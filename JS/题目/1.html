@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 数组扁平化
+        let arr = [1,[2,[3,[4,5]]],6]
+
+        let res = arr.flat(Infinity)
+
+        let res2 = JSON.stringify(arr).replace(/\[|\]/g,'').split(',')
+        // 转换后元素都为字符串
+        console.log(res2)
+
+        let res3 = JSON.parse('['+JSON.stringify(arr).replace(/\[|\]/g,'')+']')
+        console.log(res3)
+
+        const flatten = arr=>{
+            return arr.reduce((pre,cur)=>{
+                return pre.concat(Array.isArray(cur)?flatten(cur) : cur)
+            },[])
+        }
+        const res4 = flatten(arr)
+        console.log(res4)
+
+
+
+        const res5 = []
+        const fn = arr=>{
+            for(let i=0;i<arr.length;i++){
+                if(Array.isArray(arr[i])){
+                    fn(arr[i])
+                }
+                else{
+                    res5.push(arr[i])
+                }
+            }
+        }
+        fn(arr)
+        console.log(res5)
+
+
+       
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

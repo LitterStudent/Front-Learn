@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="title">
+        <div class="color"></div>
+        <div class="color2"></div>
+    </div>
+    <div class="content">
+        <div class="news">
+
+        </div>
+    </div>
+</body>
+<script>
+    // 将类数组转化为数组
+
+    let res1 = Array.from(document.querySelectorAll('div'))
+    console.log(res1)
+
+    // Array.prototype.slice 可以将类数组传入
+    let res2 = Array.prototype.slice.call(document.querySelectorAll("div"))
+    console.log(res2)
+
+    let res3 = [...document.querySelectorAll('div')]
+    console.log(res3)
+
+    let res4 = Array.prototype.concat.apply([],document.querySelectorAll('div'))
+    console.log(res4)    
+
+</script>
+
+
+</html>

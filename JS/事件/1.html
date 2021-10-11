@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="mybtn">ddd</button>
+    <a href="https://www.baidu.com" id="link">ddd</a>
+</body>
+<script>
+    // 事件对象 -- DOM事件对象
+    let btn = document.getElementById('mybtn')
+    let handler = function (event) {
+        switch (event.type) {
+            case "click":
+                console.log("Clicked");
+                break;
+            case "mouseover":
+                event.target.style.backgroundColor = "red";
+                break;
+            case "mouseout":
+                event.target.style.backgroundColor = "";
+                break;
+        }
+    }
+    btn.onclick = handler
+    btn.onmouseover = handler
+    btn.onmouseout = handler
+
+    let link = document.getElementById('link')
+    link.onclick = function (event) {
+        event.preventDefault()
+    };
+
+    btn.onclick = function (event) {
+        console.log("Clicked");
+        // event.stopPropagation();
+    };
+    document.body.onclick = function (event) {
+        console.log("Body clicked");
+    };
+   
+</script>
+
+</html>

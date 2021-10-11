@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    let hd = `
+    张三:010-2222222,李四:020-1111111
+
+    `
+    console.log(hd.match(/\d{3}-\d{7}/g))
+    // []里面的^是除[]之外的意思  除了汉字
+    console.log(hd.match(/[^\d\s\:\-\,]+/g))
+
+    let email = "2752068015@qq.com"
+    // 检测邮箱格式
+    console.log(email.match(/^\w+@\w+.\w+$/g))
+
+    console.log(hd.match(/./g))
+
+    let object = `
+    #1 java,18元 #
+    #2 javascript,28元 #
+    #3 sql,38元 #
+    #4 python,48元 #
+    `
+    console.log(object.match(/^\s*#\d+\s+.+\s+#$/gm)
+                .map(v=>{  
+                    v=v.replace(/\s*#\d\s/gm,"").replace(/\ss#/,"")
+                    console.log(v.split(','))
+                    const [name,prices] = v.split(',')
+                    // 优雅
+                    return{name,prices}
+                })
+    )
+
+    let date = '2021/8/12'
+    // () /1 原子组
+    let reg3 = /^\d{4}([-\/])\d{1,2}\1\d{1,2}$/g
+    console.log(reg3.exec(date))
+
+</script>
+</html>

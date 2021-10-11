@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* div {
+        height: 500px;
+      } */
+
+      /* .box {
+        overflow: hidden;
+      } */
+
+      /* .container {
+        padding: 0 300px 0 200px;
+        border: 1px solid black;
+      } */
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      div {
+        height: 100%;
+      }
+
+      .container {
+        display: flex;
+      }
+
+      .content {
+        flex: 1 1;
+        order: 2;
+        background: #f00;
+      }
+
+      .left {
+        float: left;
+        width: 100%;
+        background: #0f0;
+      }
+
+      .right {
+        float: left;
+        width: 300px;
+        margin-left: -300px;
+        background: #00f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left">你好</div>
+      <div class="right">我好</div>
+    </div>
+  </body>
+</html>
+

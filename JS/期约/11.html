@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 题目一 间隔一秒输出1，2，3
+        // const arr = [1, 2, 3]  
+        // arr.reduce((p,x)=>{
+        //     return p.then(()=>{
+        //         return new Promise(r=>{
+        //             setTimeout(()=>{r(console.log(x))},1000)
+        //         })
+        //     }
+        //     )
+        // },Promise.resolve())
+
+        // 题目二 红灯3秒亮一次，黄灯2秒亮一次，绿灯1秒亮一次；
+        //如何让三个灯不断交替重复亮灯？（用Promise实现）三个亮灯函数已经存在：
+        // function red() {
+        //     console.log('red');
+        // }
+        // function green() {
+        //     console.log('green');
+        // }
+        // function yellow() {
+        //     console.log('yellow');
+        // }
+
+        // const light = function(color,timer){
+        //     return new Promise(r=>{
+        //         setTimeout(()=>{
+        //         color()
+        //         r()
+        //     },timer*1000)
+        //     })
+        // }
+
+        // const step = function(){
+        //     Promise.resolve()
+        //     .then(()=>light(red,3))
+        //     .then(()=>light(yellow,2))
+        //     .then(()=>light(green,1))
+        //     .then(()=>step())
+        // }
+        // step()
+
+        // 题目三
+
+        // const time = (timer) => {
+        //     return new Promise(resolve => {
+        //         setTimeout(() => {
+        //             resolve()
+        //         }, timer)
+        //     })
+        // }
+        // const ajax1 = () => time(2000).then(() => {
+        //     console.log(1);
+        //     return 1
+        // })
+        // const ajax2 = () => time(1000).then(() => {
+        //     console.log(2);
+        //     return 2
+        // })
+        // const ajax3 = () => time(1000).then(() => {
+        //     console.log(3);
+        //     return 3
+        // })
+
+        // function mergePromise(ajaxArray) {
+        // 在这里写代码
+        // let data = []
+        // //   
+        // let promise = Promise.resolve()
+        // arr.forEach(ajax => {
+        //     promise = promise.then(ajax).then((res) => {
+        //         data.push(res);
+        //         return Promise.resolve(data)
+        //     })
+        // })
+        // return promise
+        // }
+
+        // mergePromise([ajax1, ajax2, ajax3]).then(data => {
+        //     console.log("done");
+        //     console.log(data); // data 为 [1, 2, 3]
+        // });
+        // 要求分别输出
+        // 1
+        // 2
+        // 3
+        // done
+        // [1, 2, 3]
+
+        //题目四 封装一个异步加载图片的方法
+
+        // function loadImage(url){
+        //     return new Promise((resolve,rejected)=>{
+        //         let img = new Image()
+        //         img.onload = function(){
+        //             console.log("加载成功")
+        //             resolve()
+        //         }
+        //         img.onerror = function(){
+        //             rejected(new Error("Can not load image",url))
+        //         }
+        //         img.src = url
+        //     })
+        // }
+
+
+        // 题目五
+
+        // function limitLoad(urls, handler, limit) {
+        //     let sequence = [].concat(urls);
+        //     // 初始化 limit 个 Promise的数组
+        //     let promises = sequence.splice(0, limit).map((url, index) => {
+        //         return handler(url).then(() => {
+        //             return index;
+        //         });
+        //     });
+        //     return sequence
+        //         .reduce((pCollect, url) => {
+        //             return pCollect
+        //                 .then(() => {
+        //                     return Promise.race(promises);
+        //                 })
+        //                 .then((fastestIndex) => {
+        //                     promises[fastestIndex] = handler(url).then(
+        //                         () => {
+        //                             return fastestIndex;
+        //                         }
+        //                     )
+        //                 })
+        //                 .catch(err => {
+        //                     console.log(err);
+        //                 })
+        //         }, Promise.resolve())
+        //         .then(() => {
+        //             return Promise.all(promises);
+        //         })
+        // }
+        // var urls = [
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting1.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting2.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting3.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting4.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting5.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/bpmn6.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/bpmn7.png",
+        //     "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/bpmn8.png",
+        // ];
+        // function loadImg(url) {
+        //     return new Promise((resolve, reject) => {
+        //         const img = new Image();
+        //         img.onload = function () {
+        //             console.log("一张图片加载完成");
+        //             resolve(img);
+        //         };
+        //         img.onerror = function () {
+        //             reject(new Error('Could not load image at' + url));
+        //         };
+        //         img.src = url;
+        //     });
+        // }
+        // limitLoad(urls, loadImg, 3)
+        //     .then(res => {
+        //         console.log("图片全部加载完毕");
+        //         console.log(res);
+        //     })
+        //     .catch(err => {
+        //         console.error(err);
+        //     });
+
+
+        // 题目6 Promise.all 错误处理
+        // Promise.all([A, B, C, D])
+        // 4 个请求完成后发现 AD 请求失败了，如果让 AD 请求重试
+        function http(value, flag) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (Math.random() < 0.5) {
+                        resolve(value)
+                        console.log(flag ? "重新请求成功" : "第一次请求成功", value)
+                    }
+                    else {
+                        resolve(http(value, true))
+                        console.log(flag ? "重新请求失败" : "第一次请求失败功", value)
+                    }
+                }, Math.random() * 2000)
+            })
+        }
+
+        let A = http('A');
+        let B = http('B');
+        let C = http('C');
+        let D = http('D');
+
+        Promise.all([A, B, C, D]).then(res => {
+            console.log('成功', res)
+        })
+
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

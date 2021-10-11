@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        class Vehical{
+            identifyPrototype(id){
+                console.log(id,this)
+            }
+            static identifyClass(id){
+                console.log(id,this)
+            }
+        }
+        class Bus extends Vehical{}
+
+        let v = new Vehical();
+        let b = new Bus();
+        v.identifyPrototype('v')
+        b.identifyPrototype('b')
+
+        Vehical.identifyClass('B')
+        Bus.identifyClass("B")
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

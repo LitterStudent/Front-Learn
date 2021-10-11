@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="name" placeholder="姓名">
+    <input type="text" v-model="age" placeholder="年龄">
+    <input type="text" v-model="salry" placeholder="工资">
+    <p>name: <span>{{name}}</span></p>
+    <p>age: <span>{{age}}</span></p>
+    <p>salry: <span>{{salry}}</span></p>
+
+</div>
+<script src="./mvvm.js"></script>
+<script>
+    let app = new Mvvm('#app',{
+        name:'',
+        age:'',
+        salry:''
+    })
+
+    console.log(app);
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // this 就是一个指针，指向调用函数的对象
+        // this 是函数的属性
+
+
+        // var obj = {
+        //     hi: function () {
+        //         console.log(this);
+        //     },
+
+        //     say: () => {
+        //         console.log(this);
+        //     }
+        // }
+        // 隐式绑定
+        // let hi = obj.hi();  //输出obj对象
+        // 外层为obj是对象，没有this 再外层是window
+        // obj.say();          //输出window
+
+        var number = 5;
+        var obj = {
+            number: 3,
+            fn1: (function () {
+            //    在定义obj的时候，fn对应的闭包就执行了，
+            //返回其中的函数，执行闭包中代码时，
+            //显然应用不了new绑定(没有出现new 关键字)，
+            //硬绑定也没有(没有出现call,apply,bind关键字),
+            //隐式绑定有没有？很显然没有，如果没有XX.fn()，
+            //那么可以肯定没有应用隐式绑定，所以这里应用的就是默认绑定了，
+            //非严格模式下this绑定到了window上(浏览器执行环境)。
+            //【这里很容易被迷惑的就是以为this指向的是obj，
+            //一定要注意，除非是箭头函数，否则this跟词法作用域是两回事，
+            //一定要牢记在心】
+                var number;
+                this.number *= 2;
+                number = number * 2;
+                number = 3;
+                return function () {
+                    var num = this.number;
+                    this.number *= 2;
+                    console.log(num);
+                    number *= 3;
+                    console.log(number);
+                }
+            })()
+        }
+        var fn1 = obj.fn1;
+        fn1.call(null);
+        obj.fn1();
+        console.log(window.number);
+
+    </script>
+</body>
+
+</html>

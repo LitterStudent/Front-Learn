@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function testSometing() {
+            console.log("testSomething--2");
+            return "return testSomething";
+        }
+
+        async function testAsync() {
+            console.log("testAsync--6");
+            return Promise.resolve("hello async");
+        }
+
+        async function test() {
+            console.log("test start...1");
+
+            const testFn1 = await testSometing();
+            console.log(testFn1,"5");
+
+            const testFn2 = await testAsync();
+            console.log(testFn2,"8");
+
+            console.log('test end...9');
+        }
+
+        test();
+
+        var promiseFn = new Promise((resolve) => {
+            console.log("promise START...3");
+            resolve("promise RESOLVE");
+        });
+        promiseFn.then((val) => console.log(val,"7"));
+
+        console.log("===END===--4")
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

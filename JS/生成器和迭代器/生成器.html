@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 生成器函数
+        function *generatorfn(){
+            yield 1;
+            yield 2;
+            yield 3;
+        }
+        // 获取生成器对象
+        const g = generatorfn();
+        // 生成器对象实现了 Iterator 接口，具有next()方法，调用该方法会使生成器开始执行
+        // console.log(g.next()); 
+        console.log(g);
+        // 生成器对象可以遍历
+        for(const x of g){
+            console.log(x)
+        }
+        
+        // 生成器对象的默认迭代器是自引用
+        console.log(g[Symbol.iterator]()===g)
+
+        function *nTimes(n){
+            while(n--){
+              yield;
+            }
+        }
+        for(let _ of nTimes(3)){
+            console.log("foo")
+        }
+
+        function *generatorFn2(inital){
+            console.log(inital)
+            console.log(yield)
+            console.log(yield)
+        }
+        let genertorObj = generatorFn2("foo")
+        genertorObj.next("111")//第一行调用next传入的参数不会被使用，因为这一次调用是开始执行生成器函数
+        genertorObj.next("222")
+        genertorObj.next("333")
+
+        function * zeroes(n){
+            while(n--){
+                yield 0
+            }
+        }
+        console.log(Array.from(zeroes(8)))
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

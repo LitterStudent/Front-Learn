@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    // var a = {
+    //     _value:0,
+    //     toString(){
+    //         return ++this._value;
+    //     }
+    // }
+
+    // if (a == 1 && a == 2 && a == 3) {
+    //     console.log("True");
+    // }
+    ////////////////////////////////////////////////////
+    // var _default = 0;
+    // Object.defineProperty(window,"a",{
+    //     get:function(){
+    //         return ++_default;
+    //     }
+    // })
+    // if(a === 1&&a===2 &&a===3){
+    //     console.log("True");
+    // }
+    ////////////////////////////////////////////////////
+    var len1 = ({a:1,b:2}+{})  //类型转换 toString [object Object][object Object]
+    var len2 = ([1,"aaa"]+[]).length   //类型转换 toString 为数组元素
+    console.log(len1,len2);
+    var len3 = (function(){}).length
+    console.log(len3); //形参个数  argument.length 为实参个数
+
+    require()
+</script>
+
+<body>
+
+</body>
+
+</html>

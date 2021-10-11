@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <input type="text" name="input">
+    <script>
+        const regExp = new RegExp(/cat/ig)
+        const str = 'The cat scattered his food all over the room.'
+        let res = regExp.exec(str)
+        console.log(res)
+        res = regExp.exec(str)
+        console.log(res)
+
+        const regExp2 = new RegExp(/\bcat\b/ig)
+        res = regExp2.exec(str)
+        console.log(res)
+        res = regExp2.exec(str)
+        console.log("使用单词分界符，只能匹配到cat,scattered匹配不到", res)
+
+        //  组合（）
+        let str2 = 'dsdxcxcv'
+        let reg = /[A-z]/
+        let reg2 = /(ds|dx)/
+        console.log(reg.test(str2))
+        console.log(reg2.test(str2))
+        console.log(/\d+\.\d+/.test(11.11))
+
+        // 开头与结尾
+        let input = document.querySelector("[name='input']")
+        // console.log(input)
+        input.addEventListener("keyup", function () {
+            // 
+            let flag = this.value.match(/^[a-z]{3,11}$/)
+            console.log(flag)
+        })
+
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

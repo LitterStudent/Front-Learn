@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>1111</h1>
+    <h2>2222</h2>
+    <h3>3333</h3>
+</body>
+<script>
+    // 元子组
+    let reg = /<(h[1-6])>[\s\S]*<\/\1>/g
+    console.log(document.body.innerHTML.match(reg))
+
+    //
+    let hd = `
+    <h1>1111</h1>
+    <h2>2222</h2>
+    <h3>3333</h3>
+    `
+    let reg2 = /<(h[1-6])>(\w+)<\/\1>/ig
+    // `$2`为原子组里的 第二项
+    let res = hd.replace(reg2,`$2`)
+    console.log(res)
+
+    let hd3 = `
+    https://www.baidu.com
+    https://hdongi.com
+    https://shenxsxx.com
+    `
+    // (?:)中 ?:的作用是 消除原子组的匹配结果 后续$1没有该结果
+    let reg3 = /https?:\/\/((?:\w+\.)?\w+\.(?:com|cn|org))/g
+   while((res3 = reg3.exec(hd3))){
+       console.dir(res3)
+       console.log(res3[0])
+       console.log(res3[1])
+       console.log(reg3.lastIndex)
+   }
+</script>
+</html>

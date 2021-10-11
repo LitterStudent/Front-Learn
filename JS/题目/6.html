@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 函数柯里化
+        function curry(fn,len = fn.length){
+            return _curry.call(this,fn,len)
+        }
+
+        function _curry(fn,len,...args){
+            return function(...params){
+                let _args = [...args,...params]
+                if(_args.length>=len){
+                    return fn.apply(this,_args)
+                }
+                else{
+                    return _curry.call(this,fn,len,..._args)
+                }
+
+                
+            }
+        }
+        let _fn = curry(function(a,b,c,d,e){
+                    console.log(a,b,c,d,e)
+                })
+                _fn(1,2,3)(4)(5)
+        
+    //实现add(1)(2)(3)(4)=10; 、 add(1)(1,2,3)(2)=9;
+       function add(){
+           const _args = [...arguments]
+           function fn(){
+               _args.push(arguments)
+               return fn
+            }
+          fn.toString = function(){
+              return _args.reduce((sum,cur)=>{sum = sum+cur},0)
+          }
+          return fn
+       }
+       
+       console.log(add(1)(2).toString)
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        //  instanceof 实现,判断类型
+        // instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上。
+        const myInstaceOf = (left, right) => {
+            if (left === null) return false
+            let proto = Object.getPrototypeOf(left)
+            while (true) {
+                if (proto === null) return false
+                if (proto === right.prototype) return true
+                proto = Object.getPrototypeOf(proto)
+            }
+        }
+
+
+
+
+
+        function student() {
+
+        }
+
+        const stu = new student()
+        console.log(Object.getPrototypeOf(student));
+        console.log(myInstaceOf(null, student))
+        console.log(student instanceof Function);
+
+        let object = {
+            a: 1, b: 2, c: 3
+        }
+        object.__proto__.d = 4
+        console.log()
+
+        for (const key in object) {
+            if (Object.hasOwnProperty.call(object, key)) {
+                const element = object[key];
+                console.log(element)
+            }
+        }
+        // for (const iterator of object) {
+        //     console.log(iterator)
+        // }
+
+        console.log(Object.prototype.toString.call(student))
+        console.log(Object.prototype.toString.call(stu))
+        console.log(Object.prototype.toString.call([]))
+        console.log([] == ![])
+
+        const a = {
+            b: 2,
+            foo: function () { console.log(this.b) }
+        }
+
+        function b(foo) {
+            // 输出什么？
+            foo()
+        }
+
+        b(a.foo)
+//  实现一个函数判断数据类型
+        function getTypeof(obj){
+            if(obj === null) return 'null'
+            return Object.prototype.toString.call(obj).replace('[object','').replace(']','')
+            .toLowerCase()
+        }
+        console.log(getTypeof(Symbol("ff")))
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

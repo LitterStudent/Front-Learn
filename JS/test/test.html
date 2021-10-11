@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="debounce">
+    <input type="text" id="throttle">
+</body>
+<script>
+    let debounce = function(fun,delay,immediate){
+        let timeer;
+        return function(...args){
+            const context = this;
+            console.log(this);
+            if(timeer){
+                clearTimeout(timeer);
+            }
+            if(immediate){
+                const callNow = !timeer;
+                timeer = setTimeout(()=>{
+                    timeer = null
+                },delay);
+                if(callNow){
+                    fun.apply(context,...args)
+                }
+            }
+            else{
+                timeer = setTimeout(()=>{
+                    console.log(this);
+                    fun.apply(context,...args);
+                },delay)
+            }
+        }
+        
+    }
+
+    const input = document.querySelector("#debounce");
+
+    let ajax = function(content){
+        console.log(content);
+    }
+    let fun = debounce(ajax,500,false);
+
+    input.addEventListener("keyup",function(e){
+        fun(e.target.value)
+    })
+
+
+    let throttle = function(func,delay){
+        let flag = true;
+        return function(...args){
+            if(!flag) return ;
+            flag = false
+            setTimeout(()=>{
+                func(...args);
+                flag = true;
+            },delay)
+        }
+    }
+
+    let input2 = document.querySelector("#throttle");
+    let thro = throttle(ajax,1000)
+    input2.addEventListener("keyup",function(e){
+        thro(e.target.value)
+    })
+</script>
+</html>

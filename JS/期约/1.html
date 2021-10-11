@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let p1 = new Promise((resolve, reject) => {
+            resolve("111")
+        })
+        let p2 = new Promise((resolve, reject) => {
+            reject("222")
+        })
+        console.log(p1)
+        console.log(p2)
+
+        let p3 = Promise.resolve("333")
+        console.log(p3)
+
+        // 空包装
+        let p4 = Promise.resolve(p3)
+        console.log(p4)
+
+        let p5 = Promise.reject("555")
+        console.log(p5)
+
+        // 不是空包装
+        let p6 = Promise.reject(p5)
+        console.log(p6)
+
+        let p7 = new Promise((resolve, reject) => {
+            resolve("777")
+        })
+
+        let p8 = p7.then(() => {
+            console.log("resolve--then")
+            // 会被Promise.resolve()包装
+            return "p8---then--resolve"
+        },
+            () => {
+                console.log("reject---then"
+                )
+            })
+        setTimeout(() => {
+            console.log("p8", p8)
+        }, 0)
+
+        let p9 = new Promise((resolve, reject) => {
+            reject("999")
+        })
+        let p10 = p9.then(null,
+            () => {
+                console.log("reject---then")
+                // 也会被Promise.resolve()包装
+                return "p10---then--reject"
+            })
+        setTimeout(() => {
+            console.log("p10", p10)
+        }, 0)
+
+        let p11 = p8.then(() => {
+            // 抛出错误值返回拒绝的期约
+            throw "baz"
+        })
+        let p12 = p8.then(() =>
+            // 返回错误值会将该值包装到一个解决的期约中
+            Error('qux')
+        )
+        setTimeout(() => {
+            console.log("p11", p11)
+        })
+        setTimeout(() => {
+            console.log("p12", p12)
+        })
+
+        let p13 = p9.then(null, () => new Promise.reject("p13--rejected"))
+        setTimeout(() => {
+            console.log("p13", p13)
+        })
+
+        // 与调用p9.then(null,()=>{return Promise.resolve("p14")}) 一样
+        let p14 = p9.catch(() => {
+            return Promise.resolve("p14")
+        })
+        setTimeout(() => {
+            console.log("p14", p14)
+        })
+
+        // finally返回的新的期约实例大多数情况下都是对父期约的传递
+        let p15 = p7.finally()
+        let p16 = p9.finally()
+        setTimeout(() => {
+            console.log("p15", p15)
+        })
+        setTimeout(() => {
+            console.log("p16", p16)
+        })
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

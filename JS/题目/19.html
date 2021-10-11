@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    let arr = [1,2,3,4]
+    let res = arr.reduce((pre,value,index,arr)=>{
+        console.log(pre,value,index);
+       return pre += value;
+    },0)
+    console.log(res);
+
+    let arr2 = [{name:'xiaoming',age:12},{name:'xiaohong',age:13},{name:'xiaojian',age:14}]
+    console.log(arr2.find(item=>item.age===14));
+    console.log(arr2.findIndex(item=>item.age===14));
+    let iterator1 = arr2.keys();
+    let iterator2 = arr2.values();
+    let iterator3 = arr2.entries();
+    for(let key of iterator1){
+        console.log(key);
+    }
+    for(let value of iterator2){
+        console.log(value);
+    }
+    for(let entry of iterator3){
+        console.log(entry);
+    }
+    for(let i in arr2){
+        console.log(i );
+    }
+</script>
+<body>
+    
+</body>
+</html>

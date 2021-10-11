@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="outer">
+        <div class="inner">
+            <button id="btn">click</button>
+        </div>
+    </div>
+
+    <script>
+        const inner = document.querySelector('.inner');
+        const outer = document.querySelector('.outer');
+        const body = document.body;
+        function h(stopPropagation) {
+            return function (e) {
+                console.log(e.type);
+                console.log(`${this.id || this.className || this.tagName}`);
+                if (stopPropagation) { e.stopPropagation(); }
+            }
+        }
+        body.addEventListener('click', h()); //冒泡阶段执行
+        outer.addEventListener('click', h(), true); //捕获阶段执行
+        inner.addEventListener('click', h(true)); //冒泡阶段执行，取消冒泡
+
+        //解析：W3c执行顺序：其他元素的捕获事件，自身元素的顺序事件，其他元素的冒泡事件。
+        //此处，
+        //body的click事件为冒泡阶段，暂不执行；
+        //outer的click事件为捕获阶段执行，触发。输出outer
+        //inner的click事件为冒泡阶段执行，本身触发，输出inner。
+        //但是因为inner在这里取消了冒泡，所以body的click冒泡事件也不能执行了。
+    </script>
+</body>
+
+</html>

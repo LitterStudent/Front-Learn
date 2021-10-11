@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 原型链继承
+        function SuperType() {
+            this.property = true
+        }
+        SuperType.prototype.getSuperpropertye = function () {
+            return this.property
+        }
+        function SubType() {
+            this.subproperty = false
+        }
+        SubType.prototype = new SuperType()
+        SubType.prototype.getSubproperty = function () {
+            return this.subproperty
+        }
+
+        const sub = new SubType()
+        console.log(sub.getSubproperty())
+        console.log(sub.getSuperpropertye())
+
+        // 盗用构造函数
+        // 可以传参，实现各实例的自己独立的属性。但是无法实现函数复用
+        function SubperType2(name) {
+            this.name = name
+            this.colors = ['red', 'green', 'black']
+        }
+
+        function SubType2(name) {
+            SubperType2.call(this, name)
+        }
+
+        const sub2 = new SubType2("xiaoming")
+        const sub22 = new SubType2("xiaohong")
+        sub2.colors.push("22")
+        sub22.colors.push("333")
+        console.log(sub2.colors, sub2.name)
+        console.log(sub22.colors, sub22.name)
+
+        // 组合继承
+        // 使用原型链继承原型的属性和方法，通过借用构造函数继承实例属性
+        function SubperType3(name) {
+            this.name = name
+            this.colors = ['red', 'green', 'black']
+        }
+        SubperType3.prototype.sayName = function () {
+            console.log(this.name)
+        }
+
+        function SubType3(name, age) {
+            // 第二次调用
+            SubperType3.call(this, name)
+            this.age = age
+        }
+        // 第一次调用
+        SubType3.prototype = new SubperType3()
+        SubType3.prototype.sayAge = function () {
+            console.log(this.age)
+        }
+        let instance1 = new SubType3("xiaoming", 12)
+        instance1.colors.push(3333)
+        console.log(instance1.colors)
+        instance1.sayAge()
+        instance1.sayName()
+        let instance2 = new SubType3("xiaohong", 13)
+        instance2.colors.push(4444)
+        console.log(instance2.colors)
+        instance2.sayAge()
+        instance2.sayName()
+
+        // 原型式继承
+        // 与原型链相同
+        let person = {
+            name: "dd",
+            friends: ["aa", "bb", "cc"]
+        }
+        let person2 = Object.create(person)
+        person2.friends.push("eee")
+        let person3 = Object.create(person)
+        person3.friends.push("fff")
+        console.log(person2.friends)
+        console.log(person3.friends)
+        person3.name = "gg"
+        person2.name = "xx"
+        console.log(person3.name)
+        console.log(person2.name)
+        console.log(person3.__proto__.name)
+        console.log(person2.__proto__.name)
+
+        // 寄生式组合继承
+        // 将子类的原型的原型指向父类的原型 
+        // 获取父类原型的公共属性
+        // 在子类的构造函数内道用父类的构造函数
+        // 获取父类实例的属性
+        function inheritPrototype(subType, subperType) {
+            let prototype = Object.create(subperType)
+            prototype.constructor = subperType
+            subperType.prototype = prototype
+        }
+        function SuperType(name) {
+            this.name = name;
+            this.colors = ["red", "blue", "green"];
+        }
+        SuperType.prototype.sayName = function () {
+            console.log(this.name);
+        };
+        function SubType(name, age) {
+            SuperType.call(this, name);
+            this.age = age;
+        }
+        inheritPrototype(SubType, SuperType);
+        SubType.prototype.sayAge = function () {
+            console.log(this.age);
+        };
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 寄生式组合继承
+        function Person(name){
+            this.name = name
+        }
+        Person.prototype.sayName = function(){
+            console.log(this.name)
+        }
+        function Student(name,age){
+            Person.call(this,name)
+            this.age = age
+        }
+        Student.prototype = Object.create(Person.prototype)
+        Student.prototype.constructor = Student
+        Student.prototype.sayAge = function(){
+            console.log(this.age)
+        }
+        let student1 = new Student("xiaoming",12)
+        student1.sayName()
+        student1.sayAge()
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

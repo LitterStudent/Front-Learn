@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="main">
+        <h1>111d1</h1>
+        <h2>2222d</h2>
+        <h3>3333d</h3>
+    </div>
+</body>
+  <script>
+        const main = document.querySelector(".main")
+        //  +? +后面的?是为了禁止贪婪，在h标签之间匹配尽可能少的字符
+        const reg = /<(h[1-6])>([\s\S]+?)<\/(h[1-6])>/g
+        main.innerHTML = main.innerHTML.replace(reg,(v,p1,p2)=>{
+            console.log(v)
+            return `<h1 style='color:red'>${ p2}</h1>`
+        })
+
+       
+    // String的RegExp方法 replace() match() matchAll()
+        // const hd = main.innerHTML.matchAll(reg)
+        // console.log(hd)
+        // // 遍历可迭代对象
+        // for (const iterator of hd) {
+        //     console.dir(iterator)
+        // }
+      
+        const date = "2018-4/22"
+        const reg2 = /[-\/]/
+        // split也可以用正则
+        console.log(date.split(reg2))
+
+        const tel = '(020)2222222 (010)1111111';
+        // g 可以使replace 全局匹配，replace（）第二个参数可以使用$1 $2
+        const reg3 = /\((\d{3,4})\)(\d{6,8})/g
+        console.log(tel.replace(reg3,`$1-$2`))
+</script>
+</html>

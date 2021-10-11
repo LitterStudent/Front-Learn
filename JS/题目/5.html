@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input id="debounce">
+    <br>
+    <input id="throttle">
+</body>
+<script>
+    // 防抖与节流
+// 防抖的原理就是：你尽管触发事件，但是我一定在事件触发 n 秒后才执行，
+//如果你在一个事件触发的 n 秒内又触发了这个事件，
+//那我就以新的事件的时间为准，n 秒后才执行，
+//总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行，
+
+    // 模拟一端ajax 请求
+    function ajax(content) {
+        console.log(content)
+    }
+
+    function debounce(fun, delay) {
+        return function (...args) {
+            let that = this
+            let _args = args
+            clearTimeout(fun.id)
+            // console.log(fun)
+            fun.id = setTimeout(function () {
+                fun.call(this, ..._args)
+            }, delay)
+        }
+    }
+
+    // immediate 是否立即调用 立即调用后 delay毫秒内不会重复调用会无效
+    function debounce2(fun, delay, immediate) {
+        let timmer
+        return function (...args) {
+            
+            if (timmer) {
+                clearTimeout(timmer);
+            }
+            if (immediate) {
+                const callNow = !timmer;
+                timmer = setTimeout(() => {
+                    timmer = null
+                }, delay)
+                if (callNow) {
+                    fun.call(this, ...args)
+                }
+            }
+            else {
+                timmer = setTimeout(() => {
+                    fun.call(this, ...args)
+                }, delay)
+            }
+        }
+    }
+
+    let inputb = document.getElementById('debounce')
+
+    let debounceAjax = debounce2(ajax,1000,true)
+
+    inputb.addEventListener('keyup', function (e) {
+        debounceAjax(e.target.value)
+    })
+
+    // 节流
+    function throttle(fun, delay) {
+        let flag = true
+        return function (...args) {
+            if (!flag) return
+            flag = false
+            let now = + new Date()
+            let _args = args + now
+            setTimeout(() => {
+                fun.call(this, _args)
+                flag = true
+            }, delay)
+        }
+    }
+
+
+
+    let throttleAjax = throttle(ajax, 1000)
+
+    let inputc = document.getElementById("throttle")
+
+    inputc.addEventListener('keyup', function (e) {
+        throttleAjax(e.target.value)
+    })
+
+</script>
+
+</html>

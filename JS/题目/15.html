@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 模拟 call
+        Function.prototype.call2 = function (context) {
+            if (typeof this !== "function") {
+                throw new TypeError("Error");
+            }
+            // this：调用call2的函数 
+            // context: this值
+            // 把调用call2函数的 函数 加入到 context内
+            context.fn = this || window;
+            var args = [...arguments].slice(1);
+            let result = context.fn(...args);
+            delete context.fn;
+            return result
+        };
+
+        
+        // 模拟 aplly
+        Function.prototype.apply2 = function (context) {
+            if (typeof this !== "function") {
+                throw new TypeError("Error");
+            }
+            // this：调用call2的函数 
+            // context: this值
+            // 把调用call2函数的 函数 加入到 context内
+            context.fn = this || window;
+            var args = arguments[1] || arguments
+            let result
+            result = context.fn(...args);
+            delete context.fn;
+            return result
+        };
+        function sayname(){
+            console.log("Ddd")
+        }
+        // var b =3
+        // console.log(sayname.apply2(b));
+
+     
+        // 模拟bind
+        Function.prototype.bind2 = function (context) {
+            if (typeof this !== 'function') {
+                throw new TypeError("Error");
+            }
+            var args = [...arguments];
+            var fn = this;
+             function Fn() {
+                // this instanceof Fn 判断this是否为Fn函数 new出的实例
+                // 如果是 则 传入的 context无效
+                return fn.apply((this instanceof Fn ? this : context),
+                    args.concat(...arguments));
+            }
+            Fn.prototype = this.prototype
+            return Fn
+        }
+
+   
+
+        var value = 2;
+        var foo = {
+            value: 1
+        };
+        function bar(name, age) {
+            this.habit = 'shopping';
+            console.log(this.value);
+            console.log(name);
+            console.log(age);
+        }
+        bar.prototype.friend = 'kevin';
+
+        var barbind = bar.bind2(foo,"ddd")
+        var obj = new barbind(18)
+        console.log(obj);
+        var barbind2 = bar.bind(foo,"ddd")
+        var obj2 = new barbind(18)
+        console.log(obj2)
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

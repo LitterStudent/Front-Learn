@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+    async function foo(){
+    console.log(await new Promise((resolve)=>{resolve("foo")}))
+    }
+    foo()
+
+    async function bar(){
+        // return 后会被 Promise.resolve()包装
+        return await Promise.resolve("bar")
+    }
+    bar().then(console.log)
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

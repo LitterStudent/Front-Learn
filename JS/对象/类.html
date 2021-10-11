@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        const symbol = Symbol('symbolKey')
+        class Person{
+            // 定义构造函数
+            constructor(){
+                this.name = new String('Jack')
+                this.sayName = ()=>{console.log(this.name)}
+                this.nickNames = ['ddd','eeee']
+                this.locate = ()=>{console.log("instance"+this)}
+            }
+            // 定义原型方法
+            locate(){
+                console.log("Prototyoe",this)
+            }
+            // 可以使用符号作为键值
+            [symbol](){
+                console.log("this is symbol method")
+            }
+
+            set name(name){
+                this.name_ = name 
+            }
+
+            get name(){
+                return this.name_
+            }
+
+            static locate(){
+                console.log("class",this)
+            }
+        }
+        let p1 = new Person(),
+            p2 = new Person();
+        
+        p1.sayName()
+        p2.sayName()
+
+        console.log(p1.name===p2.name)
+        console.log(p1)
+
+        // 实例
+        p1.locate()
+        // 对象本身 静态
+        Person.locate()
+        // 原型
+        Person.prototype.locate()
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

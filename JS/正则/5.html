@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<input type="text" name="password" id="">    
+</body>
+<script>
+    let input = document.querySelector("[name=password]")
+    let regs = [
+        /[A-Z]/, //必须包含大写字母
+        /[0-9]/, //必须包含数字
+        /^\w{5,9}$/ //必须为5到9位字符
+    ]
+    input.addEventListener('keyup',(e)=>{
+        let value = e.target.value
+        let bol =  regs.every(v=>
+           v.test(value)
+        )
+        console.log(bol)
+    })
+</script>
+</html>

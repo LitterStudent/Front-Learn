@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 题目 -1
+        // const promise = new Promise((resolve, reject) => {
+        //     console.log(1);
+        //     resolve('success')
+        //     console.log(2);
+        // });
+        // console.log(promise)
+        // promise.then(() => {
+        //     console.log(3);
+        // });
+        // console.log(4);
+
+
+        // 题目0
+        // Promise.resolve("11")
+        // .then(v=>{console.log(v);return "333"})
+        // .then(v=>{console.log(v)})
+
+        // Promise.resolve("22")
+        // .then(v=>{console.log(v);return "44"})
+        // .then(v=>{console.log(v)})
+
+        // 题目一
+
+        // async function async1(){
+        //     console.log("async1 start");
+        //     await async2();
+        //     // 将await下一行的语句看成微任务
+        //     console.log("async1 end")
+        // }
+
+        // async function async2(){
+        //     setTimeout(()=>{
+        //         console.log("timer")
+        //     },0);
+        //     console.log("async2");
+        // }
+        // async1();
+        // console.log("start")
+
+        // 题目二
+        // async function async1() {
+        //     console.log("async1 start 1");
+        //     await async2();
+        //     console.log("async1 end  4");
+        //     setTimeout(() => {
+        //         console.log('timer1 7')
+        //     }, 0)
+        // }
+        // async function async2() {
+        //     setTimeout(() => {
+        //         console.log('timer2 5')
+        //     }, 0)
+        //     console.log("async2  2");
+        // }
+        // async1();
+        // setTimeout(() => {
+        //     console.log('timer3 6')
+        // }, 0)
+        // console.log("start  3")
+
+        // 题目三
+        // async function async1() {
+        //     console.log('async1 start 2');
+        //     await new Promise(resolve => {
+        //         console.log('promise1 3')
+        //         resolve('promise1 resolve')
+        //     })
+        //     console.log('async1 success 5');
+        //     return 'async1 end 6 '
+        // }
+        // console.log('srcipt start 1')
+        // async1().then(res => console.log(res))
+        // console.log('srcipt end 4')
+
+        // 题目四
+        // async function async1() {
+        //     console.log('async1 start 2');
+        //     await new Promise(resolve => {
+        //         console.log('promise1 3')
+        //         resolve('promise resolve')
+        //     })
+        //     console.log('async1 success 5');
+        //     return 'async1 end 6'
+        // }
+        // console.log('srcipt start 1')
+        // async1().then(res => {
+        //     console.log(res)
+        // })
+        // new Promise(resolve => {
+        //     console.log('promise2 4')
+        //     setTimeout(() => {
+        //         console.log('timer 7')
+        //     })
+        // })
+
+        // 题目五
+        // async function async1() {
+        //     console.log("async1 start 2");
+        //     await async2();
+        //     console.log("async1 end 6 ");
+        // }
+        // async function async2() {
+        //     console.log("async2 3");
+        // }
+        // console.log("script start 1");
+        // setTimeout(function () {
+        //     console.log("setTimeout 8");
+        // }, 0);
+        // async1().then(()=>{console.log("7.5")});
+        // new Promise(function (resolve) {
+        //     console.log("promise1 4");
+        //     resolve();
+        // }).then(function () {
+        //     console.log("promise2 7");
+        // });
+        // console.log('script end 5')
+
+        // 题目六
+        // async function testSometing() {
+        //     console.log("执行testSometing 2");
+        //     return "testSometing 5";
+        // }
+        // async function testAsync() {
+        //     console.log("执行testAsync 6");
+        //     return Promise.resolve("hello async");
+        // }
+        // async function test() {
+        //     console.log("test start... 1");
+        //     const v1 = await testSometing();
+        //     console.log(v1);
+        //     const v2 = await testAsync();
+        //     console.log(v2,"8");
+        //     console.log(v1, v2,"9");
+        // }
+        // test();
+        // var promise = new Promise(resolve => {
+        //     console.log("promise start... 3");
+        //     resolve("promise");
+        // });
+        // promise.then(val => console.log(val,"7"));
+        // console.log("test end... 4");
+
+        // 题目七
+        // async function async1() {
+        //     await async2();
+        //     // 因为await返回的是一个 reject的Promise,后面代码不执行
+        //     console.log('async1 ');
+        //     return 'async1 success'
+        // }
+        // async function async2() {
+        //     return new Promise((resolve, reject) => {
+        //         console.log('async2 1')
+        //         reject('error')
+        //     })
+        // }
+        // async1().then(res => console.log(res))
+
+        // 题目八
+        // async function async1() {
+        //     try {
+        //         await Promise.reject('error!!!')
+        //     } catch (e) {
+        //         console.log(e, "2")
+        //     }
+        //     console.log('async1 3');
+        //     return Promise.resolve('async1 success ')
+        // }
+        // async1().then(res => console.log(res, '4'))
+        // console.log('script start 1')
+
+        // 题目9
+        // async function async1() {
+        // try {
+        //   await Promise.reject('error!!!')
+        // } catch(e) {
+        //   console.log(e)
+        // }
+        //     await Promise.reject('error!!!')
+        //         .catch(e => console.log(e, "2"))
+        //     console.log('async1', '3');
+        //     return Promise.resolve('async1 success')
+        // }
+        // async1().then(res => console.log(res, '4'))
+        // console.log('script start 1')
+
+        // 题目10
+
+        async function async1() {
+            console.log("async1 start 2");
+            await async2();
+            console.log("async1 end 6");
+        }
+        async function async2() {
+            console.log("async2 3");
+        }
+        console.log("script start 1");
+        setTimeout(function () {
+            console.log("setTimeout 8");
+        }, 0);
+        async1();
+        new Promise(function (resolve) {
+            console.log("promise1 4");
+            resolve();
+        }).then(function () {
+            console.log("promise2 7");
+        });
+        console.log('script end 5')
+
+
+
+    
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

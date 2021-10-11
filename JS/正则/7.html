@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" name="input" id="">
+    <main>
+        <a href="https://oss.baicu.com/1.jpg">1.jpg</a>
+        <a href="https://www.css.com/2.jpg">2.jpg</a>
+        <a href="https://www.dd.com/3.jpg">3.jpg</a>
+        <a href="https://www.ss.com/4.jpg">4.jpg</a>
+    </main>
+</body>
+<script>
+    let tel = `
+    小米：111122344
+    小红：222233455
+    `
+    let reg = /(?<=\d{7})\d{2}/g;
+    tel = tel.replace(reg,(v)=>{
+        return '*'.repeat(2);
+    })
+    console.log(tel);
+
+    let input = document.querySelector('[name="input"]');
+    input.addEventListener("keyup",(e)=>{
+        let value = e.target.value;
+        // 输入内容不能包含东东
+        let reg2 = /(?!.*东东.*)\w+/;
+        console.log(reg2.test(value));
+    })
+
+    let main = document.querySelector("main")
+    //  (?<!oss)\. .的前面域名必须为不是 +?禁止贪婪 (?=\/)最后以/结尾
+    // 找到 https://www.dd.com/ 这样的域名内容
+    let reg2 = /https:\/\/([a-z]+)?(?<!oss)\..+?(?=\/)/gi
+    main.innerHTML = main.innerHTML.replace(reg2,v=>{
+        return 'https://oss.wddd.com'
+    })
+
+
+</script>
+</html>

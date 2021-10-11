@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 题目一
+        // const first = () => (new Promise((resolve, reject) => {
+        //     console.log(3,"----1");
+        //     let p = new Promise((resolve, reject) => {
+        //         console.log(7,"----2");
+        //         setTimeout(() => {
+        //             console.log(5,"6");
+        //             resolve(6);
+        //             console.log(p,"7")
+        //         }, 0)
+        //         resolve(1);
+        //     });
+        //     resolve(2);
+        //     p.then((arg) => {
+        //         console.log(arg,"4");
+        //     });
+        // }));
+        // first().then((arg) => {
+        //     console.log(arg,"5");
+        // });
+        // console.log(4,"----3");
+
+        // 题目二
+
+        // const async1 = async () => {
+        //     console.log('async1 2');
+        //     setTimeout(() => {
+        //         console.log('timer1 7')
+        //     }, 2000)
+        //     await new Promise(resolve => {
+        //         console.log('promise1 3')
+        //     })
+        //     // 不执行
+        //     console.log('async1 end ')
+        //     return 'async1 success'
+        // }
+        // console.log('script start 1');
+        // async1().then(res => console.log(res));
+        // console.log('script end 4');
+        // Promise.resolve(1)
+        //     .then(2)
+        //     .then(Promise.resolve(3))
+        //     .catch(4)
+        //     .then(res => console.log(res,5))
+        // setTimeout(() => {
+        //     console.log('timer2 6')
+        // }, 1000)
+
+
+        // 题目三
+        // const p1 = new Promise((resolve) => {
+        //     setTimeout(() => {
+        //         resolve('resolve3');
+        //         console.log('timer1 3')
+        //     }, 0)
+        //     resolve('resovle1 1');
+        //     resolve('resolve2');
+        // }).then(res => {
+        //     console.log(res)
+        //     setTimeout(() => {
+        //         console.log(p1,"4")
+        //     }, 1000)
+        //     // then无返回值，所以是Promise{<resolved>: undefined}
+        // }).finally(res => {
+        //     console.log('finally', res,"2")
+        // })
+
+        // const p1 = new Promise((resolve) => {
+        //     resolve('resovle1 1');
+        //     resolve('resolve2');
+        //     // finally 返回上一个期约
+        // }).finally(()=>{return "ddd"}).then(res => {
+        //     console.log(res)
+        // }).then(res => {
+        //     console.log(res)
+        // }).then(res => {
+        //     console.log(res)
+        // })
+
+       
+        
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

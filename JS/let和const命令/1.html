@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    var a = []
+    for (let i = 0; i < 10; i++) {
+        a[i] = function() {
+            //i只在本轮循环有效,每一次循环的i其实都是一个新的变量
+            //设置循环变量的那部分是一个父作用域，而循环体内部是一个单独的子作用域,这里没有体现
+            console.log(i)
+        }
+    }
+    a[2]()
+
+
+    {
+        if (true) {
+            var ba = function() {
+                console.log(1)
+            }
+            let s = 1
+        }
+    }
+    window.ba()
+
+    function add(x, y) {
+        'use strict';
+        console.log(this); //undefined
+    }
+    add();
+
+    var o = {
+        m: function() {
+            return this
+        }
+    }
+    console.log(o.m())
+
+    var o1 = {
+        m: function() {
+            function n() {
+                return this;
+            }
+            return n();
+        }
+    }
+    console.log(o1.m());
+
+
+    var name = "icewoman"
+
+    function fn1() {
+        var name = 'iceman';
+
+        function fn2() {
+            console.log(name);
+        }
+        return fn2;
+    }
+    var fn3 = fn1();
+    fn3();
+
+
+    for (let i = 1; i <= 10; i++) {
+        setTimeout(function() {
+            console.log(i);
+        }, 1000);
+    }
+</script>
+
+<body>
+
+</body>
+
+</html>

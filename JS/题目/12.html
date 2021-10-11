@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 0.1+0.2 
+        // 由于javascript 中采用的是 IEE754双精度版本，
+        //0.1在转成64为时小数部分的转换会生成无限循环片段，
+        //并且截取片段后会丢失进度，从而导致0.1+0.2！=0.3
+
+        console.log(parseFloat((0.1+0.2).toFixed(2)) === 0.3)
+        let result = Math.abs((0.1+0.2)-0.3) < Number.EPSILON
+        console.log(result)
+        
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 简易版 promise
+        const PENDING = "pending";
+        const RESOLVED = "resolved";
+        const REJECTED = "rejected";
+
+        function MyPromise(fn) {
+            // console.log(this);
+            const that = this;
+            that.states = PENDING;
+            that.value = null;
+            that.resolvedCallbacks = [];
+            that.rejectedCallbacks = [];
+            function resolve(value) {
+                if (that.states === PENDING) {
+                    that.states = RESOLVED;
+                    that.value = value;
+                    that.resolvedCallbacks.map(v => {
+                        v(that.value)
+                    })
+                }
+            }
+            function reject(value) {
+                if (that.states === PENDING) {
+                    that.states = REJECTED;
+                    that.value = value;
+                    that.rejectedCallbacks.map(v => {
+                        v(that.value)
+                    })
+
+                }
+            }
+            try {
+                fn(resolve, reject)
+            } catch (error) {
+                // 当fn 函数内有错误抛出时可以直接调用reject(error)
+                reject(error)
+            }
+        }
+        MyPromise.prototype.then = function (onFulfilled, onRejected) {
+            const that = this;
+            onFulfilled = typeof onFulfilled === "function" ? onFulfilled : v => v
+            onRejected = typeof onRejected === "function" ? onRejected : r => { throw r }
+            if (that.states === PENDING) {
+                that.rejectedCallbacks.push(onRejected);
+                that.resolvedCallbacks.push(onFulfilled);
+            }
+            if (that.states === RESOLVED) {
+                onFulfilled(that)
+            }
+            if (that.states === REJECTED) {
+                onRejected(that.value)
+            }
+        }
+        new MyPromise((resolve, reject) => {
+            setTimeout(() => {
+                console.log("ddd");
+                resolve(1)
+            }, 0)
+        }).then(value => {
+            console.log(value)
+        })
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

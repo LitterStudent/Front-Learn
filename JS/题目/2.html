@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    // 数组去重
+    
+const arr = [1, 1, '1', 17, true, true, false, false, 'true', 'a', {}, {}];
+
+// 利用Set
+let res = Array.from(new Set(arr))
+console.log(res)
+
+// 最笨的 两层循环
+// let fun1 = arr=>{
+//     for(let i = 0;i<arr.length;i++){
+//         for(let j=i+1;j<arr.length;j++){
+//             if(arr[i] === arr[j]){
+//                 arr.splice(j,1)
+//                 j--
+//             }
+//         }
+//     }
+// }
+// fun1(arr)
+// console.log(arr)
+
+// 利用indexOf 或 includes
+let fun3 = arr=>{
+    let res = []
+    for(let i =0;i<arr.length;i++){
+        if(res.indexOf(arr[i])==-1) 
+        res.push(arr[i])
+    }
+    return res
+}
+let res3 = fun3(arr)
+console.log(res3) 
+
+
+// 利用filter
+let fun4 = arr=>{
+    return arr.filter((item,index)=>{
+        return arr.indexOf(item)==index
+    })
+}
+let res4 = fun4(arr)
+console.log(res4)
+
+
+
+
+// 利用map标记
+let fun5 = arr=>{
+    const map = new Map()
+    let res = []
+    for(let i = 0;i<arr.length;i++){
+        if(!map.has(arr[i])){
+            map.set(arr[i],true)
+            res.push(arr[i])
+        }
+    }
+    return res
+}
+let res5 = fun5(arr)
+console.log(res5)
+
+</script>
+<body>
+    
+</body>
+</html>

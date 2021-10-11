@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let p1 = new Promise((resolve,reject)=>{
+            console.log("11111")
+            resolve()
+            console.log('22222')
+        })
+        p1.then(()=>{console.log("p1 then onResolved")})
+        console.log("p1 then return")
+
+        let p2 = Promise.reject("222")
+        p2.then(null,()=>{console.log("p2 then onRejected")})
+        console.log("p2 then return")
+
+        let p3 = Promise.reject("333")
+        p3.catch(()=>{console.log("p3 catch onRejected")})
+        console.log("p3 catch() return ")
+
+        let p4 = Promise.resolve("444")
+        p4.finally(()=>{console.log("p4 finally onResolved")})
+        console.log("p4 finalt return")
+
+        
+
+        
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

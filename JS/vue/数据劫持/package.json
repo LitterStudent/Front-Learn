@@ -1,0 +1,19 @@
+{
+  "name": "dd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "html-webpack-plugin": "^5.3.2",
+    "webpack": "^5.53.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev":"webpack-dev-server",
+    "build":"webpack"
+  },
+  "author": "",
+  "license": "ISC"
+}

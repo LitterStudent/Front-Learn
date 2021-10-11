@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 深拷贝
+        const target = {
+            field1: 1,
+            field2: undefined,
+            field3: 'ConardLi',
+            field4: {
+                child: 'child',
+                child2: {
+                    child2: 'child2'
+                }
+            },
+            field5: [1, 2, 3, [4, [5]]]
+        };
+        // target.target = target
+
+        console.log(JSON.parse(JSON.stringify(target)))
+        // 判断是否为引用类型，不能为null,function也为引用类型
+        function isObject(target) {
+            const type = typeof target
+            return type !== null && (type === "object" || type === "function")
+        }
+
+        function clone(target, map = new Map()) {
+            if (isObject(target)) {
+                let cloneObject = Array.isArray(target) ? [] : {}
+                if (map.get(target)) {
+                    return map.get(target)
+                }
+                map.set(target, cloneObject)
+                for (const key in target) {
+                    cloneObject[key] = clone(target[key], map);
+                }
+            }
+            return target
+        }
+
+        function forEach(array, iteratee) {
+            let index = -1;
+            const length = array.length
+            while (++index < length) {
+                iteratee(array[index], index)
+            }
+            return array
+        }
+        // 性能优化，将for in  循环改为上面forEach的While循环 
+        // 当要拷贝的对象所占空间很大时，使用map对内存的消耗非常大，
+        // 而且需要手动去清除Map属性才能释放内存空间
+        // 将map改为WeakMap，对象键值改成了弱引用，当下一次垃圾回收时就会自动回收
+        function clone2(target, map = new WeakMap()) {
+            if (isObject(target)) {
+                const isArray = Array.isArray(target)
+                let cloneObject = isArray ? [] : {}
+                if (map.get(target)) {
+                    return map.get(target)
+                }
+                map.set(target, cloneObject)
+                const keys = isArray ? undefined : Object.keys(target)
+                forEach(keys || target, (value, key) => { //
+                    if (keys) {
+                        //  如果是对象时，要将索引修改
+                        key = value
+                    }
+                    cloneObject[key] = clone(target[key], map)
+                });
+                return cloneObject
+            }
+            return target
+        }
+
+
+
+        let map = new Map()
+        let res = clone(target, map)
+        console.log(res)
+        let map2 = new Map()
+        let res2 = clone2(target, map2)
+        console.log(res2)
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

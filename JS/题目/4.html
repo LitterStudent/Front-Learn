@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    // Array.prototype.filter()
+Array.prototype.filter = function(callback,thisArg){
+    if(this == undefined){
+        throw new TypeError("this is null or not defined")
+    }
+    if(typeof callback !='function'){
+        throw new TypeError(callback+"is not a function")
+    }
+    const res = []
+// 让O成为回调函数的对象传递
+    const O = Object(this)
+// >>>0 确保 len为number，且为正整数
+    const len = O.length >>>0
+    for(let i=0;i<len;i++){
+        if(i in O){
+            if(callback.call(thisArg,O[i],i,O)){
+                res.push(O[i])
+            }
+        }
+    }
+    return res
+}
+
+// Array.prototype.map 
+Array.prototype.map = function(callback,thisArg){
+    if(this == undefined){
+        throw new TypeError('this is null or not defined')
+    }
+    if(typeof callback !== 'function'){
+        throw new TypeError(callback+"is not a function")
+    }
+    const res = []
+    const O = Object(this)
+    const len = O.length >>> 0
+    for(let i=0;i<len;i++){
+        if(i in O){
+            res[i] = callback.call(thisArg,O[i],i,this) 
+        }
+    }
+    return res
+}
+
+// Array.prototype.forEach
+Array.prototype.forEach = function(callback,thisArg){
+    if(this== null){
+        throw new TypeError("this is null or undefined")
+    }
+    if(typeof callback !== "function"){
+        throw new TypeError(callback+"is not a function")
+    }
+    const O = Obejct(this)
+    const len = O.length >>>0
+    for(let k =0;k<len;k++){
+        if(k in O){
+            callback(thisArg,O[k],k,O)
+        }
+    }
+}
+
+// Array.prototype.reduce
+Array.prototype.reduce = function(callback,initiaValue){
+    if(this == undefined){
+        throw new TypeError('this is null or not defined')
+    }
+    if(typeof callback !=='function'){
+        throw new TypeError(callback+'is not a  function')
+    }
+    const O = Object(this)
+    const len = O.len >>>0
+    let accumulator = initialValue
+    let k = 0
+    if(accumulator === undefined){
+        while(k<len&&!(k in O)){
+            k++
+        }
+        if(k>= len){
+            throw new TypeError('Reduce of empyt array with no inital value')
+        }
+        accumulator = O(k++)
+    }
+    while(k<len){
+        if(k in O){
+            accumulator = callback.call(undefined,accumulator,O[k],k,O)
+        }
+        k++
+    }
+    return accumulator
+}
+
+
+
+
+</script>
+<body>
+    
+</body>
+</html>

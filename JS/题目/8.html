@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // Object.assign
+
+        Object.defineProperty(Object,"assign",{
+            value:function(target,...args){
+            if(target ===null){
+            return new TypeError("Cannot convert undefined or null object")
+            }
+            const to = Object(target)
+            for(let i = 0;i<args.length;i++){
+                // 获取每个源对象
+                const nextSource = args[i]
+                if(nextSource!==null){
+                    for(const sourceKey in nextSource){
+                        if(Object.prototype.hasOwnProperty.call(nextSource,sourceKey)){
+                            to[sourceKey] = nextSource[sourceKey]
+                        }
+                    }
+                
+                }
+            }
+            return to
+            },
+            enumerable:false,
+            configurable:true,
+            writable:true
+        })
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
