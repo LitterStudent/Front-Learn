@@ -11,17 +11,13 @@
 <body>
     <div id="app" style="width: 90px; height: 90px; background-color: skyblue;"></div>
     <script>
-       
-      
-       let a = function(){
-           console.log(this);
-        //    this.dd = 1;
-           let d =()=>console.log(this);
-           d()
-       }
-       let b = {a}
-       b.a()
-      
+        'use strict'
+
+        function a(){
+             b = 1;
+        }
+        a()
+        console.log(b);
     </script>
 </body>
 
