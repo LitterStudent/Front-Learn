@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+   .setBorderAll{
+       position:relative;
+       height: 100px;
+   }
+   .setBorderAll::after {
+       position:absolute;
+       box-sizing:border-box;
+       left: 0;
+       top: 0;
+       height: 200%;
+       width: 200%;
+       border: 1px solid red;
+       transform: scale(0.5);
+       transform-origin:left top;
+       content: "";
+   }
+</style>
+</head>
+<body>
+    <div class="setBorderAll"></div>
+</body>
+</html>

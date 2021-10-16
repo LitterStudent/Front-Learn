@@ -15,7 +15,7 @@
 
     `
     console.log(hd.match(/\d{3}-\d{7}/g))
-    // []里面的^是除[]之外的意思  除了汉字
+    // []里面的^是除[]之外的意思  除了数字和空白字符
     console.log(hd.match(/[^\d\s\:\-\,]+/g))
 
     let email = "2752068015@qq.com"

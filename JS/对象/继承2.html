@@ -17,7 +17,9 @@
             Person.call(this,name)
             this.age = age
         }
+        // 将子类原型的原型指向父类的原型。
         Student.prototype = Object.create(Person.prototype)
+        // 同时
         Student.prototype.constructor = Student
         Student.prototype.sayAge = function(){
             console.log(this.age)

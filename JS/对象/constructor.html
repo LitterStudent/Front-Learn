@@ -7,7 +7,33 @@
     <title>Document</title>
     <script>
         
+        function Parent(value) {
+            this.value = value
+        }
 
+        function Child(params) {
+            Parent.call(this,params);
+        }
+
+        class Parent2{
+            constructor(value){
+                this.value = value
+            }
+        }
+
+        class Child2 extends Parent2{
+            constructor(value){
+                super(value)
+            }
+        }
+
+        let child = new Child("dd")
+        let child2 = new Child2("aa")
+        console.log(child);
+        console.log(child instanceof Parent);
+
+        console.log(child2);
+        console.log(child2 instanceof Parent2);
     </script>
 </head>
 <body>
