@@ -228,7 +228,7 @@ align-self属性允许单个项目有与其他项目不一样的对齐方式，�
 
 ## 12 px 和 em 和 rem
 
-
+[好文](https://juejin.cn/post/6844904013322944525)
 
 px是css的像素，1px代表css中的一个像素点。
 
@@ -242,6 +242,17 @@ em 是一个相对单位，当在元素的 font-size中使用时 如 2em 是相�
 
 rem和em一样也是相对长度。不过rem是基于html的font-size.用于自适应网站。
 
+```css
+ vw与rem相结合实现适配
+
+html {
+    font-size: calc(100vw / 7.5);//除以的7.5是根据设计稿的屏幕宽度来定的，这样750px宽度下根元素字体大小则为    
+    750px/7.5=100px=1rem
+}
+```
+
+
+
 可以写一段`js`让`html`根元素的字号随着浏览器宽度的变化而等比例变化，此时造成页面等比例缩放的现象。
 
 
@@ -249,6 +260,31 @@ rem和em一样也是相对长度。不过rem是基于html的font-size.用于自�
 可以通过js依据当前的页面的视口宽度与设计稿 进行对比 自动计算出根元素html的基准是多少。
 
 
+
+## 12.5 布局视口 视觉视口 理想视口
+
+布局视口：整个html的最大宽度，100%时。浏览器默认的布局视口就是浏览器的窗口大小
+
+视觉视口
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211019215951278.png" alt="image-20211019215951278" style="zoom: 50%;" />
+
+
+
+视觉视口：用户通过屏幕真实看到的区域。
+
+
+
+```html
+<meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1; minimum-scale=1; user-scalable=no;">
+// 让布局视口等于设备宽度
+```
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+这段代码的意思是，让viewport的宽度等于物理设备上的真实分辨率，不允许用户缩放。一都主流的web app都是这么设置的，它的作用其实是故意舍弃viewport，不缩放页面，这样dpi肯定和设备上的真实分辨率是一样的，不做任何缩放，网页会因此显得更高细腻。玩ps的同学应该都知道，当你将一张1000 * 1000的图片直接缩放至500 * 500分变成什么样，对吧？图片的失真一定逃不掉。
+```
 
 
 
@@ -310,6 +346,14 @@ BFC的应用场景：
 1. 自适应式两栏布局：父盒子layout内  aside盒子 左边浮动  宽度指定，main盒子设置BFC。这样 BFC会自动铺满且不会和浮动盒子重叠。
 2. 清除浮动造成的父盒子高度塌陷。：当父盒子声明了BFC后，其浮动元素也会计入父盒子的高度。
 3. 防止外边距合并。：当声明的两个相邻盒子在两个不同的BFC内时就能解决外边距合并的问题。
+4. 
+
+IFC IFC(Inline Formatting Contexts)直译为"内联格式化上下文"，IFC 的 line box（线框）高度由其包含行内元素中最高的实际高度计算而来（不受到竖直方向的padding/margin影响)
+
+IFC一般有什么用呢？
+
+水平居中：当一个块要在环境中水平居中时，设置其为inline-block则会在外层产生IFC，通过text-align则可以使其水平居中。
+垂直居中：创建一个IFC，用其中一个元素撑开父元素的高度，然后设置其vertical-align:middle，其他行内元素则可以在此父元素下垂直居中。
 
 
 
@@ -433,3 +477,16 @@ DOMContentLoaded -> load。
 性能优化：js尽量少操作，生成，dom节点等 避免频繁操作样式。对于有复杂动画的元素可以使其浮动起来脱离标准流减少回流。
 
   可以给 script标签 添加 defer
+
+
+
+
+
+## 26 0.5px线
+
+移动端 H5 项目越来越多，设计师对于 UI 的要求也越来越高，比如 1px 的边框。在高清屏下，移动端的 1px 会很粗。
+
+那么为什么会产生这个问题呢？主要是跟一个东西有关，DPR(devicePixelRatio) 设备像素比，它是默认缩放为 100%的情况下，设备像素和 CSS 像素的比值。目前主流的屏幕 DPR=2（iPhone 8）,或者 3（iPhone 8 Plus）。拿 2 倍屏来说，设备的物理像素要实现 1 像素，而 DPR=2，所以 css 像素只能是 0.5。
+
+
+

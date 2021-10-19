@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      .semi-circle {
+  width: 100px;
+  height: 50px;
+  /* background: #FF9900; */
+  background-color: orange;
+  border-radius: 50px  50px 0 0;
+  margin: 0  auto;
+}
+    </style>
+  </head>
+
+<body>
+
+  <div class="semi-circle"></div>
+</body>
+<script>
+ 
+ async function async1 (){
+console.log("async1 2")
+await async2()
+console.log("async1 end 5")
+}
+console.log("scripts start 1")
+async1()
+async function async2() {
+ return 1
+}
+new Promise((resolve,reject)=>{
+  console.log("promise1 3")
+  resolve()
+}).then(()=>{
+  console.log("promise2 6")
+})
+setTimeout(()=>{
+  console.log("setTimeout 7")
+})
+console.log("scripts end 4")
+</script>
+</html>

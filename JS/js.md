@@ -20,7 +20,58 @@ promise可以处理将以往的异步执行的回调地狱转换成了可以通�
 
 
 
+```javascript
+async function async1 (){
+console.log("async1 2")
+await async2()
+    //这里第三次加入微任务
+console.log("async1 end 6")
+}
+console.log("scripts start 1")
+async1()
+async function async2() {
+ await console.log("async2 2.5")
+    //这里第一次加到微任务
+}
+new Promise((resolve,reject)=>{
+  console.log("promise1 3")
+  resolve()
+}).then(()=>{
+    //第二次加入到微任务
+  console.log("promise2 5")
+})
+setTimeout(()=>{
+  console.log("setTimeout 7")
+})
+console.log("scripts end 4")
+```
 
+
+
+```javascript
+async function async1 (){
+console.log("async1 2")
+await async2()
+    //第一次加入微任务
+console.log("async1 end 5")
+}
+console.log("scripts start 1")
+async1()
+async function async2() {
+ return 1
+}
+new Promise((resolve,reject)=>{
+  console.log("promise1 3")
+  resolve()
+}).then(()=>{
+    //第二次加入微任务
+  console.log("promise2 6")
+})
+setTimeout(()=>{
+  console.log("setTimeout 7")
+})
+console.log("scripts end 4")
+```
 
 
 

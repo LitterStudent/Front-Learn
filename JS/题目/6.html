@@ -42,7 +42,20 @@
           return fn
        }
        
-       console.log(add(1)(2).toString)
+    //    console.log(add(1)(2).toString)
+
+
+//  
+       function curry2 (fn,arr=[]){
+           return fn.length<=arr.length ? fn(...arr) : function(...args){
+               return curry2(fn,arr.concat(...args));
+           }
+       }
+
+       function add(a,b,c,d,e){
+           return a+b+c+d+e;
+       }
+       console.log(curry2(add,[1])([2])([3,4,5]));
     </script>
 </head>
 <body>
