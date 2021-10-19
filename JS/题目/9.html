@@ -7,6 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script>
+
+        // 够用就行版本
+        function cloneDeep(target, map = new WeakMap()) {
+            if (typeof target === 'object') {
+                let cloneTarget = Array.isArray(target) ? [] : {};
+
+                if (map.get(target)) {
+                    return target;
+                }
+                map.set(target, cloneTarget);
+                for (const key in target) {
+                    cloneTarget[key] = cloneDeep(target[key], map);
+                }
+                return cloneTarget
+            }else {
+                return target
+            }
+
+        }
+
+
+
+
+
+
         // 深拷贝
         const target = {
             field1: 1,

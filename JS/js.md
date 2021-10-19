@@ -1,5 +1,7 @@
 ## 1promise
 
+[好文](https://juejin.cn/post/6844903775329583112#heading-19)
+
 js解决异步任务的一种方案。将执行异步请求的代码和处理结果的代码清晰的分离了。可以将要异步请求的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步请求结果的代码放在promise.then内。
 
 将异步回调的控制权转移到了promise的手中而不是像封装完ajax第三方库的手中。
@@ -161,7 +163,7 @@ var obj = {a: 1, b: function(){console.log(this);}}
 
 5.let a = (a,b)=>{return a+b} 等于 let a = (a,b)=>a+b 没有{ }不用写return
 
-
+6.箭头函数可以使用apply,call,bind. 但是传入的this会被忽略，只有传入的参数有用。
 
 ## 10 函数
 
@@ -172,7 +174,7 @@ var obj = {a: 1, b: function(){console.log(this);}}
 
 ### 1.执行上下文和作用域
 
-作用域是指上下文中定义变量的区域。作用域规定了上下文如何查找变量。
+作用域是指上下文中定义变量（变量命和函数名）的区域。作用域规定了上下文如何查找变量。
 
 javaScript是词法作用域，即静态作用域。函数的作用域在函数定义时就决定了。
 
@@ -219,7 +221,7 @@ var 声明会被拿到函数或全局作用域的顶部，位于作用域中所�
 
 ### 1.常见api
 
-Object.keys(obj):返回对象的key的数组
+Object.keys(obj):返回对象的key的数组.对象自身可枚举的属性。
 
 Object.values(obj):返回对象的value的数组
 
@@ -245,41 +247,322 @@ Object.assigin(traget,source1,source2):将source1和source2合并到target上
 
 
 
+### 4.遍历对象
+
+for in + obj.hasOwnPrperty()
+
+
+
+## 12window
+
+### 1.sessionStorage,localStorage.
+
+这两个window下的对象。都是key/value键值对的存储对象。大小为5m,不参与与服务端的通讯。
+
+localStorage会被长久存储只要不手动删除。而sessIonStorage在页面关闭时就会消失。
+
+对于不怎么改变的数据尽量使用 `localStorage` 存储，否则可以用 `sessionStorage` 存储。
+
+一个源对应一个sessionStorage,localStorage.
+
+#### 2 cookie
+
+cookie不是在window下，但也一起讲讲。
+
+cookie一般由服务器生成，可以设置过期时间。大小为4k.每次都会http请求都会携带在 header 中，对于请求性能影响。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017001919692.png" alt="image-20211017001919692" style="zoom: 67%;" />
+
+
+
+
+
+## 13闭包
+
+[阮一峰的闭包说明](http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html)
+
+函数A内有函数B，函数B引用了函数A的变量，就形成了闭包。
+
+闭包指的是一个函数有权访问另外一个函数内的变量。
+
+闭包的本质就是当前环境中存在指向父级作用域的引用
+
+闭包的作用有两个：1.可以读取函数内部的变量。
+
+​                                  2.将变量始终保存在内存中。
+
+
+
+使用闭包会使得函数内的变量一直保存在内存当中，可能会导致内存泄漏。所以要谨慎使用。
+
+不再用到的内存，没有被及时释放就叫做内存泄漏。
+
+
+
+
+
+## 14 隐式转换和显示转换
+
+一般非基础类型，进行转换时都会调用 valueOf,如果valueOf无法返回基础类型则调用toString
+
+js  加或减 比较时 如果是不同类型就会进行隐式转换
+
++的话有一个操作数位字符串就都转为字符串，
+
+\- 的话有一个操作数为数字则都转为数字
+
+< > == 也都是先转为数字	
+
+
+
+
+
+## 15事件的传播机制。
+
+从根元素到目标节点，期间流经过的各个DOM节点都会被触发捕获事件。事件到达目标节点后**先执行捕获后执行冒泡**。然后事件向上冒泡，**其他元素冒泡阶段事件** 。
+
+Onclick 和 addEventListener() 默认都是冒泡阶段执行事件，但是addEventListener()第三个参数设置为ture时则是捕获阶段执行事件。
+
+
+
+
+
+## 16对js的了解
+
+
+
+js是一门基于原型的动态语言，主要独特的特性有this,原型和原型链
+
+JS严格意义上分为：语言标准（ESMAScript）+宿主环境
+
+宿主环境有浏览器的DOM+BOM 和Node.
+
+
+
+## 17如果一个构造函数，bind了一个对象，用这个构造函数创建出的实例会继承这个对象的属性吗？为什么？
+
+不会继承，因为根据 this 绑定四大规则，new 绑定的优先级高于 bind 显示绑定，通过 new 进行构造函数调用时，会创建一个新对象，这个新对象会代替 bind 的对象绑定，作为此函数的 this，并且在此函数没有返回对象的情况下，返回这个新建的对象
 
 
 
 
 
 
+## 18获取当前日期
+
+```
+function formatDate(dt) {
+  if (!dt) {
+    dt = new Date();
+  }
+  var year = dt.getFullYear();
+  var month = dt.getMonth() + 1;
+  var date = dt.getDate();
+
+  if (month < 10) {
+    month = '0' + month;
+  }
+
+  if (date < 10) {
+    date = '0' + date;
+  }
+
+  return year + '-' + month + '-' + date;
+}
+
+var nowDate = new Date();
+var formatDate = formatDate(nowDate);
+console.log(formatDate);
+```
+
+
+
+## 19模块化
+
+[模块好文](https://juejin.cn/post/6844903744518389768#heading-2)
+
+### 1.什么是模块？
+
+模块就算将复杂的代码分块，每个模块的内部变量是私有的。对外只暴露方法。
+
+
+
+## 20.不同的模块化规范
+
+#### 1.common.js 
+
+每个文件就是一个模块，都有自己独立的作用域。内部的变量和函数都是私有的，对其他文件不可见。
+
+
+
+通过 module.exports .xxx = xx 导出模块 通过 require(xxxx)导入模块
+
+```javascript
+// example.js  导出
+var x = 1;
+var addx = function(value){
+  return value+x;  
+};
+module.exports.name = x;
+module.exports.addx = addx
+```
+
+```javascript
+//导入
+var example = require('./example.js');
+console.log(example.name);
+console.log(example.addx);
+```
+
+
+
+common.js的加载机制：**CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值**
+
+
+
+#### 2.Es6模块化
+
+
+
+1.ES6 Module是静态的，也就是说它是在编译阶段运行，和var以及function一样具有提升效果（这个特点使得它支持tree shaking）
+
+2.自动采用严格模式（顶层的this返回undefined）
+
+3.ES6 Module支持使用export {<变量>}导出具名的接口，或者export default导出匿名的接口
+
+
+
+export命令导出模块，import命令导入模块。
+
+也可以export default  xxx  ,导入的时候 import  可以随意命名。
+
+```javascript
+/** 定义模块 math.js **/
+var basicNum = 0;
+var add = function (a, b) {
+    return a + b;
+};
+export { basicNum, add };
+/** 引用模块 **/
+import { basicNum, add } from './math';
+function test(ele) {
+    ele.textContent = add(99 + basicNum);
+}
+```
+
+**① CommonJS 模块输出的是一个值的拷贝，ES6 Module通过export {<变量>}输出的是一个变量的引用,export default输出的是一个值**
+
+**② CommonJS 模块是运行时加载，即代码执行到那一行才回去加载模块.ES6 模块是编译时输出接口**。
+
+**3CommonJs在第一次加载的时候运行一次并且会生成一个缓存,之后加载返回的都是缓存中的内容**
+
+
+
+ES6 模块在编译时就会静态分析，优先于模块内的其他内容执行，所以导致了我们无法写出像下面这样的代码：
+
+```javascript
+if(some condition) {
+  import a from './a';
+}else {
+  import b from './b';
+}
+
+// or 
+import a from (str + 'b');
+```
+
+因为编译时静态分析，导致了我们无法在条件语句或者拼接字符串模块，因为这些都是需要在运行时才能确定的结果在 ES6 模块是不被允许的，所以 动态引入 **import()** 应运而生。
+
+**import()** 允许你在运行时动态地引入 ES6 模块，
+
+[好文](https://zhuanlan.zhihu.com/p/33843378)
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017170426471.png" alt="image-20211017170426471" style="zoom:67%;" />
+
+## 21迭代器
+
+[迭代器好文](https://juejin.cn/post/6844903775329583112#heading-7)
+
+下次再写
 
 
 
 
 
+## 22 循环
+
+1.for (iterator of arr) 只能用于可迭代的对象，即实现了迭代接口的对象。放回value
+
+2.for (key in obj ) 遍历对象原型链获取键名
+
+
+
+## 23 ES6新增语法
+
+1.promise
+
+2.module   exports {}  import {} fromxxx
+
+3.扩展运算符
+
+4.箭头函数
+
+5.let const
+
+6.迭代器
+
+7.Object.assign
 
 
 
 
 
+## 24 Set  和Map
+
+Set 可以存储任何类型的唯一值，无论是原始值还是对象引用。
+
+常用API
+
+```javascript
+const set1 = new Set() //初始化
+const set2 = new Set(["a","b","c","d","d","e"]); //遍历数据元素初始化，set2.size 为 6
+
+set2.add("f");  //因为.add 会返回原set对象，所以可以链式添加
+set2.add("g").add("h").add("i").add("j").add("k").add("k");
+
+set2.has("a") // true
+
+set2.size // returns 10
+
+set2.clear(); //清空
+
+set2.delete('a') //删除特定值
+
+set2.keys()  //返回一个迭代器对象，可以用for of 遍历
+```
+
+**WeakSet**
+
+与 `Set` 类似，也是不重复的值的集合。但是 `WeakSet` 的成员只能是对象，而不能是其他类型的值。`WeakSet` 中的对象都是弱引用，即垃圾回收机制不考虑 `WeakSet`对该对象的引用。
+
+```javascript
+let map = new Map([[key1,value1],[key2,value2]]) //可以添加二维数组来初始化 map
+map.set(key,value)
+map.get(key)
+map.delete(key)
+map.has(key) 
+```
+
+弱引用：就是当该对象的引用只剩下这个弱引用时，该对象就会被下次垃圾回收给清理掉。
 
 
 
+**Map**
+
+Map和对象类似，也是键值对集合，但是Map可以的所有类型（包括对象）的键。
 
 
 
+WeakMap
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+直接受 对象 作为键名，且是弱引用。

@@ -43,7 +43,34 @@
         console.log(res5)
 
 
-       
+
+        // 打平对象
+
+        function flatObj(obj){
+        let keys = Object.keys(obj);
+        let res = {}
+        let fun = function(keys,obj){
+            keys.forEach((key)=>{
+            if(typeof obj[key] === 'object' && obj[key]!==null){
+                fun(Object.keys(obj[key]),obj[key]); 
+            }
+            else {
+                res[key] = obj[key]
+            }
+            
+        })
+        }
+        fun(keys,obj)
+        return res;
+    }
+    
+    const obj = {
+  a: 1,
+  b: [1, 2, { c: true }],
+  c: { e: 2, f: 3 },
+  g: null,
+};
+console.log(flatObj(obj));
     </script>
 </head>
 <body>

@@ -66,7 +66,7 @@ span:nth-child(-n+3)
 
 ## 5 posintion
 
-`elative`（相对定位）： 生成相对定位的元素，定位原点是元素本身所在的位置；
+`relative`（相对定位）： 生成相对定位的元素，定位原点是元素本身所在的位置；
 
 `absolute`（绝对定位）：生成绝对定位的元素，定位原点是离自己这一级元素最近的一级`position`设置为`absolute`或者`relative`的父元素的左上角为原点的。
 
@@ -299,7 +299,7 @@ BFC的渲染规则：
 如何创建BFC:  
 
 1. overflow: 不为visibale   可以为 hidden
-2. float : 不为 none hidden auto，scroll
+2. float : 不为 none  
 3. positon:为absolute或者fixed
 4. 定义成非block的块级元素：如  display:inline-block flex 等
 
