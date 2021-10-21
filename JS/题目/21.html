@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 打平数组
+    function flatArr(arr) {
+  function flat(obj) {
+    let res = [];
+    for (let key in obj) {
+      let val = obj[key];
+      if (typeof val === "object" && val !== null) {
+        res.push(...flatArr(val));
+      } else {
+        res.push(val);
+      }
+    }
+    return res;
+  }
+  return flat(arr);
+}
+
+let res = flatArr(["1", { a: { c: { d: { e: 2 } } } }, [3, 4, [5,[6,[7,[8,[9]]]]]]]);
+console.log(res);
+</script>
+</html>

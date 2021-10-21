@@ -10,12 +10,23 @@
    
 </body>
 <script>
-//    'use strict'
-   function a (){
-       b= 3;
-       console.log(b);
-   }
-   a();
-//    console.log(b);
+//   promise.all
+
+ Promise.myall = function(promiseArr){
+     let result = [];
+
+     return new Promise((resolve,reject)=>{
+        promiseArr.forEach((promise,index)=>{
+         promise.then((res)=>{
+             res[index] = res;
+             if(index === promiseArr.length){
+                 resolve(result)
+             }
+         }).catch(err=>{
+             reject(err)
+         })
+     })
+     })
+ }
 </script>
 </html>
