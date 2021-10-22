@@ -103,7 +103,7 @@ Observer（观察者）：Observer观查传入的data对象。遍历data对象�
 
 3.VueX状态管理。
 
-4.父组件中通过**$ref**获取获取子组件实例的方法和属性。
+4.父组件中通过**$ref**获取获取子组件实例的方法和属性。$ref是一个对象，持有注册过 [`ref` attribute](https://cn.vuejs.org/v2/api/#ref) 的所有 DOM 元素和组件实例。
 
 5.事件总线 Event Bus.通过一个空的 Vue 实例作为中央事件总线（事件中心），用它来触发事件和注册监听事件，从而实现任何组件间的通信，包括父子、隔代、兄弟组件。
 
@@ -212,9 +212,62 @@ v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 
 
 computed是计算属性，依赖于**其他值**计算得到结果。并且会对结果进行缓存。只有当依赖的数据变化时才会重新计算更新缓存。如果一个数据依赖于其他数据就可以使用computed
 
+为什么需要缓存？
+
+可以优化性能，获取一个值可以不用每次都计算，直接拿缓存。而且因为响应式依赖，每次依赖更新的时候都会更新缓存。
+
+```javascript
+computed:{
+	reverseMessage:funciton(){
+	 return this.message.split("").reverse().join("")
+	}
+}
+```
+
+computed 默认只有getter，也可以设置getter
+
+```
+computed:{
+   fullName:{
+     set:function(){
+     
+     },
+     get:function(){
+     
+     }
+   }
+}
+```
+
 wathc时监听**数据**变化而需要做一些事件，常用于异步或开销较大的操作。
 
+watch在最初为数据绑定监听器时是不会执行的。要等到观察的属性改变才会执行。可以通过对观察的属性增加**immediate**来使其绑定时执行。
 
+```javascript
+watch:{
+ firstName:{
+  handler(new,old){
+    this.fulName = new + this.lastName;
+  },
+  immediate:true
+ }
+}
+```
+
+watch还有一个 deep属性。默认值时false.表示侦听器侦听的数据是对象时，只会侦听其引用。设置deep为true时，才会侦听对象内的属性。但这样开销很大，会一层层往下遍历，观察对象所以属性。也可以通过字符串来指定对象的某一属性。
+
+```javascript
+watch:{
+    obj:{    // 'obj.a'
+        handler(new,old){
+            consloe.log(new)
+        },
+        deep:true
+    }
+}
+```
+
+使用：当我点击一个
 
 ## 12v-for 为什么要加 key
 
