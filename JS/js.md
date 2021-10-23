@@ -72,17 +72,68 @@ js是单线程的，某些代码如i/o，ajax网络请求会消耗较长的时�
 
 ### 3.promise的特点
 
-js解决异步任务的一种方案。将执行异步请求的代码和处理结果的代码清晰的分离了。可以将要异步请求的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步请求结果的代码放在promise.then内。
+js解决异步任务的一种方案。将执行异步任务的代码和处理结果的代码清晰的分离了。可以将要异步请求的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步请求结果的代码放在promise.then内。
 
 将异步回调的控制权转移到了promise的手中而不是像封装完ajax第三方库的手中。
 
 promise可以处理将以往的异步执行的回调地狱转换成了可以通过.then来链式执行的代码。可维护性以及可阅读性都得到了增强。
+
+
 
 一个promise的状态已经确定下来后，该promise的后续的then的调用都会在下一个的异步时间点上执行。
 
 
 
 ### 4.promise API
+
+调用完res()后,res()后面的代码仍可以执行. 如果return 了的话就不会执行
+
+```javascript
+new Promse((resolve, reject)=>{ resolve(1);console.log(11)})         //会
+new Promse((resolve, reject)=>{ return resolve(1);console.log(11)})  //不会
+```
+
+resolve()内传入的可以是普通的数据类型也可以是promise。当传入的是promise时，则new Promise返回的promise则为传入的promsie.
+
+```javascript
+const p1 = new Promise(function (resolve, reject) {
+        resolve("dd")
+        setTimeout(() => reject(new Error('fail')), 3000)
+    })
+
+    const p2 = new Promise(function (resolve, reject) {
+        setTimeout(() => resolve(p1), 1000)
+    })
+
+    p2
+      .then(result => console.log(result))
+      .catch(error => console.log(error))
+```
+
+
+
+即使没有用.catch或者.then的第二个参数去指定处理错误的回调函数，promise内部发生的错误不会影响promsie外部代码的执行。
+
+```javascript
+const someAsyncThing = function () {
+        return new Promise(function (resolve, reject) {
+            // 下面一行会报错，因为x没有声明
+            resolve(x + 2);
+        });
+    };
+
+    someAsyncThing().then(function () {
+        console.log('everything is great');
+    });
+
+    setTimeout(() => { console.log(123) }, 2000);   //这句代码仍会执行
+// Uncaught (in promise) ReferenceError: x is not defined
+// 123
+```
+
+
+
+
 
 .then() 内的执行函数如果最后返回的不是promsie,就会被Promise.resolve。如果不返回值，则返回 promise fulfilled 'undefined' 
 
@@ -103,7 +154,9 @@ setTimeout(()=>{
 
 `catch`不管被连接到哪里，都能捕获上层未捕捉过的错误。
 
-.Promise.resolve():当传入一个promise时会返回这个promise.是rejected状态就返回 rejected。resolve状态就返回 resolve.
+
+
+.**Promise.resolve()**:当传入一个promise时会返回这个promise.是rejected状态就返回 rejected。resolve状态就返回 resolve.
 
 ​                              :当传入不为promise时，就会被 resolve包装
 
@@ -113,9 +166,54 @@ setTimeout(()=>{
 
 .then 和 .catch 希望传入的是函数，传入其他的会发生透传。如果不传任何值也会发生透传，即promise不改变传到下一个then.
 
-.finally()内的执行函数不会接受任何参数。它用于在最后执行特定操作。
+.finally()内的执行函数不会接受任何参数。它用于在最后执行特定操作。执行完后返回的promise还是上次传入的promise,即使返回promsie也不会替换上次传入的promise.
 
-执行完后返回的promise还是上次传入的promise,即使返回promsie也不会替换上次传入的promise.
+
+
+Promise.all()
+
+1.传入的参数可以不是数组，但必须实现了Iterator接口，且每个成员实例都是promise，如果不是promise实例，则会先调用Promise.resolve()转为实例.
+
+2.数组内所有的promise都为 resolved 时，Promise.all()返回的promise才是resolved,值为所有promise的值的数组.只要有一个为rejected，则Promise.all返回的就是rejected，值为rejected的promise的值.
+
+
+
+Promise.race()
+
+```javascript
+let p = Promise.race([
+fetch(url),
+new Promise((res,rej)=>{
+    setTimeout(()=>{
+        rej("")
+    },4000)
+})
+])
+p.then((res)=>{
+    console.log(res);
+})
+ .catch(err=>{
+    console.log(err)
+})
+```
+
+Promise.any()
+
+只要有一个promise为fulfilled,则返回的包装实例的状态也时fulfilled.只有所有的promise都为rejected，返回的promise才是rejected.
+
+```javascript
+ar resolved = Promise.resolve(42);
+var rejected = Promise.reject(-1);
+var alsoRejected = Promise.reject(Infinity);
+
+Promise.any([resolved, rejected, alsoRejected]).then(function (result) {
+  console.log(result); // 42           就返回一个成功的值
+});
+
+Promise.any([rejected, alsoRejected]).catch(function (results) {
+  console.log(results); // [-1, Infinity]      返回的是一个错误内容数组
+});
+```
 
 
 
@@ -172,6 +270,12 @@ setTimeout(()=>{
 console.log("scripts end 4")
 ```
 
+
+
+
+
+
+
 ### 5.如何判断一个对象是不是promise
 
 是否有定义属性名为then的方法。
@@ -194,13 +298,33 @@ async 和 await 能进一步改善promise的链式调用，用**同步的方式�
 
 一个函数如果加上async ,那么该函数就会返回一个promise.async函数会将返回值使用Promise.resolve()包装成promise.
 
+async函数返回的promise对象，必须等待内部所有的await命令的promise对象都执行完成，才会发生状态的改变。**除非遇到return语句或者 抛出错误。**即抛出错误时会提前终止async函数的后续执行。
+
+await命令正常情况下后面是一个promise对象。但如果不是的话，就直接返回改值。
+
+```javascript
+async function f() {
+  // 等同于
+  // return 123;
+  return await 123;
+}
+
+f().then(v => console.log(v))
+// 123
+```
+
 await 等待一个promise。await后面的语句就像.then里的语句一样，得等await 等待的Promise状态确定后才会继续执行下去。
 
-如果async函数中某处返回了reject的promise,则后面的代码不会执行。
+**如果async函数中某处的await返回了reject的promise,则后面的代码不会执行。**
 
 如果想是错误的地方能被捕获不影响后续代码的执行可以使用 try 和catch捕获错误，或者在await的promise的后面增加一个.catch.
 
 
+
+#### 1.使用注意
+
+1. async 函数中，将await语句放入到 try catch 中。如果await的promise变为 rejected时，可以在catch中捕获到。
+2. 多个await命令后面的异步操作如果没有关联关系。就可以抽离出来，使用promise.all让它们同时触发，节省时间。  
 
 
 
@@ -269,7 +393,7 @@ ES6通过 extends字段 声明继承父类 和在类构造函数 constructor中�
 
 事件循环 Event Loop是浏览器为解决单线程执行js代码而不引起阻塞的机制。
 
-因为 js 是单线程运行的，在代码执行的时候，通过将不同函数的执行上下文压入执行栈中来保证代码的有序执行。在执行同步代码的时候，如果遇到了异步事件，js 引擎并不会一直等待其返回结果，而是会将这个事件挂起，继续执行执行栈中的其他任务。当异步事件执行完毕后，**再将异步事件对应的回调加入到**（与当前执行栈中不同的另一个）**任务队列中等待执行**。任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
+因为 js 是单线程运行的，在代码执行的时候，通过将不同函数的执行上下文压入执行栈中来保证代码的有序执行。在执行代码的时候，如果遇到了异步任务，js 引擎并不会一直等待其返回结果，而是会将这个任务挂起，继续执行执行栈中的其他任务。当异步任务执行完毕后，**再将异步任务对应的回调加入到**（与当前执行栈中不同的另一个）**任务队列中等待执行**。任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
 
 
 
@@ -647,13 +771,160 @@ import a from (str + 'b');
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017170426471.png" alt="image-20211017170426471" style="zoom:67%;" />
 
-## 21迭代器
+## 21可迭代对象
 
 [迭代器好文](https://juejin.cn/post/6844903775329583112#heading-7)
 
-下次再写
+**实现了[Symbol.iterator]接口的数据结构称为可迭代对象。**
+
+一个**数据结构**只要具有[Symbol.iterator]属性，就称为可迭代的。Symbol.iterator属性本身是一个函数，**是迭代器生成函数**。调用后返回迭代器。迭代器内有一个可调用的方法 next(). 调用后返回一个当前成员信息的对象 {value:  xxx, done:boolean}。至于属性名Symbol.iterator本身Symbol对象的一个属性值，预先定义好的。
 
 
+
+具备 iterator接口的数据结构：
+
+Array
+
+Map
+
+Set
+
+String
+
+arguments
+
+NodeList对象
+
+
+
+#### 1.自定义可迭代对象的数据结构
+
+可以通过对数据结构定义Symbol.iterator来实现迭代器的定义。
+
+```javascript
+//实现指针结构
+
+function Obj(value) {
+        this.value = value
+        this.next = null;
+    }
+
+    Obj.prototype[Symbol.iterator] = function () {
+        let current = this;
+        return {
+            next: function () {
+                if (current === null) {
+                    return { done: true }
+                }
+                else {
+                    let res = { value: current.value, done: false };
+                    current = current.next;
+                    return res;
+                }
+
+            }
+        }
+    }
+
+    var one = new Obj(1);
+    var two = new Obj(2);
+    var three = new Obj(3);
+
+    one.next = two;
+    two.next = three;
+
+    for (var i of one) {
+        console.log(i); // 1, 2, 3
+    }
+```
+
+
+
+#### 2.调用Symbol.iterator接口的场合
+
+1.解构赋值和扩展运算符
+
+```javascript
+let set = new Set().add('a').add('b').add('c');
+
+let [x,y] = set;
+// x='a'; y='b'
+
+let [first, ...rest] = set;
+// first='a'; rest=['b','c'];
+
+// 例一
+var str = 'hello';
+[...str] //  ['h','e','l','l','o']
+
+// 例二
+let arr = ['b', 'c'];
+['a', ...arr, 'd']
+// ['a', 'b', 'c', 'd']
+```
+
+2.for .. of   内部调用 Symbol.iterator 接口
+
+```javascript
+const arr = ['red', 'green', 'blue'];
+
+for(let v of arr) {
+  console.log(v); // red green blue
+}
+
+const obj = {};
+obj[Symbol.iterator] = arr[Symbol.iterator].bind(arr);
+
+for(let v of obj) {
+  console.log(v); // red green blue
+}
+```
+
+3.Array.from()
+
+4.Map(),Set(),WeakMap(),WeakSet()
+
+5.Promise.all()  
+
+6.Promise.race() 
+
+以上这些函数都允许传入 可迭代器对象。
+
+
+
+ES6 的数组、Set、Map 都部署了以下三个方法，调用后都返回遍历器对象。
+
+- `entries()` 返回一个遍历器对象，用来遍历`[键名, 键值]`组成的数组。对于数组，键名就是索引值；对于 Set，键名与键值相同。Map 结构的 Iterator 接口，默认就是调用`entries`方法。
+- `keys()` 返回一个遍历器对象，用来遍历所有的键名。
+- `values()` 返回一个遍历器对象，用来遍历所有的键值。
+
+而**Object.keys()，Object.entries,Object.values()返回的是数组**
+
+```javascript
+let arr = ['a', 'b', 'c'];
+for (let pair of arr.entries()) {
+  console.log(pair);
+}
+// [0, 'a']
+// [1, 'b']
+// [2, 'c']
+```
+
+并不是所有类似数组的对象都具有 Iterator 接口，一个简便的解决方法，就是使用`Array.from`方法将其转为数组。
+
+```javascript
+let arrayLike = { length: 2, 0: 'a', 1: 'b' };
+
+// 报错
+for (let x of arrayLike) {
+  console.log(x);
+}
+
+// 正确
+for (let x of Array.from(arrayLike)) {
+  console.log(x);
+}
+```
 
 
 

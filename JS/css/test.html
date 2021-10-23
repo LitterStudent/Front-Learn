@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div{
+        border: solid 2px blue;
+      }
+      .visible{
+        visibility: hidden;
+      }
+      .hidden{
+        opacity:0;
+      }
+      
+    </style>
+</head>
+<body>
+    
+      <div class="hidden">
+        I'm Parent.
+        <div class="visible">
+          I'm Son.
+        </div>
+      </div>
+</body>
+<script>
+    let c = document.querySelector(".hidden")
+    c.addEventListener("click",function(e){console.log("object");})
+</script>
+</html>

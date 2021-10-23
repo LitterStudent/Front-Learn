@@ -52,10 +52,17 @@
            }
        }
 
+       function curry3 (fn,...args){
+           return fn.length<=args.length ?fn(...args) :function(...args2){
+               return curry3(fn,...args,...args2)
+           }
+       }
+
        function add(a,b,c,d,e){
            return a+b+c+d+e;
        }
        console.log(curry2(add,[1])([2])([3,4,5]));
+       console.log(curry3(add,1,2,3)(4)(5));
     </script>
 </head>
 <body>

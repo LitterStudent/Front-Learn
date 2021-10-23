@@ -298,9 +298,11 @@ html {
 
 ## 14 display:none 和 visibility:hidden 有什么区别？
 
-display：none 是使得元素从文档的布局上消失，引发浏览器的回流。
+display：none 是使得元素从文档的布局上消失，引发浏览器的回流。其子元素也会被隐藏。
 
-visibility:hidden 元素仍在文档的布局上，只会引发浏览器的重绘 ，不会引发回流。
+visibility:hidden 元素仍在文档的布局上，只会引发浏览器的重绘 ，不会引发回流。其子元素设置visibility:visiable就可以显示出来。不一定隐藏子元素。设置点击事件无效。
+
+opacity:0  引发重绘。设置点击事件有效。
 
 
 

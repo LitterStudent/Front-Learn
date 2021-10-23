@@ -12,21 +12,53 @@
 <script>
 //   promise.all
 
- Promise.myall = function(promiseArr){
-     let result = [];
-
-     return new Promise((resolve,reject)=>{
+Promise.myall = function(promiseArr){
+    let result = [];
+    let count = 0;
+    //包裹一层兼容非promis情况
+    return new Promise((resolve,reject)=>{
         promiseArr.forEach((promise,index)=>{
-         promise.then((res)=>{
-             res[index] = res;
-             if(index === promiseArr.length){
-                 resolve(result)
-             }
-         }).catch(err=>{
-             reject(err)
-         })
-     })
-     })
- }
+            Promise.resolve(promise).then((res)=>{
+                result[index] = res;
+                count++;
+                if(count === promiseArr.length){
+                    resolve(result);
+                }
+            })
+            .catch(err=>{
+                reject(err)
+            })
+        })
+    })
+}
+
+ let p1 = new Promise((res,rej)=>{
+    setTimeout(()=>{
+        res("dd")
+    },1000);
+ })
+ let p2 = new Promise((res,rej)=>{
+     setTimeout(()=>{
+         rej("ee")
+     },200)
+ })
+//  let p3 = Promise.reject("err")
+
+//  Promise.myall([p1,p2]).then(res=>{console.log(res);})
+ 
+
+Promise.myrace = function(promiseArr){
+    return new Promise((resolve,reject)=>{
+        promiseArr.forEach((promise,index)=>{
+            Promise.resolve(promise).then((res)=>{
+                resolve(res)
+            })
+            .catch((err)=>{
+                reject(err)
+            })
+        })
+    })
+}
+Promise.myrace([p1,p2]).then(res=>{console.log(res);},err=>{console.log(err);})
 </script>
 </html>
