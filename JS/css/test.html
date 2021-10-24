@@ -28,7 +28,47 @@
       </div>
 </body>
 <script>
-    let c = document.querySelector(".hidden")
-    c.addEventListener("click",function(e){console.log("object");})
+    
+let line2 = 'i you he';
+let line3 = 'am is are';
+let line4 = 'yours his hers';
+let line5 = 5;
+let num = parseInt(line5);
+let One = line2.split(' ');
+let two = line3.split(' ');
+let three = line4.split(' ');
+let arr = [];
+let i =0;
+arr[0] = 'i am yours';
+arr[1] = 'you is his';
+let res = []
+ for(let key=0;key<arr.length;key++){
+    let arr2 = arr[key].split(' ');
+    if(One.indexOf(arr2[0]) === -1){
+        res.push('No');
+        continue;
+    }
+    let index = 1;
+    while(One.indexOf(arr2[index])!== -1){
+        index++;
+    }
+    if(two.indexOf(arr2[index]) === -1 || two.indexOf(arr2[index+1])!==-1){
+        res.push('No');
+        continue;
+    }
+    index++;
+    while(index <arr2.length){
+        if(three.indexOf(arr2[index]) === -1){
+            res.push('No')
+            break;
+        }
+        index++;
+    }
+    if(index >= arr2.length){
+        res.push('Yes');
+    }
+ }
+
+console.log(res);
 </script>
 </html>
