@@ -4,6 +4,70 @@
 
 
 
+## 1.5vue基础
+
+### 1.组件的全局注册
+
+```javascript
+// 第一个参数组件名，就是我们在html了 使用的标签名
+
+Vue.component('my-component-name',{
+    template:'',
+    data:function(){
+        return {
+            .......
+        }
+    },
+    props:[],
+    computed:{
+        
+    },
+    methods:{
+        
+    },
+    watch:{
+        
+    }
+    
+})
+
+//全局注册后的组件，能够后面的new Vue() 创建的根实例种使用。
+new Vue（{
+ el:'',
+ template:'',
+ data:[],
+ methods:{},
+     ....
+}）
+```
+
+### 2.局部注册
+
+```javascript
+//1.使用一个普通的对象来定义 一个组件
+var component = {
+    ...
+}
+//2.然后在new Vue() 的过程中加入进去，新生成的vue实例就可以在模板中使用设个组件
+new Vue({
+    el:'#app',
+    components:{
+    'conponent-name1':component
+}
+})
+
+//使用ES6模块 看起来就是
+
+import 'ComponentA' from './ComponentA.vue'
+
+export default {
+    components:{
+        ComponentA
+    }
+}
+    
+```
+
 
 
 ## 2 MVVM
@@ -210,7 +274,11 @@ v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 
 
 ## 11 computed 和 watch 
 
-computed是计算属性，依赖于**其他值**计算得到结果。并且会对结果进行缓存。只有当依赖的数据变化时才会重新计算更新缓存。如果一个数据依赖于其他数据就可以使用computed
+computed是计算属性，依赖于**其他值**计算得到结果。并且会对结果进行缓存。只有当依赖的数据变化时才会重新计算更新缓存。如果一个数据依赖于其他数据就可以使用computed。
+
+**使用方式**：和普通的data一样，直接通过 属性名访问即可。不用加（）。
+
+**使用场景**：计算总价格，过滤某些数据；
 
 为什么需要缓存？
 
@@ -241,6 +309,25 @@ computed:{
 
 wathc时监听**数据**变化而需要做一些事件，常用于异步或开销较大的操作。
 
+使用场景：
+
+```javascript
+//1.监控路由对象
+new Vue({
+        el: '#app',
+        router: router, //开启路由对象
+        watch: {
+          '$route': function(newroute, oldroute) {
+            console.log(newroute, oldroute);
+            //可以在这个函数中获取到当前的路由规则字符串是什么
+            //那么就可以针对一些特定的页面做一些特定的处理
+       }
+    }
+ })
+
+//2.观察某个属性，弹出弹框
+```
+
 watch在最初为数据绑定监听器时是不会执行的。要等到观察的属性改变才会执行。可以通过对观察的属性增加**immediate**来使其绑定时执行。
 
 ```javascript
@@ -267,6 +354,12 @@ watch:{
 }
 ```
 
+**watch无法监听到数组的变化的情况(computed也不能吧)：**1.vm.items[indexofItem]=newValue 
+
+​																  2.vm.items.length=newLength
+
+​	**解决方案**：	把第一种情况写成this.$set(this.arr,0,1234)。第二种情况写成this.arr.splice(0,1)
+
 使用：当我点击一个
 
 ## 12v-for 为什么要加 key
@@ -281,20 +374,64 @@ Virtual DOM 本质就是用一个原生的 JS 对象去描述一个 DOM 节点�
 
 
 
-## 14vue-router 动态路由是什么
+## 14vue-router 
+
+### 1动态路由是什么
 
 把某种模式匹配到的所有路由，全都映射到同个组件。
 
-```
+```javascript
  routes: [
     // 动态路径参数 以冒号开头
     { path: "/user/:id", component: User },
   ],
+  
+  // this.$route.params : {id:xxxx}
+ //  this.$route.query
+```
+
+注意：当使用动态路由时，路径从 `/user/foo` 导航到 `/user/bar`，**原来的组件实例会被复用**。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。**不过，这也意味着组件的生命周期钩子不会再被调用**。
+
+复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) `$route` 对象：
+
+```javascript
+const User = {
+  template: '...',
+  watch: {
+    $route(to, from) {
+      // 对路由变化作出响应...
+    }
+  }
+}
+```
+
+或者使用全局前置路由
+
+```javascript
+const User = {
+  template: '...',
+  beforeRouteUpdate(to, from, next) {
+    // react to route changes...
+    // don't forget to call next()
+  }
+}
 ```
 
 
 
+### 2.Router和Route的区别
 
+**Router(路由器对象)**是VueRouter的一个对象。我们在new Vue()生成根实例时将Router实例注入进去。只要注入进去后，后续在使用都可以通过vue实例来获取Router对象：**this.$router**
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211024215848663.png" alt="image-20211024215848663" style="zoom: 67%;" />
+
+**$router.push({path:'home'})**;本质是向history栈中添加一个路由，在我们看来是 切换路由，但本质是在添加一个history记录
+
+**$router.replace({path:'home'})**;//替换路由，没有历史记录
+
+
+
+**Route(路由)**
 
 ## 15diff
 
