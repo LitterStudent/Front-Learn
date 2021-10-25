@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 并行限度的promsie调度器
+    function runPromise (promiseArr,maxCount){
+      let count = Math.min(maxCount,promiseArr.length);
+      let length = promiseArr.length;
+      let reslut = new Array(length);
+      let index = 0;
+      let flag = 0;
+      for(let i=0;i<count;i++){
+          next()
+      }
+      function next(){
+          let promise = promiseArr[index++]
+          const key = index;
+          promise.then((res) => {
+              reslut[key] = res;
+              flag++;
+              if(flag >= length){
+                  resolve(reslut)
+              }
+              else{
+                  next();
+              }
+          }).catch((err) => {
+              reject(err)
+          });
+      }
+    }
+</script>
+</html>

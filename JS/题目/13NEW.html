@@ -10,11 +10,11 @@
         // 生成一个空对象,构造函数的this指向该对象，连接构造函数的原型
         // 执行构造函数代码，属性和方法被添加到this引用的对象中
         // 如果构造函数中没有返回其它对象，那么返回this，即创建的这个的新对象，否则，返回构造函数中返回的对象。
-        function myNew(fun){
+        function myNew(fun,...args){
             let obj = Object.create(fun.prototype)
-            let args = Array.prototype.slice.call(arguments,1)
             // 执行构造函数，将属性和方法添加到 obj中
             let result = fun.call(obj,...args)
+            // let result = fun.apply(obj,args)
              //在JavaScript构造函数中：如果return值类型，
              //那么对构造函数没有影响，实例化对象返回空对象；
              //如果return引用类型（数组，函数，对象），

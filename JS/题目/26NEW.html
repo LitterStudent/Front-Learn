@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+
+// new 
+    let myNew = function(fn,...args){
+        let obj = Object.create(fn.prototype);
+        let result = fn.apply(obj,args);
+        if((typeof result === 'object'||typeof result === 'function') && result !==null){
+            return result;
+        }
+        else{
+            return obj;
+        }
+    }
+
+    function a(){
+        this.cc  =1
+        return null
+    }
+    let b = myNew(a)
+    let c = new a();
+    console.log(b);
+    console.log(c);
+</script>
+</html>

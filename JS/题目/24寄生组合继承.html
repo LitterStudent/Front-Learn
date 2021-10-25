@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 实现寄生组合继承
+    function Parent(age){
+        console.log(this.name);
+        this.age = age;
+    }
+    Parent.prototype.sayName = function(){
+        console.log(this.name);
+    }
+
+    function Children(age,time){
+        Parent.call(this,age)
+        console.log(this.name);
+        this.time = time;
+    }
+    Children.prototype = Object.create(Parent);
+    Children.prototype.constructor = Children;
+
+    let child = new Children('30','15');
+    console.log(child);
+    
+</script>
+</html>

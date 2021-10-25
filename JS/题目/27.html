@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 手写 call apply bind
+
+    // fun.call(this,1,2,3)
+    Function.prototype.myCall = function(context,...args){
+        if(context === null){
+            context = window;
+        }
+
+        let key = Symbol();
+        context[key] = fun;
+        let res = context[key](...args);
+        return res;
+    }
+
+    Function.prototype.myApply = function (context,args) {
+        if(context ===null){
+            context = window;
+        }
+        let key = Symbol();
+        context[key] = this;
+        let res = context[key](...args);
+        return res;
+    }
+
+
+    // bind后生成的函数，如果做构造函数，则不使用传入的this.
+    Function.prototype.myBind = function (context,...args) {
+        if(context === null){
+            context = window;
+        }
+        let fn = this;
+        let key = Symbol();
+        context[key] = this;
+
+        let result = function (...args2) {
+            if(this instanceof that){
+                this[key] = that;
+                this[key](...[...args,...args2])
+            }
+            else{
+                context[key](...[...args,...args2])
+            }
+        }
+        result.prototype = Object.create(this.prototype);
+        return result;
+    }
+
+    let obj = {name:"dd"};
+    function  Student(age) {
+        this.age = age;
+    }
+    let BindFun = Student.myBind(obj,11)
+    let stu = new BindFun();
+    console.log(stu);
+</script>
+</html>
