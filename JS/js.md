@@ -465,6 +465,25 @@ var obj = {a: 1, b: function(){console.log(this);}}
 
 6.箭头函数本身没有this,是通过父级上下文获取的this。如果在对象中定义箭头函数，通过对象obj.a，来访问箭头函数时，它的this指向全局上下文。如果时在函构造中定义箭头函数，它的this指向实例的this.
 
+7.在函数A内部再**单独调用函数B**，即使函数A有相应的this,但是函数B内的this还是指向window.就像2.一样。作为一个函数调用。默认指向全局，严格模式下指向window
+
+```javascript
+function name(params) {
+    console.log(this);
+     let b = function(params){
+        console.log(this);      //window
+    }
+    b()
+}
+new name()
+
+document.querySelector('input').addEventListener('input',function(e){
+    console.log(this);
+    debouceAjax();      //内部的this还是window
+})
+
+```
+
 在标准函数和箭头函数中有不同的指向。
 
 在标准函数中，this 引用的是把函数当成方法调用的上下文对象
@@ -493,6 +512,29 @@ var obj = {a: 1, b: function(){console.log(this);}}
 
 1. 普通函数（非箭头函数）都有 prototype（原型）,length(形参个数)
 2. 在严格模式下，直接调用函数，函数内的this不会指向windows。二是undeined.
+
+函数也是对象，也可以拥有属性和方法。
+
+```javascript
+// add(1)(2)(3)....
+
+function add(...args){
+    let allArgs = args
+    let fn = function(...args2){
+        allArgs = [...allArgs,...args2];
+        return fn;
+    }
+    // js是词法作用域 函数的作用域在函数定义时就决定了
+    fn.toString = function(){
+        // 通过作用域链攀升获得变量 allArgs
+        return allArgs.reduce((sum,value)=>{return sum+value},0)
+    }
+    fn.dd = 'dd'
+    return fn;
+}
+let a = add(1)(2)(3)
+console.log(a);
+```
 
 
 
@@ -545,7 +587,7 @@ var 声明会被拿到函数或全局作用域的顶部，位于作用域中所�
 
 ### 1.常见api
 
-Object.keys(obj):返回对象的key的数组.对象自身可枚举的属性。
+Object.keys(obj):返回对象的key的数组.对象**自身可枚举**的属性。不会攀升原型。下面两个都不会。
 
 Object.values(obj):返回对象的value的数组
 
@@ -555,7 +597,7 @@ Object.assigin(traget,source1,source2):将source1和source2合并到target上
 
  Object.defineProperty(obj,{value: })：修改属性的默认特性，使用的方法
 
-
+**Reflect.ownkys():**相当于Object.getOwnPropertyNames(target) concat(Object.getOwnPropertySymbols(target)
 
 ### 2.原型
 
@@ -648,6 +690,34 @@ js  加或减 比较时 如果是不同类型就会进行隐式转换
 Onclick 和 addEventListener() 默认都是冒泡阶段执行事件，但是addEventListener()第三个参数设置为ture时则是捕获阶段执行事件。
 
 
+
+执行事件回调的对象是 相应的元素节点。
+
+```javascript
+document.querySelector('input').oninput =  function (e) {
+ {
+    console.log(this);
+}
+} 
+document.querySelector('input').addEventListener('input',function(e) {
+    console.log(this);
+})
+```
+
+![image-20211025210120858](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211025210120858.png)
+
+而当使用箭头函数时，this的执行为父级上下文的this.一般都是window
+
+```javascript
+document.querySelector('input').oninput =  (e)=> {
+ {
+    console.log(this);
+}
+} 
+document.querySelector('input').addEventListener('input',(e)=>{
+    console.log(this);
+})
+```
 
 
 

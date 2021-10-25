@@ -14,6 +14,9 @@
 
     // fun.call(this,1,2,3)
     Function.prototype.myCall = function(context,...args){
+        if (typeof this !== 'function') {
+                throw new TypeError("Error");
+        }
         if(context === null){
             context = window;
         }
@@ -25,6 +28,9 @@
     }
 
     Function.prototype.myApply = function (context,args) {
+        if (typeof this !== 'function') {
+                throw new TypeError("Error");
+        }
         if(context ===null){
             context = window;
         }
@@ -37,24 +43,23 @@
 
     // bind后生成的函数，如果做构造函数，则不使用传入的this.
     Function.prototype.myBind = function (context,...args) {
+        if (typeof this !== 'function') {
+                throw new TypeError("Error");
+        }
         if(context === null){
             context = window;
         }
         let fn = this;
-        let key = Symbol();
-        context[key] = this;
-
-        let result = function (...args2) {
-            if(this instanceof that){
-                this[key] = that;
-                this[key](...[...args,...args2])
+        let Fn = function (...args2) {
+            if(this instanceof fn){
+                fn.call(this,...[...[...args,...args2]])
             }
             else{
-                context[key](...[...args,...args2])
+                fn.call(context,...[...args,...args2])
             }
         }
-        result.prototype = Object.create(this.prototype);
-        return result;
+        Fn.prototype = this.prototype;
+        return Fn;
     }
 
     let obj = {name:"dd"};
