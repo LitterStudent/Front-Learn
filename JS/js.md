@@ -2,7 +2,9 @@
 
 ### 1.什么是回调？
 
-回调是js中实现异步逻辑的一种方式。可以为某些操作添加异步任务。例如监听事件，ajax事件，定时器事件等
+回调是js中实现异步逻辑的一种方式。可以为某些异步操作添加后续任务。例如事件监听，ajax事件，定时器。
+
+
 
 ### 2.回调的缺点
 
@@ -20,7 +22,9 @@
 
 进程：进程是cpu分配资源的最小单位。一个运行的程序对应一个进程，一个进程包括运行中的程序和程序使用到的内存和系统资源。
 
-线程：线程是进程下的执行者（程序运行单位），一个进程至少开启一个线程，也可以开启多个线程。
+[线程和进程](https://www.cnblogs.com/qianqiannian/p/7010909.html)
+
+线程：线程是程序执行流的最小单元，是程序执行过程中一个单一的顺序控制流程，是处理器调度和派发的基本单位。 线程是进程下的执行者（程序运行单位），一个进程至少开启一个线程，也可以开启多个线程。同一个进程下的线程共享进程的内存空间和系统资源。
 
 浏览器是多进程的：每当我们打开一个tab页，就是新建了一个独立的浏览器进程。
 
@@ -96,15 +100,23 @@
 
 
 
-### 2.js为什么要有异步？
+### 2.js要有异步？
 
-js是单线程的，某些代码如i/o，ajax网络请求会消耗较长的时间，如果是同步的话就会阻塞后面代码的执行过久。所以需要异步先将这些任务挂起，到后续执行。
+js是单线程的，某些代码如i/o（文件读取，输出等），ajax网络请求会消耗较长的时间，如果是同步的话就会阻塞后面代码的执行过久。所以需要异步先将这些任务挂起，到后续执行。
+
+
+
+### 2 .js为什么是单线程的？
+
+js的主要用途是用户交互和处理dom.这决定了它只能是单线程。否则多个线程同时操作dom时会让浏览器不知所措。
+
+但html5提出了 WebWorker标准，允许js 创建多个子线程，但子线程完全由主线程控制，且不能操作dom.
 
 
 
 ### 3.promise的特点
 
-js解决异步任务的一种方案。将执行异步任务的代码和处理结果的代码清晰的分离了。可以将要异步请求的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步请求结果的代码放在promise.then内。
+js解决异步任务的一种方案。将执行异步任务的代码和处理结果的代码清晰的分离了。可以将要异步操作的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步操作结果的代码放在promise.then内。
 
 将异步回调的控制权转移到了promise的手中而不是像封装完ajax第三方库的手中。
 
@@ -144,7 +156,7 @@ const p1 = new Promise(function (resolve, reject) {
 
 
 
-即使没有用.catch或者.then的第二个参数去指定处理错误的回调函数，promise内部发生的错误不会影响promsie外部代码的执行。
+即使没有用.catch或者.then的第二个参数去指定处理错误的回调函数，promise**内部发生的错误不会影响promsie外部代码的执行。**
 
 ```javascript
 const someAsyncThing = function () {
@@ -304,13 +316,54 @@ console.log("scripts end 4")
 
 
 
+```javascript
+  console.log('script start 1')
+
+async function async1() {
+    await async2()
+    console.log('async1 end 8') //第4个
+}
+async function async2() {
+    console.log('async2 end 2')
+    return Promise.resolve().then(()=>{
+        console.log('async2 end1 5')  //第一个入微任务队列
+    }) 
+}
+async1()
+
+setTimeout(function() {
+    console.log('setTimeout 11')
+}, 0)
+
+new Promise(resolve => {
+    console.log('Promise 3 ')
+    resolve()
+})
+.then(function() {
+    console.log('promise1 6') //第二个入微任务队列
+})
+.then(function() {
+    console.log('promise2 7') //第3个入微任务队列
+})
+.then(function() {
+    console.log('promise2 9') //第5个
+})
+.then(function() {
+    console.log('promise2 10') //第6个
+})
+
+console.log('script end 4')
+```
+
 
 
 
 
 ### 5.如何判断一个对象是不是promise
 
-是否有定义属性名为then的方法。
+判断该对象是否有定义属性名为then的方法。
+
+promise instanceof Promise这样只能判断 es6 标准的 promise 实例，无法判断 Bluebird 等的第三方 promise 实现
 
 
 
@@ -326,18 +379,29 @@ return new Promise(()=>{});
 
 ## 2 async 和 await
 
-async 和 await 能进一步改善promise的链式调用，用**同步的方式，执行异步操作**。
+async 和 await 能进一步改善promise的链式调用，**使得异步代码看起来更像是同步代码**。
 
-一个函数如果加上async ,那么该函数就会返回一个promise.async函数会将返回值使用Promise.resolve()包装成promise.
+**async函数的返回值为 promise.**一个函数如果加上async ,那么该函数就会返回一个状态为fulfilled的promise，**除非async函数内抛出的错误或者await后面的promsie状态变为rejected.** 
+
+await 后面一般跟着一个promise。await下一行的语句就和.then里的语句一样，`（会在promise状态确定下来后加入到微任务队列当中）`，得等await 等待的Promise状态确定后才会继续执行下去。
+
+
+
+在async函数中，await规定了异步操作只能一个个排队执行，从而达到同步的方式执行异步操作。
+
+`async/await` 在底层转换成了 `promise` 和 `then` 回调函数。也就是说，这是 `promise` 的语法糖。
+ 每次我们使用 `await`, 解释器都创建一个 `promise` 对象，然后把剩下的 `async` 函数中的操作放到 `then` 回调函数中。
+ `async/await` 的实现，离不开 `Promise`。从字面意思来理解，`async` 是“异步”的简写，而 `await` 是 `async wait` 的简写可以认为是等待异步方法执行完成。
 
 async函数返回的promise对象，必须等待内部所有的await命令的promise对象都执行完成，才会发生状态的改变。**除非遇到return语句或者 抛出错误。**即抛出错误时会提前终止async函数的后续执行。
 
-await命令正常情况下后面是一个promise对象。但如果不是的话，就直接返回改值。
+await命令正常情况下后面是一个promise对象。但如果不是的话，就直接返回该值。
 
 ```javascript
 async function f() {
   // 等同于
   // return 123;
+  //不会阻塞
   return await 123;
 }
 
@@ -345,11 +409,11 @@ f().then(v => console.log(v))
 // 123
 ```
 
-await 等待一个promise。await后面的语句就像.then里的语句一样，得等await 等待的Promise状态确定后才会继续执行下去。
+
 
 **如果async函数中某处的await返回了reject的promise,则后面的代码不会执行。**
 
-如果想是错误的地方能被捕获不影响后续代码的执行可以使用 try 和catch捕获错误，或者在await的promise的后面增加一个.catch.
+**如果想是错误的地方能被捕获不影响后续代码的执行可以使用 try 和catch捕获错误，或者在await的promise的后面增加一个.catch.**
 
 
 
@@ -423,17 +487,25 @@ ES6通过 extends字段 声明继承父类 和在类构造函数 constructor中�
 
 ## 7事件循环
 
-事件循环 Event Loop是浏览器为解决单线程执行js代码而不引起阻塞的机制。
+DOM事件：用户在界面上进行一些操作触发的响应。
 
-单线程js引擎在执行代码时，通过将不同的执行上下文压入执行栈中来保证代码的有序执行。在执行代码的时候，如果遇到了异步任务，js 引擎并不会一直等待其返回结果，而是会将这个异步任务交给特定线程处理，继续执行执行栈中的其他任务。当异步任务执行完毕后，**再将异步任务对应的回调加入到**（与当前执行栈中不同的另一个）**任务队列中等待执行**。任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
+事件监听器：onclik 或 addEventListener() 添加事件监听器。事件监听器上绑定的回调函数又可以叫消息。
 
+事件循环 Event Loop是浏览器为解决单线程执行js代码而不引起阻塞的机制。为了协调事件，用户交互，ui渲染，网络请求。
 
+事件循环的机制是由宿主环境来决定的，在浏览器运行环境中是由浏览器内核引擎决定的。在NodeJS中是由libuv引擎实现的。
+
+（单线程）**js引擎在执行代码时**，通过将不同的执行上下文压入执行栈中来保证代码的有序执行。在执行代码的时候，如果遇到了异步任务，js 引擎并不会一直等待其返回结果，而是会将这个异步任务交给特定线程处理，继续执行执行栈中的其他任务。当异步任务执行完毕后，**再将异步任务对应的回调加入到**（与当前执行栈中不同的另一个）**任务队列中等待执行**。任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211026152035189.png" alt="image-20211026152035189" style="zoom:50%;" />
 
  先执行script脚本，执行过程中遇到微任务加入微任务队列，遇到宏任务加入宏任务队列。当script脚本执行完也就是js执行栈为空的时候，就会去清空微任务队列。当微任务队列执行，再取出宏任务队列的第一个任务执行。直至两个队列的所有任务都执行完。
 
 宏任务：<script> setTimeout setInerval  requestAnimationFrame ：希望在下一次浏览器重绘之前执行动画 setImmediate(node)
 
-微任务： promise.then all  race 
+`requestAnimationFrame`姑且也算是宏任务吧，`requestAnimationFrame`在[MDN的定义](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FAPI%2FWindow%2FrequestAnimationFrame)为，下次页面重绘前所执行的操作，而重绘也是作为宏任务的一个步骤来存在的，且该步骤晚于微任务的执行
+
+微任务： promise.then catch finally ; **MutationObserver**
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211016193053562.png" alt="image-20211016193053562" style="zoom:50%;" />
 

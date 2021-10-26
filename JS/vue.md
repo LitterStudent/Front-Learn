@@ -226,6 +226,14 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 
 
 
+当v-if指令附属于普通元素时，v-if指令状态变化会使得父组件的dom发生变化，父组件将会更新视图，所以会触发父组件的beforeUpdate和updated钩子函数。
+
+当v-if指令令附属于组件时，v-if指令状态变化对父组件的影响和上一条一致，但是对于本身组件的生命周期的影响是不一样的。
+
+1. v-if从false切换到true时，会触发beforeCreate，created，beforeMount，mounted钩子。 2.v-if从true切换到false时，会触发beforeDestroy和destroyed钩子函数。
+
+
+
 
 
 
