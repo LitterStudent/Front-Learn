@@ -383,7 +383,7 @@ async 和 await 能进一步改善promise的链式调用，**使得异步代码�
 
 **async函数的返回值为 promise.**一个函数如果加上async ,那么该函数就会返回一个状态为fulfilled的promise，**除非async函数内抛出的错误或者await后面的promsie状态变为rejected.** 
 
-await 后面一般跟着一个promise。await下一行的语句就和.then里的语句一样，`（会在promise状态确定下来后加入到微任务队列当中）`，得等await 等待的Promise状态确定后才会继续执行下去。
+当函数体执行时，一旦遇到await就会先返回，让出线程，跳出函数体。 等到触发的异步操作完成时，才有机会执行函数体后面的语句。await 后面一般跟着一个promise。await下一行的语句就和.then里的语句一样，`（会在promise状态确定下来后加入到微任务队列当中）`，得等await 等待的Promise状态确定后才会继续执行下去。
 
 
 
@@ -423,6 +423,10 @@ f().then(v => console.log(v))
 2. 多个await命令后面的异步操作如果没有关联关系。就可以抽离出来，使用promise.all让它们同时触发，节省时间。  
 
 
+
+#### 2async，await是如何实现的？
+
+async/await 其实就是 generator函数的语法糖。generator函数内部通过 yield字段(一耳)来暂停执行，一般yield字段后面跟通过在new Promise(）函数内部添加异步操作，next()方法执行到yield暂停处即返回的未确定状态promise处，为未确定状态的promsie添加.then来添加完成异步操作后的回调。
 
 
 
