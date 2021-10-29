@@ -161,7 +161,7 @@ Observer（观察者）：Observer观查传入的data对象。遍历data对象�
 
 
 
-1.props 和 $emit. 子组件通过props接收父组件传递的数据，然后$emit触发事件向父组件传递数据。
+1.props 和 $emit. 子组件通过props接收父组件传递的数据，然后$emit触发事件向父组件传递数据。 $emit(eventName,[...args])
 
 2.通过$parent和$children获取当前组件的父组件和组件
 
@@ -447,5 +447,221 @@ const User = {
 
 
 
+1.首先在patch方法，在patch方法内调用sameVNode方法判断新老虚拟dom是否为同一类型的节点
+
+2.如果不是则直接更换跟新新虚拟dom
+
+3.如果类型相同，则对新旧虚拟dom进行深层比较。调用patchVnode（oldVnode, newVnode）方法。
+
+   3.1*如果新旧虚拟节点是同一个对象，则终止*
+
+   3.2*如果新旧虚拟节点是文本节点，且文本不一样* *则直接将真实DOM中文本更新为新虚拟节点的文本*
+
+​    3.3*否则* *新旧虚拟节点都有子节点，且子节点不一样* *对比子节点，并更新* 使用 updateChildren方法
+
+​           a.方法内对新老虚拟dom都有两个头尾指针指向头尾孩子节点,头尾孩子节点两两比较，如果相同则指针移动，并将相同节点真实的dom
+
+​			b如果以上逻辑都匹配不到，再把所有旧子节点的 `key` 做一个映射到旧节点下标的 `key -> index` 表，然后用新 `vnode` 的 `key` 去找出在旧节点中可以复用的位置。
+
+ 
 
 
+
+## 16nextTick
+
+vue更新dom的背景：
+
+vue更新DOM是异步的。只要侦听到数据发生变化，vue就会开启一个缓冲队列，存入同一事件循环内所有的数据变更。如果同一个watcher被多次触发，只会被推入到队列中一次。然后在下一次事件循环“tick"中，vue刷新队列并执行相应工作。
+
+nextTick的作用：当我们跟新数据时，dom会在下一次事件循环发送跟新渲染。如果我们要访问更新渲染后的dom进行相应操作的话，可以通过**this.$nextTick**内。
+
+
+
+```javascript
+Vue.component('example', {
+  template: '<span>{{ message }}</span>',
+  data: function () {
+    return {
+      message: '未更新'
+    }
+  },
+  methods: {
+    updateMessage: function () {
+      this.message = '已更新'
+      console.log(this.$el.textContent) // => '未更新'
+      this.$nextTick(function () {
+        console.log(this.$el.textContent) // => '已更新'
+      })
+    }
+  }
+})
+```
+
+因为 `$nextTick()` 返回一个 `Promise` 对象，所以你可以使用新的 [ES2017 async/await](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function) 语法完成相同的事情：
+
+```javascript
+methods: {
+  updateMessage: async function () {
+    this.message = '已更新'
+    console.log(this.$el.textContent) // => '未更新'
+    await this.$nextTick()
+    console.log(this.$el.textContent) // => '已更新'
+  }
+}
+```
+
+
+
+## 17 组件库
+
+### 1.vue.extend与 $mount一起使用  
+
+**vue.extend生成一个 vue构造函数。**
+
+```javascript
+<div id="mount-point"></div>
+
+// 创建构造器
+var Profile = Vue.extend({
+  template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
+  data: function () {
+    return {
+      firstName: 'Walter',
+      lastName: 'White',
+      alias: 'Heisenberg'
+    }
+  }
+})
+// 创建 Profile 实例，并挂载到一个元素上。
+new Profile().$mount('#mount-point')
+```
+
+### 2混入Mixin
+
+1.在new Vue实例时，可以在mixin属性内添加要混入的属性。
+
+2.各属性混入时一般会同名属性合并成一个对象，如果属性data混入时发生冲突，以vue实例的属性为准。
+
+```javascript
+//data 对象如此  同键名时以vue实例为准
+const mixin = {
+    data:funciton(){
+    return {
+      message: 'hello',
+      foo: 'abc'
+    }
+ }
+}
+
+new Vue({
+  mixins: [mixin],
+  data: function () {
+    return {
+      message: 'goodbye',
+      bar: 'def'
+    }
+  },
+  created: function () {
+    console.log(this.$data)
+    // => { message: "goodbye", foo: "abc", bar: "def" }
+  }
+}
+
+//methods 方法也是如此
+var mixin = {
+  methods: {
+    foo: function () {
+      console.log('foo')
+    },
+    conflicting: function () {
+      console.log('from mixin')
+    }
+  }
+}
+
+var vm = new Vue({
+  mixins: [mixin],
+  methods: {
+    bar: function () {
+      console.log('bar')
+    },
+    conflicting: function () {
+      console.log('from self')
+    }
+  }
+})
+
+vm.foo() // => "foo"
+vm.bar() // => "bar"
+vm.conflicting() // => "from self"
+
+        
+//声明周期钩子函数也会合并
+var mixin = {
+  created: function () {
+    console.log('混入对象的钩子被调用')
+  }
+}
+
+new Vue({
+  mixins: [mixin],
+  created: function () {
+    console.log('组件钩子被调用')
+  }
+})
+
+// => "混入对象的钩子被调用"
+// => "组件钩子被调用"  
+```
+
+以上都是组件混入
+
+也可以全局混入
+
+```javascript
+Vue.mixin({
+created: function () {
+    var myOption = this.$options.myOption
+    if (myOption) {
+      console.log(myOption)
+    }
+  }
+})
+
+new Vue({
+  myOption: 'hello!'
+})
+// => "hello!"
+```
+
+### 3.自定义指令
+
+1.全局与局部
+
+```javascript
+//全局注册指令
+Vue.directive('focus',{
+  inserted:function(el){
+     el.focus();
+  }
+})
+
+//局部注册指令
+new Vue({
+  directives:{
+      focus:{
+          inserted:function(el){
+              el.focus();
+          }
+      }
+  }
+})
+```
+
+2.钩子函数
+
+bind：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置。
+
+inserted：被绑定元素插入父节点时调用 (仅保证父节点存在，但不一定已被插入文档中)。
+
+updated:所在组件的 VNode 更新时调用，**但是可能发生在其子 VNode 更新之前**。指令的值可能发生了改变，也可能没有。但是你可以通过比较更新前后的值来忽略不必要的模板更新 (详细的钩子函数参数见下)。

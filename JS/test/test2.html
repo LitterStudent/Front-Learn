@@ -10,34 +10,22 @@
     
 </body>
 <script>
-console.log('script begin 1');
-
-setTimeout(() => {
-  console.log('settimeout 9');
-});
-
-async function fn1() {
-  await fn2();
-  console.log('fn1 end 7');
-} 
-
-async function fn2() {
-  console.log('fn2 start 2');
-  return Promise.resolve().then(res => {
-    console.log('fn2 end 4')
+function ajaxto(url){
+  return new Promise((resolve,reject)=>{
+    let xhr = new XmlHttpRequest();
+    xhr.open('get',url,true);
+    xhr.setRequestHearder('content-type','application/json');
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState !=4) return;
+      if(xhr.status===200||xhr.status===304){
+        resolve(xhr.responseText);
+      }
+      else{
+        reject(new Error(xhr.responseText))
+      }
+    }
+    xhr.send();
   })
 }
-
-fn1();
-
-Promise.resolve().then(() => {
-  console.log('resolve 5');
-}).then(() => {
-  console.log('resolve 6');
-}).then(() => {
-  console.log('resolve 8')
-})
-
-console.log('script end 3');
 </script>
 </html>

@@ -87,3 +87,27 @@
 7promise的链式调用如何停止
 
 8ES6语法
+
+
+
+
+
+## 5 10/29 转转  1面 
+
+1.v-for  key的作用
+
+2.如何将 if else 转为 prosmie
+
+3.vue中  .nextTick()
+
+4.写一个vue组件，button组件等。
+
+5.http缓存
+
+6http2
+
+7判断完全平方数
+
+8判断一个对象的最长键值 {a:{b:{c:{d:1}}}}
+
+9.css实现一个动画

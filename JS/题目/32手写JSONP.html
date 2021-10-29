@@ -10,11 +10,36 @@
     
 </body>
 <script>
-    let jsonp = function(url,param,fun){
+    let jsonp = function(url,param,callback){
      return new Promise((resolve,reject)=>{
          //定义回调函数
-         window[fun] = 
+         window[callback] = function(data){
+             console.log(data);
+            resolve(data);
+            document.body.removeChild('script')
+         }
+         const fromParams = {...param,callback}
+        let requestParams = Object.keys(fromParams).reduce((pre,value)=>{
+            return pre.concat(`${value}=${fromParams[value]}`)
+        },[])
+        let str = requestParams.join('&');
+        let requestUrl = url+'?'+str;
+        let script = document.createElement('script');
+        console.log(str);
+        script.setAttribute('src',requestUrl)
+        document.body.appendChild(script);  
         })
+        
     }
+</script>
+<script>
+    jsonp('http://www.baidu.com',
+    {
+        name:'xiaoming',
+        age:'dd'
+    },
+    "sayHello",
+    11
+    )
 </script>
 </html>
