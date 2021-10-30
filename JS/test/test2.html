@@ -9,23 +9,9 @@
 <body>
     
 </body>
-<script>
-function ajaxto(url){
-  return new Promise((resolve,reject)=>{
-    let xhr = new XmlHttpRequest();
-    xhr.open('get',url,true);
-    xhr.setRequestHearder('content-type','application/json');
-    xhr.onreadystatechange = function(){
-      if(xhr.readyState !=4) return;
-      if(xhr.status===200||xhr.status===304){
-        resolve(xhr.responseText);
-      }
-      else{
-        reject(new Error(xhr.responseText))
-      }
-    }
-    xhr.send();
-  })
-}
+<script type="module">
+    "use strict";
+    var a = 2;
+console.log(window.a);
 </script>
 </html>

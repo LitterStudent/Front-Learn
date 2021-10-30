@@ -436,7 +436,7 @@ async/await 其实就是 generator函数的语法糖。generator函数内部通�
 
 而使用let和const声明的变量则不会被提升。所以let 和const 声明的变量不能提前使用，有暂时性死区的说法。
 
-var在全局作用域中声明的变量会被挂载到全局对象window上，而let和const不会。
+var在全局作用域中声明的变量会被挂载到全局对象window上(不论是否严格模式)，而let和const不会。
 
 var 在函数中使用会声明函数作用域变量，函数外访问不到。而let和const还可以声明块级作用域变量。块级外访问不到。
 
@@ -592,24 +592,7 @@ document.querySelector('input').addEventListener('input',function(e){
 函数也是对象，也可以拥有属性和方法。
 
 ```javascript
-// add(1)(2)(3)....
-
-function add(...args){
-    let allArgs = args
-    let fn = function(...args2){
-        allArgs = [...allArgs,...args2];
-        return fn;
-    }
-    // js是词法作用域 函数的作用域在函数定义时就决定了
-    fn.toString = function(){
-        // 通过作用域链攀升获得变量 allArgs
-        return allArgs.reduce((sum,value)=>{return sum+value},0)
-    }
-    fn.dd = 'dd'
-    return fn;
-}
-let a = add(1)(2)(3)
-console.log(a);
+// add(1)(2)(3)....function add(...args){    let allArgs = args    let fn = function(...args2){        allArgs = [...allArgs,...args2];        return fn;    }    // js是词法作用域 函数的作用域在函数定义时就决定了    fn.toString = function(){        // 通过作用域链攀升获得变量 allArgs        return allArgs.reduce((sum,value)=>{return sum+value},0)    }    fn.dd = 'dd'    return fn;}let a = add(1)(2)(3)console.log(a);
 ```
 
 
@@ -896,15 +879,39 @@ common.js的加载机制：**CommonJS模块的加载机制是，输入的是被�
 
 1.ES6 Module是静态的，也就是说它是在编译阶段运行，和var以及function一样具有提升效果（这个特点使得它支持tree shaking）
 
-2.自动采用严格模式（顶层的this返回undefined）
+2.**自动采用严格模式**（顶层的this返回undefined,不应该在顶层代码中使用this.）（变量必须声明后才能使用）.这个严格模式跟我们直接使用‘use strict'的严格模式不太一样。我们直接使用’use strict'声明的严格模式，顶层的this指向window。
 
 3.ES6 Module支持使用export {<变量>}导出具名的接口，或者export default导出匿名的接口
 
+4.import  导入的如果是值的话,不能修改.如果是对象,则可以修改对象属性.不能修改对象的引用
 
+```javascript
+import {a} from './1.js'  //a是一个对象
+console.log(a);   //{name:"1"}
+a.name ="dd"    //可以修改到
+console.log(a);  //{name:"dd"}  再次访问,对象值改变
+a = {}           //抛出错误,如果是值这样修改也错误
+```
 
-export命令导出模块，import命令导入模块。
+5import 是静态执行，所以后面不能跟表达式和变量，这些只会在运行时得到结果。
 
-也可以export default  xxx  ,导入的时候 import  可以随意命名。
+```
+// 报错
+import { 'f' + 'oo' } from 'my_module';
+
+// 报错
+let module = 'my_module';
+import { foo } from module;
+
+// 报错
+if (x === 1) {
+  import { foo } from 'module1';
+} else {
+  import { foo } from 'module2';
+}
+```
+
+6也可以export default  xxx  ,导入的时候 import  可以随意命名。
 
 ```javascript
 /** 定义模块 math.js **/
@@ -920,13 +927,9 @@ function test(ele) {
 }
 ```
 
-**① CommonJS 模块输出的是一个值的拷贝，ES6 Module通过export {<变量>}输出的是一个变量的引用,export default输出的是一个值**
-
-**② CommonJS 模块是运行时加载，即代码执行到那一行才回去加载模块.ES6 模块是编译时输出接口**。
-
-**3CommonJs在第一次加载的时候运行一次并且会生成一个缓存,之后加载返回的都是缓存中的内容**
 
 
+7.**import()** 允许你在运行时动态地引入 ES6 模块，
 
 ES6 模块在编译时就会静态分析，优先于模块内的其他内容执行，所以导致了我们无法写出像下面这样的代码：
 
@@ -943,11 +946,93 @@ import a from (str + 'b');
 
 因为编译时静态分析，导致了我们无法在条件语句或者拼接字符串模块，因为这些都是需要在运行时才能确定的结果在 ES6 模块是不被允许的，所以 动态引入 **import()** 应运而生。
 
-**import()** 允许你在运行时动态地引入 ES6 模块，
+`import()`返回一个 Promise 对象。可以在promise内执行模块内容。
+
+```js
+const main = document.querySelector('main');
+
+import(`./section-modules/${someVariable}.js`)
+  .then(module => {
+    module.loadPageInto(main);
+  })
+  .catch(err => {
+    main.textContent = err.message;
+  });
+```
+
+import()可以实现（1）按需加载。（2）条件加载（3）动态的模块路径
+
+```js
+//按需加载。
+button.addEventListener('click', event => {
+  import('./dialogBox.js')
+  .then(dialogBox => {
+    dialogBox.open();
+  })
+  .catch(error => {
+    /* Error handling */
+  })
+});
+//条件加载
+if (condition) {
+  import('moduleA').then(...);
+} else {
+  import('moduleB').then(...);
+}
+//动态的模块路径生成
+import(f())
+.then(...);
+```
 
 [好文](https://zhuanlan.zhihu.com/p/33843378)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017170426471.png" alt="image-20211017170426471" style="zoom:67%;" />
+
+
+#### 3.浏览器加载(ES6)
+
+1.浏览器加载 ES6 模块，也使用`<script>`标签，但是要加入`type="module"`属性。
+
+```html
+<script type="module" src="./foo.js"></script>		
+```
+
+2.`type="module"`默认异步加载模块。不会造成堵塞浏览器，即等到整个页面渲染完，再执行模块脚本，等同于打开了`<script>`标签的`defer`属性。
+
+```html
+<script type="module" src="./foo.js"></script>
+<!-- 等同于 -->
+<script type="module" src="./foo.js" defer></script>
+```
+
+3一旦使用了`async`属性，`<script type="module">`就不会按照在页面出现的顺序执行，而是只要该模块加载完成，就执行该模块。
+
+```html
+<script type="module" src="./foo.js" async></script>
+```
+
+4ES6 模块也允许内嵌在网页中，语法行为与加载外部脚本完全一致。
+
+```js
+<script type="module">
+  import utils from "./utils.js";
+
+  // other code
+</script>
+```
+
+
+
+#### 4CommonJS和ES6module的区别
+
+**① CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。**（ES6 Module通过export {<变量>}输出的是一个变量的引用,变量如果改变的话,我查看的到变化,export default输出的是一个值）
+
+**② CommonJS 模块是运行时加载，即代码执行到那一行才回去加载模块.ES6 模块是编译时输出接口**。
+
+**3.CommonJs在第一次加载的时候运行一次并且会生成一个缓存,之后加载返回的都是缓存中的内容**
+
+4.CommonJs的require()是同步加载模块，ES6的import是异步加载模块，有一个独立解析的过程。
+
+
 
 ## 21可迭代对象
 
@@ -1209,5 +1294,58 @@ return Reflect.get(...arguments);
 const proxy = new Proxy(target, handler);
 console.log(proxy.foo); // bar
 console.log(target.foo); // bar
+```
+
+
+
+## 26严格模式
+
+严格模式用于选择以更严格的条件检查JavaScript 代码错误，**可以应用到全局，也可以应用到函数内部。**严格模式的好处是可以提早发现错误。
+
+```javascript
+//例如在函数内部时这样的
+function doSomething() {
+"use strict";
+// 其他代码
+}
+```
+
+
+
+1.不能意外创建全局变量.
+
+```javascript
+"use strict" 
+a =2  //这样会抛出错误
+this.a = 2  //这样才能定义全局变量
+```
+
+2.严格模式下全局中的this,指向window.和非严格模式一样
+
+```javascript
+"use strict" 
+console.log(this) // window
+```
+
+3.**严格模式下函数中的this,指向undefined.**
+
+```javascript
+"use strict";
+function f1(){
+ console.log(this); //undefined
+}
+```
+
+4.使用函数的apply()或call()方法时，在非严格模式下null 或undefined 值会被强制转型为全局对象。在严格模式下，则始终以指定值作为函数this 的值，无论指定的是什么值。
+
+```javascript
+// 访问属性
+// 非严格模式：访问全局属性
+// 严格模式：抛出错误，因为this 值为null
+let color = "red";
+function displayColor() {
+alert(this.color);
+}
+displayColor.call(null);
 ```
 
