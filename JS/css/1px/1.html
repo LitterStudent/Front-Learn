@@ -12,12 +12,16 @@
         }
      .setOnePx {
          position: relative;
+         height: 10px;
+         background-color: skyblue;
+        
      }
      .setOnePx::after {
+        
          content:"";
          position:absolute;
          left: 0;
-         top: 0;
+         bottom: 0;
          height: 1px;
          background-color: red;
          transform: scale(1,0.5);

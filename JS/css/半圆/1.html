@@ -22,26 +22,6 @@
   <div class="semi-circle"></div>
 </body>
 <script>
- 
- async function async1 (){
-console.log("async1 2")
-await async2()
-console.log("async1 end 5")
-}
-console.log("scripts start 1")
-async1()
-async function async2() {
- return 1
-}
-new Promise((resolve,reject)=>{
-  console.log("promise1 3")
-  resolve()
-}).then(()=>{
-  console.log("promise2 6")
-})
-setTimeout(()=>{
-  console.log("setTimeout 7")
-})
-console.log("scripts end 4")
+
 </script>
 </html>

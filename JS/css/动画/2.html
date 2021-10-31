@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style> 
+div {
+  width: 100px;
+  height: 100px;
+  background: red;
+  position: relative;
+  animation-name: example;
+  animation-duration: 3s;  
+  animation-fill-mode: forwards;
+}
+
+@keyframes example {
+  from {top: 0px;}
+  to {top: 200px; background-color: blue;}
+}
+</style>
+</head>
+<body>
+
+<p>动画结束后，让 div 元素保留最后一个关键帧的样式值：</p>
+
+<div></div>
+
+<p><b>注释：</b>Internet Explorer 9 以及更早的版本不支持 animation-fill-mode 属性。</p>
+
+</body>
+</html>

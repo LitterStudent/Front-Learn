@@ -495,7 +495,7 @@ DOM事件：用户在界面上进行一些操作触发的响应。
 
 事件监听器：onclik 或 addEventListener() 添加事件监听器。事件监听器上绑定的回调函数又可以叫消息。
 
-事件循环 Event Loop是浏览器为解决单线程执行js代码而不引起阻塞的机制。为了协调事件，用户交互，ui渲染，网络请求。
+事件循环 **Event Loop是浏览器为解决单线程执行js代码而不引起阻塞的机制。为了协调事件，用户交互，ui渲染，网络请求。**
 
 事件循环的机制是由宿主环境来决定的，在浏览器运行环境中是由浏览器内核引擎决定的。在NodeJS中是由libuv引擎实现的。
 
@@ -658,6 +658,12 @@ Object.assigin(traget,source1,source2):将source1和source2合并到target上
 
 **Reflect.ownkys():**相当于Object.getOwnPropertyNames(target) concat(Object.getOwnPropertySymbols(target)
 
+Object.getOwnPropertyNames():返回一个由指定对象的所有自身属性的属性名（**包括不可枚举属性但不包括Symbol值作为名称的属性**）组成的数组。
+
+Object.getOwnPropertySymbols()方法返回一个给定对象自身的所有 Symbol 属性的数组。
+
+
+
 ### 2.原型
 
  原型就一个为其他对象提供共享属性访问的对象。在创建对象时每个对象都有一个隐式属性指向它的原型或者null.
@@ -675,6 +681,25 @@ Object.assigin(traget,source1,source2):将source1和source2合并到target上
 ### 4.遍历对象
 
 for in + obj.hasOwnPrperty()
+
+
+
+### 5判断一个对象是否为空
+
+使用 Object 的 getOwnPropertyNames 方法，获取所有属性名，这样就算是不可枚举属性依然能够获取到，算是比较 ok 的方法。
+
+```js
+const isEmptyObj = object => {
+    if (!!Object.getOwnPropertySymbols(object).length) {
+        return false
+    }
+    if (!!Object.getOwnPropertyNames(object).length) {
+        return false
+    }
+    return true
+}
+```
+
 
 
 
@@ -1349,3 +1374,59 @@ alert(this.color);
 displayColor.call(null);
 ```
 
+
+
+## 27encodeURI 和 encodeURIComponent 的区别
+
+[好文](https://www.zhihu.com/question/21861899)
+
+**二、最常用的encodeURI和encodeURIComponent**
+
+对URL编码是常见的事，所以这两个方法应该是实际中要特别注意的。
+
+它们都是编码URL，唯一区别就是编码的字符范围，其中
+
+encodeURI方法***不会***对下列字符编码  **ASCII字母  数字  ~!@#$&\*()=:/,;?+'**
+
+encodeURIComponent方法***不会***对下列字符编码 **ASCII字母  数字  ~!\*()'**
+
+所以encodeURIComponent比encodeURI编码的范围更大。
+
+实际例子来说，encodeURIComponent会把 http://  编码成  http%3A%2F%2F 而encodeURI却不会。
+
+
+
+**三、最重要的，什么场合应该用什么方法**
+
+**1、如果只是编码字符串，不和URL有半毛钱关系，那么用escape。**
+
+**2、如果你需要编码整个URL，然后需要使用这个URL，那么用encodeURI。**
+
+比如
+
+```js
+encodeURI("http://www.cnblogs.com/season-huang/some other thing");
+```
+
+编码后会变为
+
+```js
+"http://www.cnblogs.com/season-huang/some%20other%20thing";
+```
+
+其中，空格被编码成了%20。但是如果你用了encodeURIComponent，那么结果变为
+
+```js
+"http%3A%2F%2Fwww.cnblogs.com%2Fseason-huang%2Fsome%20other%20thing"
+```
+
+看到了区别吗，连 "/" 都被编码了，整个URL已经没法用了。
+
+**3、当你需要编码URL中的参数的时候，那么encodeURIComponent是最好方法。**
+
+```js
+var param = "http://www.cnblogs.com/season-huang/"; //param为参数
+param = encodeURIComponent(param);
+var url = "http://www.cnblogs.com?next=" + param;
+console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fseas
+```

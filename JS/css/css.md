@@ -1,4 +1,4 @@
-## 1.常见的块级元素，行内元素。
+## 	1.常见的块级元素，行内元素。
 
 1. 块级元素：div   ul  ol li  p form  table  header  aside footer  audio video 独占一行，可以设置宽高，内外边距
 2. 行内元素：span  a  strong  em 粗体 i big samll 
@@ -131,11 +131,11 @@ display:block;
 
 ## 9伪元素和伪类
 
-伪元素   ::before, ::after 通过在元素的第一个子元素前面或者最后一个元素前面添加 一个新的元素。
+伪元素   ::before, ::after 通过在元素的**第一个子元素前面或者最后一个子元素后面**添加 一个新的元素。
 
 起初 伪元素只有 :一个分号，现在伪元素都为两个分号：：
 
-
+这个虚拟元素默认是行内元素。
 
 一个分号的为  伪类 ：  ，伪类是一个类。拥有类的权重等。
 
@@ -350,12 +350,14 @@ BFC的应用场景：
 3. 防止外边距合并。：当声明的两个相邻盒子在两个不同的BFC内时就能解决外边距合并的问题。
 4. 
 
-IFC IFC(Inline Formatting Contexts)直译为"内联格式化上下文"，IFC 的 line box（线框）高度由其包含行内元素中最高的实际高度计算而来（不受到竖直方向的padding/margin影响)
+IFC IFC(Inline Formatting Contexts)直译为"内联格式化上下文"，IFC 的 line box（线框）**高度由其包含行内元素中最高的实际高度计算而来**（不受到竖直方向的padding/margin影响)
+
+形成条件：块级元素中仅包含内联级别元素。
 
 IFC一般有什么用呢？
 
-水平居中：当一个块要在环境中水平居中时，设置其为inline-block则会在外层产生IFC，通过text-align则可以使其水平居中。
-垂直居中：创建一个IFC，用其中一个元素撑开父元素的高度，然后设置其vertical-align:middle，其他行内元素则可以在此父元素下垂直居中。
+水平居中：当一个块要在环境中水平居中时，设置其为inline-block则会在外层产生IFC，通过**text-align**则可以使其水平居中。
+垂直居中：创建一个IFC，用其中一个元素撑开父元素的高度，然后设置其**	**，其他行内元素则可以在此父元素下垂直居中。
 
 
 
@@ -556,4 +558,92 @@ DOMContentLoaded -> load。
 那么为什么会产生这个问题呢？主要是跟一个东西有关，DPR(devicePixelRatio) 设备像素比，它是默认缩放为 100%的情况下，设备像素和 CSS 像素的比值。目前主流的屏幕 DPR=2（iPhone 8）,或者 3（iPhone 8 Plus）。拿 2 倍屏来说，设备的物理像素要实现 1 像素，而 DPR=2，所以 css 像素只能是 0.5。
 
 
+
+
+
+## 27 transform transition animation
+
+### 1.transform（变形）
+
+```css
+transform:translate(x,y)  //移动
+transform:scale(x,y)      //缩放
+```
+
+
+
+### 2.transition 
+
+过渡。通常搭配伪类选择器一起使用，:hover,:focus,:checked .等
+
+```css
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>transition</title>
+  <style>
+    #box {
+      height: 100px;
+      width: 100px;
+      background: green;
+      transition: transform 1s ease-in 1s;
+    }
+
+    #box:hover {
+      transform: rotate(180deg) scale(.5, .5);
+    }
+  </style>
+</head>
+<body>
+  <div id="box"></div>
+</body>
+</html>
+
+```
+
+我们来分析这一整个过程，首先transition给元素设置的过渡属性是transform，当鼠标移入元素时，元素的transform发生变化，那么这个时候就触发了transition，产生了动画，当鼠标移出时，transform又发生变化，这个时候还是会触发transition，产生动画，所以transition产生动画的条件是transition设置的property发生变化，这种动画的特点是需要“一个驱动力去触发”，有着以下几个不足：
+
+1. 需要事件触发，所以没法在网页加载时自动发生
+2. 是一次性的，不能重复发生，除非一再触发
+3. 只能定义开始状态和结束状态，不能定义中间状态，也就是说只有两个状态
+4. 一条transition规则，只能定义一个属性的变化，不能涉及多个属性。
+
+**transition: property duration timing-function delay;**
+
+| 值                         | 描述                              |
+| -------------------------- | --------------------------------- |
+| transition-property        | 规定设置过渡效果的 CSS 属性的名称 |
+| transition-duration        | 规定完成过渡效果需要多少秒或毫秒  |
+| transition-timing-function | 规定速度效果的速度曲线            |
+| transition-delay           | 定义过渡效果何时开始              |
+
+
+
+### 3.animation
+
+[制作网站](https://animista.net/play/basic)
+
+语法：**animation: name duration timing-function delay iteration-count direction play-state fill-mode;**
+
+
+
+| 值                  | 描述                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| name                | 用来调用@keyframes定义好的动画，与@keyframes定义的动画名称一致 |
+| duration            | 指定元素播放动画所持续的时间                                 |
+| **timing-function** | 规定速度效果的速度曲线，是针对每一个小动画所在时间范围的变换速率 |
+| delay               | 定义在浏览器开始执行动画之前等待的时间，值整个animation执行之前等待的时间 |
+| iteration-count     | 定义动画的播放次数，可选具体次数或者无限(infinite)           |
+| direction           | 设置动画播放方向：normal(按时间轴顺序),reverse(时间轴反方向运行),alternate(轮流，即来回往复进行),alternate-reverse(动画先反运行再正方向运行，并持续交替运行) |
+| play-state          | 控制元素动画的播放状态，通过此来控制动画的暂停和继续，两个值：running(继续)，paused(暂停) |
+| fill-mode           | 控制动画结束后，元素的样式，有四个值：none(回到动画没开始时的状态)，forwards(动画结束后动画停留在结束状态)，backwords(动画回到第一帧的状态)，both(根据animation-direction轮流应用forwards和backwards规则)，注意与iteration-count不要冲突(动画执行无限次) |
+
+**animation-timing-function** 属性可接受以下值：
+
+- ease - 指定从慢速开始，然后加快，然后缓慢结束的动画（默认）
+- linear - 规定从开始到结束的速度相同的动画
+- ease-in - 规定慢速开始的动画
+- ease-out - 规定慢速结束的动画
+- ease-in-out - 指定开始和结束较慢的动画
+- cubic-bezier(n,n,n,n) - 运行您在三次贝塞尔函数中定义自己的值
 
