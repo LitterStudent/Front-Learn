@@ -181,9 +181,9 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
    created():vue实例已完全创建。data和methods可以使用。但是真正的dom还未生成。
 
-   beforeMount:此时模板已经被渲染到内存当中，但未挂载到DOM
+   beforeMount:此时模板已经被渲染到内存当中，但未挂载到页面上
 
- mounted:模板挂载到DOM,如果操作dom,最早只能再mounted阶段
+ mounted:模板挂载到页面上,如果操作dom,最早只能再mounted阶段
 
 beforeUpadte:数据更新完成时调用，虚拟dom重新渲染和打补丁之前。可以在这个时候对进一步修改数据，不会触发重新渲染
 
