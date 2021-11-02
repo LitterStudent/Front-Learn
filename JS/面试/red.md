@@ -58,9 +58,34 @@
 
 9.css 左中右布局, 1. flex  2.浮动
 
-10.移动端的适配
+10.移动端的适配，rem
 
+11.call,apply,bind
 
+12.position的属性
+
+13
+
+```js
+   var name = 'windom';
+var obj = {
+    name:'obj',
+    say(){
+        console.log(this.name)
+    },
+    say1:()=>{
+        console.log(this.name);
+    }
+}
+obj.say();
+obj.say1();
+var fn = obj.say;
+fn();
+var fn1 = obj.say1;
+fn1()
+```
+
+1
 
 
 

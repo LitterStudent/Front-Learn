@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    class EventBus {
+        constructor(){
+            this.eventMap = new Map();
+        }
+
+        on(event,callBack){
+            if(this.eventMap.has(event)){
+                let eventArr = this.eventMap.get(event);
+                eventArr.push(callBack);
+            }
+            else{
+                this.eventMap.set(event,[callBack]);
+            }
+        }
+
+        emit(event,...args){
+           let EventArr = this.eventMap.get(event);
+           if(EventArr == null){
+               console.log('null')
+               return;
+           }
+           EventArr.forEach((fun,index)=>{
+               if(Array.isArray(fun)){
+                   fun[0]();
+                   EventArr.splice(index,1);
+               }
+               else{
+                fun.call(this,...args)
+               }
+           })
+        }
+
+        once(event,callBack){
+            if(this.eventMap.has(event)){
+                let eventArr = this.eventMap.get(event);
+                eventArr.push([callBack,1]);
+            }
+            else{
+                this.eventMap.set(event,[callBack,1]);
+            }
+        }
+
+        off(event){
+            this.eventMap.delete(event);
+        }
+
+    }
+    let eventBus = new EventBus();
+    eventBus.on('click1',()=>{console.log("click1");})
+    eventBus.on('click1',()=>{console.log("click1++++++");});
+    eventBus.once('click1',()=>{console.log("click1once");});
+    // eventBus.on('click2',()=>{console.log("click2");});
+
+    eventBus.emit('click1');
+    eventBus.off('click1')
+    eventBus.emit('click1');
+    // eventBus.emit('click2')
+</script>
+</html>
