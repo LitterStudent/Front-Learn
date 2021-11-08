@@ -1,4 +1,4 @@
-## 1vue的理解
+## 	1vue的理解
 
 渐进式` JavaScript` 框架、核心库加插件、动态创建用户界面
 
@@ -175,7 +175,7 @@ Observer（观察者）：Observer观查传入的data对象。遍历data对象�
 
 ## 5Vue的生命周期
 
-vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板，挂载Dom,渲染，更新，卸载的一系列过程。
+vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板，渲染,挂载Dom,更新,渲染，卸载的一系列过程。
 
 ​	beforeCreate()：vue实例刚创建，data和methods都未初始化，还不能使用
 
@@ -214,7 +214,7 @@ destroy：Vue 实例销毁后调用。
 
 v-if:是**“真正”的条件渲染**，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被**销毁**和**重建**。而且是惰性的，如果初始化渲染时条件值为假。则不什么也不做。直到为真时才渲染条件块。
 
-v-show :不管什么条件下，元素都会被渲染。并且只是简单css切换。
+v-show :下的元素始终都会被渲染。并且只是简单css切换。
 
 
 
@@ -243,6 +243,33 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 v-model就是语法糖。内部是不同type的输入元素绑定不同的属性和监听不同事件。
 
 例如 input  type 为 text 时 绑定的时 value和监听input事件。
+
+
+
+1.**将V-model绑定到组件上时，组件内部应该如何封装？**
+
+在自定义组件内部可以通过model属性，来指定组件上v-model传入的值和监听的事件。
+
+```js
+Vue.component('base-checkbox', {
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
+  props: {
+    checked: Boolean
+  },
+  template: `
+    <input
+      type="checkbox"
+      v-bind:checked="checked"
+      v-on:change="$emit('change', $event.target.checked)"
+    >
+  `
+})
+```
+
+
 
 
 
@@ -373,6 +400,10 @@ watch:{
 使用：当我点击一个
 
 ## 12v-for 为什么要加 key
+
+key作为列表渲染中元素的唯一标识，可以在列表更新的时候更好地复用旧的元素，提高列表渲染的效率。
+
+key属性可以用来提升v-for渲染的效率！，vue不会去改变原有的元素和数据，而是创建新的元素然后把新的数据渲染进去
 
 key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操作可以更准确、更快速.
 
@@ -518,7 +549,7 @@ methods: {
 
 ### 1.vue.extend与 $mount一起使用  
 
-**vue.extend生成一个 vue构造函数。**
+**vue.extend生成一个 vue构造函数。**通过接收一个对象来生成一个vue构造器 。
 
 ```javascript
 <div id="mount-point"></div>
@@ -598,7 +629,7 @@ vm.bar() // => "bar"
 vm.conflicting() // => "from self"
 
         
-//声明周期钩子函数也会合并
+//生命周期钩子函数也会合并
 var mixin = {
   created: function () {
     console.log('混入对象的钩子被调用')
@@ -695,8 +726,78 @@ oldVnode:旧虚拟节点
 
 
 
+
+
+### 4.如何开发一个组件库
+
+通过封装成插件。一个js对象代表一个插件，该对象暴露一个install方法。该方法第一个参数是 Vue构造器，第二个参数是一个可选的选项对象。**在install方法内可以通过Vue构造器来注册组件。** 
+
+还可以通过Vue构造器：1.添加全局方法或属性，2.通过Vue.directive()添加全局指令。 3.通过Vue.mixin混入
+
+
+
 ## 18keep-alive
 
 缓存组件，不需要重复渲染.如多个静态Tab页的切换优化性能.
 
 希望组件被重新渲染影响使用体验；或者处于性能考虑，避免多次重复渲染降低性能。而是希望组件可以缓存下来,维持当前的状态。这时候就可以用到keep-alive组件。
+
+
+
+
+
+## 19事件修饰符
+
+[好文](https://blog.csdn.net/weixin_46071217/article/details/108654509)
+
+.stop 阻止事件继续传播
+.prevent 阻止标签默认行为
+.capture 使用事件捕获模式,即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理
+.self 只当在 event.target 是当前元素自身时触发处理函数
+.once 事件将只会触发一次
+.passive 告诉浏览器你不想阻止事件的默认行为
+
+```html
+<!-- 阻止单击事件继续传播 -->
+<a v-on:click.stop="doThis"></a>
+
+<!-- 提交事件不再重载页面 -->
+<form v-on:submit.prevent="onSubmit"></form>
+
+<!-- 修饰符可以串联 -->
+<a v-on:click.stop.prevent="doThat"></a>
+
+<!-- 只有修饰符 -->
+<form v-on:submit.prevent></form>
+
+<!-- 添加事件监听器时使用事件捕获模式 -->
+<!-- 即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理 -->
+<div v-on:click.capture="doThis">...</div>
+
+<!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
+<!-- 即事件不是从内部元素触发的 -->
+<div v-on:click.self="doThat">...</div>
+
+<!-- 点击事件将只会触发一次 -->
+<a v-on:click.once="doThis"></a>
+
+<!-- 滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
+<!-- 而不会等待 `onScroll` 完成  -->
+<!-- 这其中包含 `event.preventDefault()` 的情况 -->
+<div v-on:scroll.passive="onScroll">...</div>
+123456789101112131415161718192021222324252627
+```
+
+
+
+## 20V-on事件监听
+
+1.将原生事件绑定到组件
+
+你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。这时，你可以使用 `v-on` 的 `.native` 修饰符：
+
+```html
+<base-input v-on:focus.native="onFocus"></base-input>
+```
+
+2.vm.$listeners:里面包含了作用在这个组件上的所有监听器你就可以配合 `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。

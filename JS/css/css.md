@@ -68,7 +68,7 @@ span:nth-child(-n+3)
 
 `relative`（相对定位）： 生成相对定位的元素，定位原点是元素本身所在的位置；
 
-`absolute`（绝对定位）：生成绝对定位的元素，定位原点是离自己这一级元素最近的一级`position`设置为`absolute`或者`relative`的父元素的左上角为原点的。
+`absolute`（绝对定位）：生成绝对定位的元素，相对于不是static 定位的第一个父元素进行定位。使用absolute定位时，添加top,bottom,left,right都为0可以使得元素铺满父元素。
 
 `fixed` （老IE不支持）：生成绝对定位的元素，相对于浏览器窗口进行定位。
 
@@ -131,15 +131,32 @@ display:block;
 
 ## 9伪元素和伪类
 
-伪元素   ::before, ::after 通过在元素的**第一个子元素前面或者最后一个子元素后面**添加 一个新的元素。
+伪元素用于设置元素指定部分的样式，
+
+例如：
+
+- 设置元素的首字母、首行的样式
+- 在元素的内容之前或之后插入内容
+
+伪元素   ::before, ::after 通过在元素的**第一个子元素前面或者最后一个子元素后面**添加 一个新的元素。伪元素不会出现在dom树中。
 
 起初 伪元素只有 :一个分号，现在伪元素都为两个分号：：
 
 这个虚拟元素默认是行内元素。
 
-一个分号的为  伪类 ：  ，伪类是一个类。拥有类的权重等。
 
 
+
+
+伪类一个分号： 
+
+伪类用于定义元素的特殊状态。
+
+例如，它可以用于：
+
+- 设置鼠标悬停在元素上时的样式
+- 为已访问和未访问链接设置不同的样式
+- 设置元素获得焦点时的样式
 
 ## 10.Opacity和Rgba的透明效果有何不同？
 
@@ -298,7 +315,7 @@ html {
 
 ## 14 display:none 和 visibility:hidden 有什么区别？
 
-display：none 是使得元素从文档的布局上消失，引发浏览器的回流。其子元素也会被隐藏。
+display：none 的元素不会出现在渲染树中，其子元素也会被隐藏。切换visibility会引发浏览器的回流。
 
 visibility:hidden 元素仍在文档的布局上，只会引发浏览器的重绘 ，不会引发回流。其子元素设置visibility:visiable就可以显示出来。不一定隐藏子元素。设置点击事件无效。
 
@@ -312,7 +329,7 @@ opacity:0  引发重绘。设置点击事件有效。
 
 link 是html中的标签，可以引入css和其他资源，如脚本，图片，字体等。而 @import是纯css 语法，只能在css内使用，导入css.
 
-link会在页面加载时同时加载，而import要等到页面加载完才加载
+link会在页面加载时同时加载，而import要等到**页面加载**完才加载
 
 可以使用js生成link标签动态引入样式。而@import不能。
 
@@ -350,14 +367,14 @@ BFC的应用场景：
 3. 防止外边距合并。：当声明的两个相邻盒子在两个不同的BFC内时就能解决外边距合并的问题。
 4. 
 
-IFC IFC(Inline Formatting Contexts)直译为"内联格式化上下文"，IFC 的 line box（线框）**高度由其包含行内元素中最高的实际高度计算而来**（不受到竖直方向的padding/margin影响)
+IFC IFC(Inline Formatting Contexts)直译为"内联格式化上下文"，IFC 的 中**每一行的高度由其包含行内元素中最高的实际高度计算而来**（不受到竖直方向的padding/margin影响)
 
 形成条件：块级元素中仅包含内联级别元素。
 
 IFC一般有什么用呢？
 
-水平居中：当一个块要在环境中水平居中时，设置其为inline-block则会在外层产生IFC，通过**text-align**则可以使其水平居中。
-垂直居中：创建一个IFC，用其中一个元素撑开父元素的高度，然后设置其**	**，其他行内元素则可以在此父元素下垂直居中。
+水平居中：在父盒子中通过**text-align：center**则可以使其水平居中。
+垂直居中：在子元素中设置其vertical-align: middle使得垂直居中。
 
 
 
@@ -520,12 +537,26 @@ cssom树和dom树时同步构建的，所以css的加载不会阻塞dom的加载
 
 ## 24 DOMContentLoaded 与 load 的区别 ?
 
-当 DOMContentLoaded 事件触发时,仅当 DOM 解析完成后,不包括样式表,图片。我们前面提到 **CSS 加载会阻塞 Dom 的渲染和后面 js 的执行,js 会阻塞 Dom 解析**,所以我们可以得到结论:
+当 DOMContentLoaded 事件触发时,仅当 DOM **解析完成**后,不包括样式表,图片。我们前面提到 **CSS 加载会阻塞 Dom 的渲染和后面 js 的执行,js 会阻塞 Dom 解析**,所以我们可以得到结论:
 当文档中没有脚本时,浏览器解析完文档便能触发 DOMContentLoaded 事件。如果文档中包含脚本,则脚本会阻塞文档的解析,而脚本需要等 CSSOM 构建完成才能执行。在任何情况下,DOMContentLoaded 的触发不需要等待图片等其他资源加载完成。
 
 当 onload 事件触发时,页面上所有的 DOM,样式表,脚本,图片等资源已经加载完毕。
 
 DOMContentLoaded -> load。
+
+```html
+<script>
+     window.addEventListener("load", function(event) {
+        console.log("Loaded");
+    });
+    document.addEventListener("DOMContentLoaded", function(event) {
+        console.log("DOM fully loaded and parsed");
+    });
+   
+</script>
+```
+
+
 
 
 
@@ -572,7 +603,7 @@ transform:scale(x,y)      //缩放
 
 
 
-### 2.transition 
+### 2.transition  过度
 
 过渡。通常搭配伪类选择器一起使用，:hover,:focus,:checked .等
 
