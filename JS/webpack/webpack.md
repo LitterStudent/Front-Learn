@@ -1,5 +1,7 @@
 [入门文章](https://www.jiangruitao.com/webpack/quick-start/)
 
+[npm命令](https://www.cnblogs.com/web-record/p/10904907.html)
+
 ![image-20211030150844521](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211030150844521.png)
 
 ## 0.常见问题
@@ -133,11 +135,13 @@ npx webpack a.js -o bundle.js      //从a.js文件开始，按照模块引入的
 
 
 
-#### 2path：绝对路径。如果你不设置它，webpack4默认为dist目录。
+#### 2path：打包后的文件在硬盘路径
+
+绝对路径。如果你不设置它，webpack4默认为dist目录。
 
 
 
-#### 3publicPath：表示的是资源访问路径。
+#### 3publicPath：表示的是虚拟打包路径，文件夹不会真正生成，会在启动webServer时生成
 
 表示形式有两大类：相对路径与绝对路径。
 
@@ -290,7 +294,7 @@ url-loader的特殊功能是可以计算出文件的base64编码接在打包在J
 
 **为什么要配置 contentBase ？**
 
-配置 DevServer HTTP 服务器的文件根目录。
+配置 DevServer HTTP 服务器的文件根目录，启动服务后会自动访问index.html。
 
 
 

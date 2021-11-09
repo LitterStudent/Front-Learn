@@ -409,9 +409,13 @@ key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操
 
 
 
-## 13 虚拟 DOM 是什么 	
+## 13 虚拟 DOM 是什么 （模板编译）
 
 Virtual DOM 本质就是用一个原生的 JS 对象去描述一个 DOM 节点，是对真实 DOM 的一层抽象。
+
+DOM变为虚拟dom的过程即是模板编译。
+
+
 
 
 
@@ -475,6 +479,68 @@ const User = {
 **Route(路由)**
 
 ## 15diff
+
+最小量更新算法。
+
+新的虚拟dom和老的虚拟dom进行diff,算出应该如何最小量更新，最后反映到真实的dom上。
+
+一个虚拟节点拥有的属性
+
+![image-20211108205747320](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108205747320.png)
+
+### 1.虚拟dom被h函数产生
+
+h函数接收参数格式：
+
+snabbdom中h函数的源码h.ts：主要就是通过**重载**来实现函数参数的可以是多种情况。
+
+```js
+//最常用的三种
+// 节点标签类型   标签属性    标签的文本
+h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},'百度');
+// 节点标签类型   标签属性    标签一个子元素
+h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},h('span',{},'子节点'))
+//// 节点标签类型   标签属性    标签的子元素数组
+h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节点1'),h('span',{},'子节点2')])
+```
+
+调用完后生成的对象。
+
+![image-20211108230132891](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108230132891.png)
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108225632507.png" alt="image-20211108225632507" style="zoom: 67%;" />
+
+![image-20211108225526942](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108225526942.png)
+
+### 2.diff算法原理。
+
+演示：当增加一个节点在尾部时是直接插入
+
+![image-20211108233114327](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233114327.png)
+
+如果是增加在头部，后面的不会复用。但是如果虚拟节点内data对象有key值，则会被复用。
+
+![image-20211108233244424](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233244424.png)
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233431224.png" alt="image-20211108233431224" style="zoom: 50%;" />
+
+
+
+#### diff算法特点
+
+1.最小量更新。依据唯一标识key.
+
+2.只有该节点新旧虚拟dom中的同一虚拟节点**（选择器（h函数的第一个参数）和key相同即是同一个虚拟节点）**才进行比较，否则暴力删除旧的，插入新的。
+
+3.只会同层级比较，不会跨层比较。以下代码vnode2新增了一层section，则旧节点被暴力删除，然后插入新的。
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108234149320.png" alt="image-20211108234149320" style="zoom:50%;" />
+
+
 
 ![image-20211018005624667](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211018005624667.png)
 
