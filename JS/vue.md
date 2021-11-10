@@ -480,6 +480,8 @@ const User = {
 
 ## 15diff
 
+[好文](https://blog.csdn.net/weixin_44972008/article/details/115620198)
+
 最小量更新算法。
 
 新的虚拟dom和老的虚拟dom进行diff,算出应该如何最小量更新，最后反映到真实的dom上。
@@ -516,6 +518,8 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 ### 2.diff算法原理。
 
+
+
 演示：当增加一个节点在尾部时是直接插入
 
 ![image-20211108233114327](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233114327.png)
@@ -538,7 +542,62 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108234149320.png" alt="image-20211108234149320" style="zoom:50%;" />
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108234149320.png" alt="image-20211108234149320" style="zoom: 50%;" />
+
+patch函数内的
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211109131113009.png" alt="image-20211109131113009" style="zoom:50%;" />
+
+​                                              下图为精细化比较的过程
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211109160239786.png" alt="image-20211109160239786" style="zoom:67%;" />
+
+```typescript
+function patch(oldVnode, newVnode) {
+  // 判断传入的第一个参数是 DOM节点 还是 虚拟节点
+  if (oldVnode.sel == "" || oldVnode.sel === undefined) {
+    // 说明oldVnode是DOM节点，此时要包装成虚拟节点
+    oldVnode = vnode(
+      oldVnode.tagName.toLowerCase(), // sel
+      {}, // data
+      [], // children
+      undefined, // text
+      oldVnode // elm
+    );
+  }
+  // 判断 oldVnode 和 newVnode 是不是同一个节点
+  if (oldVnode.key === newVnode.key && oldVnode.sel === newVnode.sel) {
+    console.log("是同一个节点，需要精细化比较");
+  } else {
+    console.log("不是同一个节点，暴力 插入新节点，删除旧节点");
+    // 创建 新虚拟节点 为 DOM节点
+    // 要操作DOM，所以都要转换成 DOM节点
+    let newVnodeElm = createElement(newVnode);
+    let oldVnodeElm = oldVnode.elm;
+    // 插入 新节点 到 旧节点 之前
+    if (newVnodeElm) {
+      // 判断newVnodeElm是存在的 在旧节点之前插入新节点
+      oldVnodeElm.parentNode.insertBefore(newVnodeElm, oldVnodeElm);
+    }
+    // 删除旧节点
+    oldVnodeElm.parentNode.removeChild(oldVnodeElm);
+  }
+}
+```
+
+如果新旧虚拟节点都有子节点，则设置4个指针分别指向新旧虚拟节点的第一个子节点和最后一个子节点。分别设这4个指针为旧前，旧后。新前，新后。通过4种命中查找来进行判断：
+
+1.新前与旧前（如果命中，则这两个指针分别向下移动）
+
+2.新后与旧后（如果命中，则这两个指针分别向上移动）
+
+3.新后与旧前（如果命中，新后指向的节点插入旧后节点之后，然后将旧前节点置为undefined,最后移动新后指针和旧前指针）
+
+4.新前与旧后（如果命中，新前指向的节点插入到旧前节点之前，然后将旧后节点置为undefined,最后移动新前指针和旧后指针）
+
+如果上述4种情况都没有命中，则通过循环旧节点的子节点来进行查找与新前指针的节点或者旧后指针的节点进行比较，找到了就将旧节点的字节点置为undefined.然后移动新节点前指针或者后指针。
+
+
 
 
 
@@ -546,21 +605,31 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 
 
-1.首先在patch方法，在patch方法内调用sameVNode方法判断新老虚拟dom是否为同一类型的节点
+1.首先在patch方法，在patch方法内调用sameVNode方法判断新老虚拟节点是否为同一类型的节点
 
-2.如果不是则直接更换跟新新虚拟dom
+2.如果不是则直接更换跟新虚拟节点
 
-3.如果类型相同，则对新旧虚拟dom进行深层比较。调用patchVnode（oldVnode, newVnode）方法。
+3.如果类型相同，则对新旧虚拟节点进行深层比较。调用patchVnode（oldVnode, newVnode）方法。
 
    3.1*如果新旧虚拟节点是同一个对象，则终止*
 
    3.2*如果新旧虚拟节点是文本节点，且文本不一样* *则直接将真实DOM中文本更新为新虚拟节点的文本*
 
-​    3.3*否则* *新旧虚拟节点都有子节点，且子节点不一样* *对比子节点，并更新* 使用 updateChildren方法
+​    3.3*如果* *新旧虚拟节点都有子节点，* 使用 updateChildren方法传入新旧虚拟节点*对比并更新* 其子节点。
 
-​           a.方法内对新老虚拟dom都有两个头尾指针指向头尾孩子节点,头尾孩子节点两两比较，如果相同则指针移动，并将相同节点真实的dom
+​           **a**.在方法内：
 
-​			b如果以上逻辑都匹配不到，再把所有旧子节点的 `key` 做一个映射到旧节点下标的 `key -> index` 表，然后用新 `vnode` 的 `key` 去找出在旧节点中可以复用的位置。
+设置4个指针分别指向新旧虚拟节点的第一个子节点和最后一个子节点。分别设这4个指针为旧首，旧尾。新首，新尾。然后**依次**进行以下四种比较看**命中哪一次**：新前与旧前，新后与旧后，新后与旧前，新前与旧后，看命中
+
+1.新首与旧首（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，然后这两个指针分别向下移动）
+
+2.新尾与旧尾（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，然后这两个指针分别向上移动）
+
+3.新尾与旧首（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，新尾指针指向的节点插入旧尾节点之后，然后移动新尾指针和旧首指针）
+
+4.新首与旧尾（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，新首指向的节点插入到旧首节点之前，然后移动新首指针和旧尾指针）
+
+​			**b**如果以上逻辑都匹配不到，再把所有旧子节点的 `key` 做一个映射到旧节点下标的 `key -> index` 表，然后用新 虚拟节点的首指针指向的节点的 `key` 在映射中找出在旧节点中可以复用的位置。
 
  
 
