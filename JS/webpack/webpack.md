@@ -6,6 +6,8 @@
 
 ## 0.常见问题
 
+webpack 根据引用关系，**构建**一个依赖关系图，然后利用这个关系图将所有静态模块**打包**成一个或多个 bundle 输出。
+
 ### 1.webpack的作用
 
 1.模块打包。将不同模块的文件打包在一起，保证模块之间的正确引用，执行有序。
@@ -566,6 +568,14 @@ plugins: [
 
 ## 7.开发环境优化
 
+\* 优化打包构建速度
+
+ \* HMR
+
+\* 优化代码调试
+
+ \* source-map
+
 #### 1.HMR
 
 HMR: HotModuleReplace 热模块替换。当某一个模块发生变化时，只会重新打包这一个模块而不是打包所有模块，提升构建速度。
@@ -673,6 +683,32 @@ devtool: 'eval-source-map'
 
 ## 8.生成环境优化
 
+\* 优化打包构建速度
+
+ \* oneOf
+
+ \* babel缓存
+
+ \* 多进程打包
+
+ \* externals
+
+ \* dll
+
+\* 优化代码运行的性能
+
+ \* 缓存(hash-chunkhash-contenthash)
+
+ \* tree shaking
+
+ \* code split
+
+ \* 懒加载/预加载
+
+ \* pwa
+
+
+
 ### 1.oneOf
 
 优化生产环境的打包构建速度。
@@ -713,15 +749,15 @@ devtool: 'eval-source-map'
 
    1.hash 
 
-  构建后的css和js都会共享同一个hash值。如果只改一个文件也会使得所有强缓存失效。
+  构建后**所有的**css和js都会共享同一个hash值。如果只改一个文件也会使得所有强缓存失效。
 
-   2.chunkhash:根据chunk生成hash值。如果打包来源属于同一个chunk，那么hash就一样。
+   2.chunkhash:根据chunk生成hash值。如果打包来源属于**同一个chunk**，那么hash就一样。
 
 ​    chunk的概念：当入口文件引用的了其他文件被，其他文件和入口文件一起被打包构建成了同一个chunk. 
 
 ​     因为css还是在js中的，即使是使用插件MiniCssExtractPlugin将css单独提取处理，但本质上css和js还是属于同一个chunk的，所以chunkhash和上面的hash一样相同。
 
-3.contenthash: 根据文件的内容生成hash值。不同文件hash值一定不一样
+3.contenthash: 根据文件的内容生成hash值。**不同文件**hash值一定不一样
 
 **总结：使用contenthash，当文件内容改变时，文件名也会改变，浏览器就会重新请求相应的资源**
 
@@ -731,13 +767,259 @@ devtool: 'eval-source-map'
 
 ### 3.树摇。tree-shaking
 
-1.使用Es6Module化语法和开启production就会使用树摇，将没有使用的代码去除掉。
+使用Es6Module化语法和开启production就会使用树摇，将没有使用的代码去除掉。
+
+**test.js**
+
+```js
+
+export function mul(x, y) {
+  return x * y;
+}
+
+export function count(x, y) {
+  return x - y;
+}
+
+```
+
+**index.js**
+
+```js
+//只引用了mul 没有count 
+//开启 tree-shaking 会不将count函数打包在内
+
+import { mul } from './test';
+import '../css/index.css';
+
+function sum(...args) {
+  return args.reduce((p, c) => p + c, 0);
+}
+
+// eslint-disable-next-line
+console.log(mul(2, 3));
+// eslint-disable-next-line
+console.log(sum(1, 2, 3, 4));
+
+```
 
 
 
 ### 4.代码分割。code split.
 
- 1.声明多入口文件，打包构建后就会生成多个bundle
+**好处：将一个大js文件分割成多个小的js文件，并行加载多个小的js文件提高加载文件的速度。**
+
+
+
+####  1.声明多入口文件，打包构建后就会生成多个bundle
+
+​	
+
+```js
+ entry: {
+    // 多入口：有一个入口，最终输出就有一个bundle
+    index: './src/js/index.js',
+    test: './src/js/test.js'
+  },
+  output: {
+    // [name]：取文件名
+    filename: 'js/[name].[contenthash:10].js',
+    path: resolve(__dirname, 'build')
+  },
+```
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112002243415.png" alt="image-20211112002243415" style="zoom: 80%;" />
+
+
+
+#### 2.配置optimization
+
+将第三方库的引用单独提出来成一个chunk打包，一起当做**一个chunk**去打包。这样做的好处是当多入口打包时可以将多入口文件的依赖文件提取出来单独当做一个chunk打包，避免多模块重复打包第三方库的文件。
+
+```js
+//这就是对第三方库的引用
+import $ from 'jquery';
+```
+
+
+
+```js
+ /*
+    1. 可以将node_modules中代码单独打包一个chunk最终输出
+    2. 自动分析多入口chunk中，有没有公共的文件。如果有会打包成单独一个chunk
+  */
+
+optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
+```
+
+
+
+#### 3.通过import()和optimization
+
+
+
+**index.js**
+
+```js
+/*
+  通过js代码，让某个文件被单独打包成一个chunk
+  import动态导入语法：能将某个文件单独打包
+*/
+import(/* webpackChunkName: 'test' */'./test')
+//webpackChunkName 指定单独打包的bundle名
+  .then(({ mul, count }) => {
+    // 文件加载成功~
+    // eslint-disable-next-line
+    console.log(mul(2, 5));
+  })
+  .catch(() => {
+    // eslint-disable-next-line
+    console.log('文件加载失败~');
+  });
+```
+
+构建打包后
+
+![image-20211112004435207](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112004435207.png)
+
+
+
+### 5懒加载
+
+通过在回调函数中调用 import() 实现懒加载 js文件
+
+注意：import()导入的模块会被单独打包
+
+
+
+**index.js**
+
+```js
+
+document.getElementById('btn').onclick = function() {
+  // 懒加载~：当文件需要使用时才加载~
+  import(/* webpackChunkName: 'test'*/'./test').then(({ mul }) => {
+    console.log(mul(4, 5));
+  });
+};
+
+```
+
+浏览器运行时先不加载test.js,当点击按钮后才加载。
+
+![image-20211112010335072](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010335072.png)
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010422923.png" alt="image-20211112010422923" style="zoom: 80%;" />
+
+懒加载会在需要懒加载时在html的head中插入<script>标签。
+
+![image-20211112010709712](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010709712.png)
+
+而预加载是浏览器有空就加载
+
+```js
+document.getElementById('btn').onclick = function() {
+  // 懒加载~：当文件需要使用时才加载~
+  // 预加载 prefetch：会在使用之前，提前加载js文件 
+  // 正常加载可以认为是并行加载（同一时间加载多个文件）  
+  // 预加载 prefetch：等其他资源加载完毕，浏览器空闲了，再偷偷加载资源
+  import(/* webpackChunkName: 'test', webpackPrefetch: true */'./test').then(({ mul }) => {
+    console.log(mul(4, 5));
+  });
+};
+```
+
+ 
+
+
+
+### 6.cdn引入第三库，打包时不打包这些通过cnd引入的库
+
+**index.js**
+
+```js
+//引入了jquery的库 可以通过 cdn引入
+import $ from 'jquery';
+
+console.log($);
+
+```
+
+**webpack-config-js**
+
+```
+externals: {
+    // 拒绝jQuery被打包进来
+    jquery: 'jQuery'
+  }
+```
+
+
+
+### 7.多进程打包
+
+bable解析js文件时会耗费比较久的时间，可以通过 thread-loader 开启多进程打包，加快打包速度。
+
+```js
+  {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: [
+              /* 
+                开启多进程打包。 
+                进程启动大概为600ms，进程通信也有开销。
+                只有工作消耗时间比较长，才需要多进程打包
+              */
+              {
+                loader: 'thread-loader',
+                options: {
+                  workers: 2 // 进程2个
+                }
+              },
+              {
+                loader: 'babel-loader',
+                options: {
+                  presets: [
+                    [
+                      '@babel/preset-env',
+                      {
+                        useBuiltIns: 'usage',
+                        corejs: { version: 3 },
+                        targets: {
+                          chrome: '60',
+                          firefox: '50'
+                        }
+                      }
+                    ]
+                  ],
+                  // 开启babel缓存
+                  // 第二次构建时，会读取之前的缓存
+                  cacheDirectory: true
+                }
+              }
+            ]
+          }
+```
+
+
+
+### 8 dll（地耳）
+
+将第三方库提取出来单独打包，后续构建打包项目代买只会打包我们项目本身的代买，不会编译打包第三方库，提高打包的速度。
+
+
+
+将第三方库提取出来单独打包成多个chunk和manifest.json的第三库的映射文件。
+
+配置webpack.config.js文件，指定哪些第三方库不打包，还有通过什么去引用。
+
+在html中要手动引用第三方库的文件。
 
 
 

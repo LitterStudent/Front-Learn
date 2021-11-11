@@ -39,7 +39,7 @@ const commonCssLoader = [
 module.exports = {
   entry: './src/js/index.js',
   output: {
-    filename: 'js/built.[contenthash:10].js',
+    filename: 'js/built.[hash:10].js',
     path: resolve(__dirname, 'build')
   },
   module: {
@@ -100,7 +100,7 @@ module.exports = {
             loader: 'url-loader',
             options: {
               limit: 8 * 1024,
-              name: '[contenthash:10].[ext]',
+              name: '[hash:10].[ext]',
               outputPath: 'imgs',
               esModule: false
             }
@@ -122,7 +122,7 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'css/built.[contenthash:10].css'
+      filename: 'css/built.[hash:10].css'
     }),
     new OptimizeCssAssetsWebpackPlugin(),
     new HtmlWebpackPlugin({
