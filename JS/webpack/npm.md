@@ -10,3 +10,11 @@
 
 ![image-20211110155456883](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211110155456883.png)
 
+5.版本号：  5.1.2表示固定版本5.1.2
+
+​					^3.6.5表示 3.x.x版本的包，后面两位不确定
+
+​                  ~4.5.0 表示 4.5.x版本的包，后面一位不确定
+
+6.![image-20211110155939153](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211110155939153.png)
+

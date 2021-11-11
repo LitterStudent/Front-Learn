@@ -100,7 +100,7 @@ module.exports = {
             loader: 'url-loader',
             options: {
               limit: 8 * 1024,
-              name: '[hash:10].[ext]',
+              name: '[contenthash:10].[ext]',
               outputPath: 'imgs',
               esModule: false
             }

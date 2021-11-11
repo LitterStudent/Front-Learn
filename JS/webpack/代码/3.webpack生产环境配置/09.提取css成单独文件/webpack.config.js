@@ -32,5 +32,5 @@ module.exports = {
       filename: 'css/built.css'
     })
   ],
-  mode: 'development'
+  mode: 'production'
 };

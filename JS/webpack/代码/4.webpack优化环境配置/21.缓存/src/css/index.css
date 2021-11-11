@@ -4,4 +4,5 @@ body {
   padding: 0;
   height: 100%;
   background-color: deeppink;
+  background-image: url('./angular.jpg');
 }

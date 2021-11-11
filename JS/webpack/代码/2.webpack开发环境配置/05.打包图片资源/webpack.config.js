@@ -29,11 +29,11 @@ module.exports = {
           // 问题：因为url-loader默认使用es6模块化解析，而html-loader引入图片是commonjs
           // 解析时会出问题：[object Module]
           // 解决：关闭url-loader的es6模块化，使用commonjs解析
-          // esModule: false,
+          esModule: false,
           // 给图片进行重命名
           // [hash:10]取图片的hash的前10位
           // [ext]取文件原来扩展名
-          name: '[hash:10].[ext]'
+          name: '[name]_[hash:10].[ext]'
         }
       },
       {

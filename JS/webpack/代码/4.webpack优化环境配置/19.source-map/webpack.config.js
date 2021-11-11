@@ -62,7 +62,7 @@ module.exports = {
     open: true,
     hot: true
   },
-  devtool: 'eval-source-map'
+  devtool: 'hidden-source-map'
 };
 
 /*

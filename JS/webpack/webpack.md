@@ -14,9 +14,33 @@
 
 
 
-### 2chunk是什么？
+### 2chunk是什么？模块，chunk,bundle的区别？
 
-在[模块化编程](https://en.wikipedia.org/wiki/Modular_programming)中，开发者将程序分解为功能离散的 chunk，并称之为 **模块**。
+[好文](https://www.cnblogs.com/skychx/archive/2020/05/18/webpack-module-chunk-bundle.html)
+
+```js
+ //多入口打包生成两个chunk，构建两个bundle 
+ entry: {
+        index: "../src/index.js",
+        utils: '../src/utils.js',
+    }
+```
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112001116745.png" alt="image-20211112001116745" style="zoom:67%;" />
+
+1. 对于一份同逻辑的代码，当我们手写下一个一个的文件，它们无论是 ESM 还是 commonJS 或是 AMD，他们都是 **module** ；
+2. 当我们写的 module 源文件传到 webpack 进行打包时，webpack 会根据文件引用关系生成 **chunk** 文件，webpack 会对这个 chunk 文件进行一些操作；
+3. webpack 处理好 chunk 文件后，最后会输出 **bundle** 文件，这个 bundle 文件包含了经过加载和编译的最终源文件，所以它可以直接在浏览器中运行。
+
+一般来说一个 chunk 对应一个 bundle，比如上图中的 `utils.js -> chunks 1 -> utils.bundle.js`；但也有例外，比如说上图中，我就用 `MiniCssExtractPlugin` 从 chunks 0 中抽离出了 `index.bundle.css` 文件。
+
+###  一句话总结：
+
+`module`，`chunk` 和 `bundle` 其实就是同一份逻辑代码在不同转换场景下的取了三个名字：
+
+我们直接写出来的是 module，webpack 处理时是 chunk，最后生成浏览器可以直接运行的 bundle。
 
 
 
@@ -141,7 +165,13 @@ npx webpack a.js -o bundle.js      //从a.js文件开始，按照模块引入的
 
 
 
-#### 3publicPath：表示的是虚拟打包路径，文件夹不会真正生成，会在启动webServer时生成
+#### 3publicPath：表示的是虚拟打包路径，文件夹不会真正生成，但是会添加到生成网页中静态资源的uri上。
+
+[haowen](https://blog.csdn.net/wang839305939/article/details/85855967)
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111145547566.png" alt="image-20211111145547566" style="zoom:50%;" />
+
+![image-20211111145533874](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111145533874.png)
 
 表示形式有两大类：相对路径与绝对路径。
 
@@ -212,7 +242,7 @@ module:{
 //除了test和use这两个关键配置参数，rules还有exclude、include、resource、issure和enforce等参数。
 ```
 
-### 2.css-loader:解析CSS文件插入到JS文件中
+### 2.css-loader:解析在JS文件中引入的CSS文件插入到JS文件中
 
   style-loader:通过js动态生成style标签插入到HTML中。
 
@@ -268,35 +298,47 @@ const path = require('path');
 
 
 
-### 3.file-loader
+### 3.file-loader  用于打包 图片、字体、媒体、等文件
 
-file-loader在Webpack中的作用是，**处理文件导入地址并替换成其访问地址**，并把文件输出到相应位置。其中导入地址包括了JavaScript和CSS等导入语句的地址
+在JavaScript,CSS引入文件时，把文件生成到输出目录，并替换JavaScript和CSS引入文件的地址。
 
 
 
 ### 4.url-loader
 
-url-loader的特殊功能是可以计算出文件的base64编码接在打包在JS文件里，在文件体积小于我们指定的值（单位 byte）的时候，可以返回一个base64编码的**DataURL**来代替访问地址。
+功能与 file-loader 类似，如果文件小于限制的大小。则会返回 base64 编码，否则使用 file-loader 将文件移动到输出的目录中
 
 使用base64编码的好处是可以减少一次网络请求，提升页面加载速度。
 
 
 
+### 5.html-loader
+
+负责处理html中的图片，使其能被url-loader解析。
+
+
+
 ## 4dev-server
+
+启动：npx webpack-dev-server
+
+启动后的页面默认为 html-webpack-plugin插件的模板页面。
+
+
 
 **1publicPath**
 
-影响资源在本地开发环境中的访问。
+影响资源在本地开发环境中的访问路径。
 
 
 
 2.**contentBase**的替代
 
+
+
 **为什么要配置 contentBase ？**
 
-配置 DevServer HTTP 服务器的文件根目录，启动服务后会自动访问index.html。
-
-
+DevServer启动后会自动将模块编译打包到内存当中。contentBase 用于配置 DevServer HTTP 服务器的文件根目录， 启动服务后会自动访问index.html。
 
 我也不知道为啥contentBase配置不了，看了官网好像是这样配置的
 
@@ -308,11 +350,29 @@ static: {
 
 
 
-## 5.生产环境配置
+## 5.开发环境配置
+
+1.解析css资源，less资源插入js中再插入html中。less-loader,css-loader,style-loader.
+
+2.处理js和css中引用的图片资源。使用url-loader将相应的被引用的资源输出到指定目录，并更换引用地址。url-loader还可以通过limit指定大小来使用base64进行处理，从而减少请求数量，但是请求的html会增大。
+
+3.处理html中引用的图片，使用html-loader。使被引用的图片能被url-loader识别解析。
+
+4.使用file-loader处理其他资源类型，将引用的资源输出到指定目录，并更改引用地址。
+
+5.html-webpack-plugin 指定模板html输出到输出目录，并且自动引用打包后的js资源。
+
+
+
+
+
+## 6.生产环境配置
 
 
 
 ### 1.提取css成单独一个文件
+
+
 
 ```js
 //1
@@ -338,6 +398,61 @@ plugins: [
     })
   ]
 ```
+
+### 1.5CSS兼容性处理
+
+postcss-loader 
+
+对css进行处理，实现兼容。
+
+plugin: postcss-preset-env
+
+找到package.json中browserslist里面的配置，指定css要兼容到哪些浏览器和版本。
+
+```js
+ {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          /*
+            css兼容性处理：postcss --> postcss-loader postcss-preset-env
+
+            帮postcss找到package.json中browserslist里面的配置，通过配置加载指定的css兼容性样式
+
+            "browserslist": {
+              // 开发环境 --> 设置node环境变量：process.env.NODE_ENV = development
+              "development": [
+                "last 1 chrome version",
+                "last 1 firefox version",
+                "last 1 safari version"
+              ],
+              // 生产环境：默认是看生产环境
+              "production": [
+                ">0.2%",
+                "not dead",
+                "not op_mini all"
+              ]
+            }
+          */
+          // 使用loader的默认配置
+          // 'postcss-loader',
+          // 修改loader的配置
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: () => [
+                // postcss的插件
+                require('postcss-preset-env')()
+              ]
+            }
+          }
+        ]
+      }
+```
+
+
 
 ### 2.压缩CSS文件
 
@@ -449,12 +564,16 @@ plugins: [
 
 
 
-### 7.生产环境优化
+## 7.开发环境优化
 
 #### 1.HMR
 
+HMR: HotModuleReplace 热模块替换。当某一个模块发生变化时，只会重新打包这一个模块而不是打包所有模块，提升构建速度。
+
+热跟新：修改代码后会重新编译，刷新浏览器。
+
 ```js
-/* 样式文件：可以使用HMR功能：因为style-loader内部实现了~
+/* 样式文件：可以使用HMR功能：因为style-loader内部实现了.所以开发环境使用style-loader性能更好，开发环境使用MiniCssExtractPlugin.loader提取成单独文件~
       js文件：默认不能使用HMR功能 --> 需要修改js代码，添加支持HMR功能的代码
         注意：HMR功能对js的处理，只能处理非入口js文件的其他文件。
       html文件: 默认不能使用HMR功能.同时会导致问题：html文件不能热更新了~ （不用做HMR功能）
@@ -471,18 +590,41 @@ plugins: [
   }
 ```
 
+```js
+//通过 module.hot.accept来监听非入口文件的js文件，当监听的文件发生变化时执行回调函数。
+if (module.hot) {
+  // 一旦 module.hot 为true，说明开启了HMR功能。 --> 让HMR功能代码生效
+  module.hot.accept('./print.js', function() {
+    // 方法会监听 print.js 文件的变化，一旦发生变化，其他模块不会重新打包构建。
+    // 会执行后面的回调函数
+    print();
+  });
+}
+```
+
 
 
 #### 2.source-map
+
+总结： source-map是可以将构建后的代码映射到源代码中。
+
+在开发环境和生产环境可以用不同的source-map.
+
+开发环境为了调式更友好和构建速度更快可以使用 eval-source-map
+
+生产环境如果需要隐藏源代码可以使用nosources-source-map 全部隐藏
+    如果不需要隐藏为了调试更友好可以使用 source-map
 
 ```js
 
 devtool: 'eval-source-map'
 
 /*
-  source-map: 一种 提供源代码到构建后代码映射 技术 （如果构建后代码出错了，通过映射可以追踪源代码错误）
+  source-map: 一种将构建后代码映射到源代码的技术 （如果构建后代码出错了，通过映射可以追踪源代码错误）
 
     [inline-|hidden-|eval-][nosources-][cheap-[module-]]source-map
+    
+    有些会产生映射文件到外部，有些内联在js中。下面有表外部的就是生成在外部，内联就是在js中。
 
     source-map：外部
       错误代码准确信息 和 源代码的错误位置
@@ -526,4 +668,109 @@ devtool: 'eval-source-map'
 */
 
 ```
+
+
+
+## 8.生成环境优化
+
+### 1.oneOf
+
+优化生产环境的打包构建速度。
+
+没有使用oneOf的情况下，打包构建模块时每一个文件都会被所有的loader过一遍。可以使用oneOf[]来指定只匹配一个loader.匹配到就退出。
+
+```js
+   oneOf: [
+          {
+            test: /\.css$/,
+            use: [...commonCssLoader]
+          },
+          {
+            test: /\.less$/,
+            use: [...commonCssLoader, 'less-loader']
+          }
+        
+        ]
+```
+
+### 2.缓存
+
+1.bable缓存
+
+第二次打包构建速度更快。
+
+可以使用bable缓存，当某个js模块改变时，第二次打包构建时会读取缓存，只修改改变的模块。使得构建速度更快。
+
+
+
+2.文件资源缓存。
+
+让上线后的在客户端的缓存更好使用。
+
+这个其实就是浏览器的强缓存。
+
+如果在浏览器强缓存时候，服务端发现客户端强缓存的文件有bug，修改bug后但是浏览器因为强缓存仍然在使用有bug的文件。可以通过给构建后的文件的文件名加哈希值来使得浏览器去重新请求相应更新后的资源。
+
+   1.hash 
+
+  构建后的css和js都会共享同一个hash值。如果只改一个文件也会使得所有强缓存失效。
+
+   2.chunkhash:根据chunk生成hash值。如果打包来源属于同一个chunk，那么hash就一样。
+
+​    chunk的概念：当入口文件引用的了其他文件被，其他文件和入口文件一起被打包构建成了同一个chunk. 
+
+​     因为css还是在js中的，即使是使用插件MiniCssExtractPlugin将css单独提取处理，但本质上css和js还是属于同一个chunk的，所以chunkhash和上面的hash一样相同。
+
+3.contenthash: 根据文件的内容生成hash值。不同文件hash值一定不一样
+
+**总结：使用contenthash，当文件内容改变时，文件名也会改变，浏览器就会重新请求相应的资源**
+
+![image-20211111212006493](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111212006493.png)
+
+
+
+### 3.树摇。tree-shaking
+
+1.使用Es6Module化语法和开启production就会使用树摇，将没有使用的代码去除掉。
+
+
+
+### 4.代码分割。code split.
+
+ 1.声明多入口文件，打包构建后就会生成多个bundle
+
+
+
+## 9.plugins
+
+
+
+### 1.html-webpack-plugin
+
+创建一个html（可以通过指定template来复制html）到输出目录，该html自动引入打包输出的资源.
+
+
+
+## 10mode
+
+`production`模式下会进行`tree shaking`(去除无用代码)和`uglifyjs`(代码压缩混淆)
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111161327571.png" alt="image-20211111161327571" style="zoom:50%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111161408776.png" alt="image-20211111161408776" style="zoom:50%;" />
+
+| 选项        | 描述                                                         |
+| ----------- | ------------------------------------------------------------ |
+| development | 会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 development. 为模块和 chunk 启用有效的名。 |
+| production  | 会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 production。为模块和 chunk 启用确定性的混淆名称，FlagDependencyUsagePlugin，FlagIncludedChunksPlugin，ModuleConcatenationPlugin，NoEmitOnErrorsPlugin 和 TerserPlugin 。 |
+| none        | 不使用任何默认优化选项                                       |
+
+- DefinePlugin：定义全局变量process.env.NODE_ENV，区分程序运行状态。
+- FlagDependencyUsagePlugin：标记没有用到的依赖。
+- FlagIncludedChunksPlugin：标记chunks，防止chunks多次加载。
+- ModuleConcatenationPlugin：作用域提升(scope hosting)，预编译功能，提升或者预编译所有模块到一个闭包中，提升代码在浏览器中的执行速度。
+- NoEmitOnErrorsPlugin：防止程序报错，就算有错误也继续编译。
+- TerserPlugin：压缩js代码。
+
+
 
