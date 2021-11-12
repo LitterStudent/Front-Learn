@@ -26,10 +26,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 */
 
 module.exports = {
-  entry: {
-    index: ['./src/index.js', './src/count.js'], 
-    add: './src/add.js'
-  },
+  // entry: {
+  //   index: ['./src/index.js', './src/count.js'], 
+  //   add: './src/add.js'
+  // },
+  entry:['./src/index.js','./src/count.js'],
   output: {
     filename: '[name].js',
     path: resolve(__dirname, 'build')

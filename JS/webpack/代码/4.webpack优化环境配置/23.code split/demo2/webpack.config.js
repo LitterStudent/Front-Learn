@@ -11,6 +11,7 @@ module.exports = {
   output: {
     // [name]：取文件名
     filename: 'js/[name].[contenthash:10].js',
+    chunkFilename:'[name]_chunk.js',
     path: resolve(__dirname, 'build')
   },
   plugins: [
