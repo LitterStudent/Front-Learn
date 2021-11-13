@@ -2,6 +2,18 @@
 
 渐进式` JavaScript` 框架、核心库加插件、动态创建用户界面
 
+可以逐步构建应用，简单应用只需要一个轻量小巧的核心库，复杂应用可以引入各式各样的Vue插件。
+
+
+
+**vue的特点**
+
+1.组件化
+
+2.响应式数据
+
+3.虚拟dom和diff算法
+
 
 
 ## 1.5vue基础
@@ -67,6 +79,206 @@ export default {
 }
     
 ```
+
+
+
+### 3.Vue实例上常用方法。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113171123378.png" alt="image-20211113171123378" style="zoom:80%;" />
+
+
+
+原型上的方法
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113171155363.png" alt="image-20211113171155363" style="zoom: 80%;" />
+
+
+
+### 4.模板语法
+
+
+
+```js
+{{name}}
+//这样实际上是在访问vue实例vm上的属性
+//但是vm上怎么会有data里面的每一个属性呢？
+//答案就是数据代理
+
+//data属性上的数据代理到了vm上
+//访问的是vue实例，vm上的属性
+//初始化vue实例vm时，传入的data会代理到vue实例vm上。
+
+vm._data === data //同一个对象
+```
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113174016175.png" alt="image-20211113174016175" style="zoom:67%;" />
+
+
+
+### 5.事件处理
+
+#### 1.可以使用 v-on，或者 @
+
+#### 2.通过往方法中传入 $event 参数传递事件
+
+#### 3.方法定义时，不应该使用箭头函数，这样this 才是 指向vm 或者 组件实例对象
+
+```vue
+<button v-on:click="warn('Form cannot be submitted yet.', $event)">
+  Submit
+</button>
+
+<script>
+    // ...
+methods: {
+  warn: function (message, event) {
+    // 现在我们可以访问原生事件对象
+    if (event) {
+      event.preventDefault()
+    }
+    alert(message)
+  }
+}
+</script>
+```
+
+
+
+#### 4.事件修饰符
+
+[好文](https://blog.csdn.net/weixin_46071217/article/details/108654509)
+
+.stop 阻止事件继续传播
+.prevent 阻止标签默认行为
+.capture 使用事件捕获模式,即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理
+.self 只当在 event.target 是当前元素自身时触发处理函数
+.once 事件将只会触发一次
+.passive 告诉浏览器你不想阻止事件的默认行为
+
+```vue
+<!-- 阻止单击事件继续传播 -->
+<a v-on:click.stop="doThis"></a>
+
+<!-- 提交事件不再重载页面 -->
+<form v-on:submit.prevent="onSubmit"></form>
+
+<!-- 修饰符可以串联 -->
+<a v-on:click.stop.prevent="doThat"></a>
+
+<!-- 只有修饰符 -->
+<form v-on:submit.prevent></form>
+
+<!-- 添加事件监听器时使用事件捕获模式 -->
+<!-- 即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理 -->
+<div v-on:click.capture="doThis">...</div>
+
+<!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
+<!-- 即事件不是从内部元素触发的 -->
+<div v-on:click.self="doThat">...</div>
+
+<!-- 点击事件将只会触发一次 -->
+<a v-on:click.once="doThis"></a>
+
+<!-- 滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
+<!-- 而不会等待 `onScroll` 完成  -->
+<!-- 这其中包含 `event.preventDefault()` 的情况 -->
+<div v-on:scroll.passive="onScroll">...</div>
+123456789101112131415161718192021222324252627
+
+什么是事件的默认行为？
+当监听到 srcoll事件，默认行为就是滚动条下滑。
+
+默认事件流会将监听事件的回调函数先执行完后再执行默认行为。
+如果回调函数耗时过久，就可以使用passive来使得默认行为先执行。
+
+
+
+
+```
+
+
+
+#### 5.键盘事件
+
+1.有keydown和keyup.一般用keyup. 
+
+2.常见的键盘修饰符：keyup.enter .tab .space 等.只有tab一般搭配keydown.
+
+3.可以通过event.key 来获取按键名
+
+
+
+### 6样式绑定
+
+
+
+通过  :class=" " 动态绑定样式
+
+1.字符串
+
+```vue
+<div v-bind:class="str"></div>
+
+
+<scrpit>
+new Vue({
+    data: {
+  	str:'color'
+  }
+    })
+</scrpit>
+```
+
+2.对象
+
+```vue
+<div v-bind:class="arr"></div>
+
+
+<scrpit>
+new Vue({
+    data: {
+  	obj:{
+  	'active':true,
+    'text-danger':false
+  	}
+  }
+    })
+</scrpit>
+```
+
+3.数组
+
+```vue
+<div v-bind:class="arr"></div>
+
+
+<scrpit>
+new Vue({
+    data: {
+  	arr:[ 'active',
+         'text-danger']
+  }
+    })
+</scrpit>
+
+```
+
+
+
+
+
+
+
+1.将原生事件绑定到组件
+
+你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。这时，你可以使用 `v-on` 的 `.native` 修饰符：
+
+```html
+<base-input v-on:focus.native="onFocus"></base-input>
+```
+
+2.vm.$listeners:里面包含了作用在这个组件上的所有监听器你就可以配合 `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。
 
 
 
@@ -141,13 +353,82 @@ var app = new Vue({
 
 第三种说法：每当new一个vue实例时，内部通过initData初始化数据，然后调用Observer对数据进行观察。如果数据是对象类型，就会通过遍历对象属性分别调用defineReactive方法。在defineReactive先生成一个dep订阅器实例，然后调用Object.defineProperty()来拦截数据,添加set和get分别对获取数据设置数据进行拦截。在获取数据时，初始化相应的订阅者实例watcher添加到dep订阅器实例中，当设置数据时，依赖收集器通知相应的订阅者对象实例watcher去进行相应的更新操作等（重新渲染dom等）。
 
-Observer（观察者）：Observer观查传入的data对象。遍历data对象并通过defineProperty(obj,key,{get，set})去拦截每个数据的获取与设置。
-
-
-
-
+Observer（观察者）：Observer观查传入的data对象。遍历data对象并通过defineProperty(obj,key,{get，set})去拦截每个数据的获取与设置
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017212021275.png" alt="image-20211017212021275" style="zoom: 67%;" />
+
+### 1.Vue.set()
+
+Vue 不允许动态添加根级别的响应式 property。所以你必须在初始化实例前声明所有根级响应式 property，哪怕只是一个空值：
+
+```js
+var vm = new Vue({
+  data:{
+    a:1
+  }
+})
+
+// `vm.a` 是响应式的
+
+//Vue 不允许动态添加根级别的响应式 property。
+vm.b = 2
+vm._data.b = 2
+// `vm.b` 是非响应式的
+```
+
+
+
+#### 1.对于对象
+
+
+
+但是，对于已经创建的实例，可以使用 `Vue.set(object, propertyName, value)` 方法向**data内的对象**添加响应式 property。
+
+例如，对于：
+
+```js
+Vue.set(vm.someObject, 'b', 2)
+Vue.set(vm._data.someObject, 'b', 2)
+```
+
+还可以使用 `vm.$set` 实例方法，这也是全局 `Vue.set` 方法的别名：
+
+```js
+//this 可以是在方法内
+this.$set(this.someObject,'b',2)
+```
+
+
+
+#### 2.对于数组
+
+Vue 不能检测以下数组的变动：
+
+1. 当你利用索引直接设置一个数组项时，例如：`vm.items[indexOfItem] = newValue`
+2. 当你修改数组的长度时，例如：`vm.items.length = newLength`
+
+```js
+var vm = new Vue({
+  data: {
+    items: ['a', 'b', 'c']
+  }
+})
+vm.items[1] = 'x' // 不是响应性的
+vm.items.length = 2 // 不是响应性的
+
+//vm.items[indexOfItem] = newValue 相同的效果，同时也将在响应式系统内触发状态更新：
+// Vue.set
+Vue.set(vm.items, indexOfItem, newValue)
+// Array.prototype.splice
+vm.items.splice(indexOfItem, 1, newValue)
+
+vm.$set(vm.items, indexOfItem, newValue)
+
+//这样可以过滤掉c
+vm.items = vm.items.filter(item=>item!='c')
+```
+
+
 
 
 
@@ -881,58 +1162,11 @@ oldVnode:旧虚拟节点
 
 
 
-## 19事件修饰符
+## 
 
-[好文](https://blog.csdn.net/weixin_46071217/article/details/108654509)
 
-.stop 阻止事件继续传播
-.prevent 阻止标签默认行为
-.capture 使用事件捕获模式,即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理
-.self 只当在 event.target 是当前元素自身时触发处理函数
-.once 事件将只会触发一次
-.passive 告诉浏览器你不想阻止事件的默认行为
-
-```html
-<!-- 阻止单击事件继续传播 -->
-<a v-on:click.stop="doThis"></a>
-
-<!-- 提交事件不再重载页面 -->
-<form v-on:submit.prevent="onSubmit"></form>
-
-<!-- 修饰符可以串联 -->
-<a v-on:click.stop.prevent="doThat"></a>
-
-<!-- 只有修饰符 -->
-<form v-on:submit.prevent></form>
-
-<!-- 添加事件监听器时使用事件捕获模式 -->
-<!-- 即元素自身触发的事件先在此处处理，然后才交由内部元素进行处理 -->
-<div v-on:click.capture="doThis">...</div>
-
-<!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
-<!-- 即事件不是从内部元素触发的 -->
-<div v-on:click.self="doThat">...</div>
-
-<!-- 点击事件将只会触发一次 -->
-<a v-on:click.once="doThis"></a>
-
-<!-- 滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
-<!-- 而不会等待 `onScroll` 完成  -->
-<!-- 这其中包含 `event.preventDefault()` 的情况 -->
-<div v-on:scroll.passive="onScroll">...</div>
-123456789101112131415161718192021222324252627
-```
 
 
 
 ## 20V-on事件监听
 
-1.将原生事件绑定到组件
-
-你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。这时，你可以使用 `v-on` 的 `.native` 修饰符：
-
-```html
-<base-input v-on:focus.native="onFocus"></base-input>
-```
-
-2.vm.$listeners:里面包含了作用在这个组件上的所有监听器你就可以配合 `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。

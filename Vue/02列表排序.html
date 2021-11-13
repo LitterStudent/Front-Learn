@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./vue.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <div id="app">
+       <input type="text" v-model='keyword'>
+       <button @click="sort = 1">升序</button>
+       <button @click="sort = 2">降序</button>
+       <button @click="sort = 3">平序</button>
+       <ul>
+        <li v-for='persion in persionfilter' :key="persion.pid">
+            {{persion.name}} 年龄 {{persion.age}}
+        </li>
+       </ul>
+    </div>
+</body>
+<script>
+ const vm = new Vue({
+      el:'#app',
+      data:{
+          keyword:"",
+          persionList:[
+              {name:'小米',age:22,pid:1},
+              {name:'小宏',age:23,pid:2},
+              {name:'小单',age:24,pid:3}
+          ],
+          sort:2
+      },
+      computed:{
+        persionfilter(){
+            let res = this.persionList.filter((persion)=>{
+                return persion.name.indexOf(this.keyword) !== -1;
+            })
+            if(this.sort === 3){
+                return res;
+            }
+            else if(this.sort === 2){
+                return res.sort((value1,value2)=>{
+                    return value2.age-value1.age
+                })
+            }
+            else if(this.sort === 1){
+                return res.sort((value1,value2)=>{
+                    return value1.age-value2.age
+                })
+            }
+        }
+      }
+ })
+</script>
+</html>

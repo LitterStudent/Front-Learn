@@ -163,9 +163,9 @@ entry:{
 
 特定动态值有**[hash]、[chunkhash]和[contenthash]**，**[name]等**。
 
-**[hash]**:根据打包中所有的文件计算出的hash值,在一次打包中，所有出口文件的filename获得的[hash]都是一样的。
+**[hash]**:根据打包中所有的文件计算出的hash值,在一次打包中，**所有出口文件的filename获得的[hash]都是一样的**。
 
-**[chunkhash]**:是根据打包过程中当前chunk计算出的hash值。如果Webpack配置是多入口配置，那么通常会生成多个chunk，每个chunk对应的出口filename获得的[chunkhash]是不一样的。这样可以保证打包后每一个JS文件名都不一样（这么说不太严谨，但有助于理解）。
+**[chunkhash]**:是根据打包过程中当前chunk计算出的hash值。如果Webpack配置是多入口配置，那么通常会生成多个chunk，不同chunk对应的出口filename获得的[chunkhash]是不一样的。这样可以保证打包后每一个JS文件名都不一样（这么说不太严谨，但有助于理解）。
 
 **[contenthash]**是根据打包时CSS内容计算出的hash值。一般在使用提取CSS的插件的时候，我们使用contenthash。
 
