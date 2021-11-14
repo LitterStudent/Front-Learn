@@ -16,73 +16,11 @@
 
 
 
-## 1.5vue基础
-
-### 1.组件的全局注册
-
-```javascript
-// 第一个参数组件名，就是我们在html了 使用的标签名
-
-Vue.component('my-component-name',{
-    template:'',
-    data:function(){
-        return {
-            .......
-        }
-    },
-    props:[],
-    computed:{
-        
-    },
-    methods:{
-        
-    },
-    watch:{
-        
-    }
-    
-})
-
-//全局注册后的组件，能够后面的new Vue() 创建的根实例种使用。
-new Vue（{
- el:'',
- template:'',
- data:[],
- methods:{},
-     ....
-}）
-```
-
-### 2.局部注册
-
-```javascript
-//1.使用一个普通的对象来定义 一个组件
-var component = {
-    ...
-}
-//2.然后在new Vue() 的过程中加入进去，新生成的vue实例就可以在模板中使用设个组件
-new Vue({
-    el:'#app',
-    components:{
-    'conponent-name1':component
-}
-})
-
-//使用ES6模块 看起来就是
-
-import 'ComponentA' from './ComponentA.vue'
-
-export default {
-    components:{
-        ComponentA
-    }
-}
-    
-```
+## 2.vue基础
 
 
 
-### 3.Vue实例上常用方法。
+### 1.Vue实例上常用方法。
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113171123378.png" alt="image-20211113171123378" style="zoom:80%;" />
 
@@ -94,7 +32,7 @@ export default {
 
 
 
-### 4.模板语法
+### 2.模板语法
 
 
 
@@ -115,7 +53,7 @@ vm._data === data //同一个对象
 
 
 
-### 5.事件处理
+### 3.事件处理
 
 #### 1.可以使用 v-on，或者 @
 
@@ -208,7 +146,23 @@ methods: {
 
 
 
-### 6样式绑定
+#### 6.组件事件
+
+1.将原生事件绑定到组件
+
+你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。这时，你可以使用 `v-on` 的 `.native` 修饰符：
+
+```html
+<base-input v-on:focus.native="onFocus"></base-input>
+```
+
+2.vm.$listeners:里面包含了作用在这个组件上的所有监听器你就可以配合 `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。
+
+
+
+
+
+### 4样式绑定
 
 
 
@@ -270,19 +224,206 @@ new Vue({
 
 
 
-1.将原生事件绑定到组件
 
-你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。这时，你可以使用 `v-on` 的 `.native` 修饰符：
 
-```html
-<base-input v-on:focus.native="onFocus"></base-input>
+
+
+## 3.组件
+
+组件的优点：可以复用组件代码，可以使得js，html，css的引用关系明确。
+
+
+
+### 1.创建组件的两种方式
+
+```js
+//1. 使用Vue.extend,传入options，生成一个 vuecomponent构造函数，然后将该构造函数传入new Vue中，Vue实例会自动帮我们调用vuecomponent构造函数
+ var component = Vue.extend({
+ //name :'ddd' 可以在Vue.exntnd中定义name指定组件在开发者工具中的名字
+    template:'',
+    data:function(){
+        return {
+            .......
+        }
+    },
+    props:[],
+    computed:{
+        
+    },
+    methods:{
+        
+    },
+    watch:{
+        
+    }
+    )
+     
+//2.直接定义成对象，但是vue实例内部接收到组件对象时会自动调用Vue.extend方法
+var component = {
+    template:'',
+    data:function(){
+        return {
+            .......
+        }
+    },
+    props:[],
+    computed:{
+        
+    },
+    methods:{
+        
+    },
+    watch:{
+        
+    }
 ```
 
-2.vm.$listeners:里面包含了作用在这个组件上的所有监听器你就可以配合 `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。
+
+
+### 2.组件的全局注册
+
+```javascript
+// 第一个参数组件名，就是我们在html了 使用的标签名
+
+Vue.component('my-component-name',{
+    template:'',
+    data:function(){
+        return {
+            .......
+        }
+    },
+    props:[],
+    computed:{
+        
+    },
+    methods:{
+        
+    },
+    watch:{
+        
+    }
+    
+})
+
+//全局注册后的组件，能够后面的new Vue() 创建的根实例种使用。
+new Vue（{
+ el:'',
+ template:'',
+ data:[],
+ methods:{},
+     ....
+}）
+```
+
+### 3.局部注册
+
+```javascript
+//1.使用一个普通的对象来定义 一个组件
+var component = {
+    ...
+}
+//2.然后在new Vue() 的过程中加入进去，新生成的vue实例就可以在模板中使用设个组件
+new Vue({
+    el:'#app',
+    components:{
+    'conponent-name1':component
+}
+})
+
+//使用ES6模块 看起来就是
+
+import 'ComponentA' from './ComponentA.vue'
+
+export default {
+    components:{
+        ComponentA
+    }
+}
+    
+```
+
+### 4.组件开发层级
 
 
 
-## 2 MVVM
+通过new Vue()生成 Root节点，
+
+new Vue中只有一个组件app,app内再放入所有其他组件
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114195055825.png" alt="image-20211114195055825" style="zoom:50%;" />
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114194942520.png" alt="image-20211114194942520" style="zoom:50%;" />
+
+
+
+### 5.组件中的this指向
+
+组件中的 methods中的函数,computed中的函数,watch中的函数,data中的函数，它们的this都是指向vueComponent
+
+
+
+new Vue中的 methods中的函数,computed中的函数,watch中的函数,data中的函数，它们的this都是指向Vue实例
+
+
+
+因为组件是可复用的 Vue 实例，所以它们与 `new Vue` 接收相同的选项，例如 `data`、`computed`、`watch`、`methods` 以及生命周期钩子等。仅有的例外是像 `el` 这样根实例特有的选项。
+
+
+
+###  6.VueComponent.prototype.__proto === Vue.prototype
+
+为了让vue组件的实例对象可以访问的vue原型上的方法。
+
+
+
+![image-20211115000542851](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115000542851.png)
+
+### 7.Vue文件编写
+
+1.Vue文件命名开头要大写 HelloWorld.vue
+
+
+
+
+
+## 4.Vue@CLI
+
+Vue脚手架创建的项目中：
+
+页面在public/index.html中，创建了id为app的容器
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015114854.png" alt="image-20211115015114854" style="zoom:50%;" />
+
+在入口文件src/main.js中，通过调用render函数的参数,creatElement()函数，将收到的App.vue编译成真正的DOM后挂载到了app上。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015210797.png" alt="image-20211115015210797" style="zoom:50%;" />
+
+1.import Vue from 'vue' ，通过ES6module语法导入的Vue是 vue.runtime.esm.js，没有解析模板的功能.无法像直接导入vue.js那样在new Vue的过程中直接通过 template 指定模板让vue编译。
+
+2.导入残缺版的vue是因为后续webapck打包文件时会将Vue文件解析成浏览器识别的文件，不需要用到Vue.js的解析模板的功能。所以使用残缺版减少打包后的文件体积。
+
+```
+	关于不同版本的Vue：
+	
+		1.vue.js与vue.runtime.xxx.js的区别：
+				(1).vue.js是完整版的Vue，包含：核心功能+模板解析器。
+				(2).vue.runtime.xxx.js是运行版的Vue，只包含：核心功能；没有模板解析器。
+
+		2.因为vue.runtime.xxx.js没有模板解析器，所以不能使用template配置项，需要使用
+			render函数接收到的createElement函数去指定具体内容。
+```
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015628620.png" alt="image-20211115015628620" style="zoom: 50%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015500029.png" alt="image-20211115015500029" style="zoom: 80%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015929613.png" alt="image-20211115015929613" style="zoom:50%;" />
+
+
+
+## 4 MVVM
 
 Model  View  ViewModel
 
@@ -339,7 +480,7 @@ var app = new Vue({
 
 
 
-## 3响应式原理（数据双向绑定）
+## 5.响应式原理（数据双向绑定）
 
 [好文](https://juejin.cn/post/6844903903822086151#heading-1)
 
@@ -432,13 +573,13 @@ vm.items = vm.items.filter(item=>item!='c')
 
 
 
-## 3为什么 data 是一个函数
+## 6.为什么 data 是一个函数
 
 组件中的data写成函数，数据以函数返回形式获取。这样每次**复用**一个组件时，都会获取到一份新的data.实现各自数据的独立。如果data是用对象写的话，所有的组件实例就会共用一个data对象。
 
 
 
-## 4vue组件通讯的方式
+## 7.vue组件通讯的方式
 
 
 
@@ -454,25 +595,39 @@ vm.items = vm.items.filter(item=>item!='c')
 
 
 
-## 5Vue的生命周期
+## 8.Vue的生命周期
 
 vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板，渲染,挂载Dom,更新,渲染，卸载的一系列过程。
 
-​	beforeCreate()：vue实例刚创建，data和methods都未初始化，还不能使用
+1. new Vue 实后，初始化了一个空的Vue对象，该对象内只有一些默认的生命周期函数和默认事件。
 
-   created():vue实例已完全创建。data和methods可以使用。但是真正的dom还未生成。
+   2.beforeCreate()：vue实例刚创建，data和methods都未初始化，还不能使用
 
-   beforeMount:此时模板已经被渲染到内存当中，但未挂载到页面上
+   3.进行数据代理和数据劫持。将data数据代理到vm上。通过Obesever对象对data进行数据拦截，实现数据的响应式
 
- mounted:模板挂载到页面上,如果操作dom,最早只能再mounted阶段
+   4.created():vue实例已完全创建。data和methods可以使用。
 
-beforeUpadte:数据更新完成时调用，虚拟dom重新渲染和打补丁之前。可以在这个时候对进一步修改数据，不会触发重新渲染
+   6.vue开始编译模板，生成虚拟dom到内存当中。
 
-updated:Dom已经完成了跟新。这个不能再更新数据。因为可能导致无限循环跟新。
+   5.beforeMount:此时模板已经被渲染到内存当中，但未挂载到页面上
 
-**beforeDestroy**： 实例销毁之前调用。在这一步，实例仍然完全可用。可以在这时进行善后收尾工作，比如清除计时器。
+   6.将内存中的虚拟dom转换为真实的dom挂载页面
 
-destroy：Vue 实例销毁后调用。
+   7.mounted:模板挂载到页面上,如果操作dom,最早只能再mounted阶段 
+
+   8.beforeUpadte:数据更新完成时调用，但是视图还未更新。可以在这个时候对进一步修改数据，不会触发重新渲染
+
+   9.将新旧虚拟dom进行对比，然后更新到真实dom。
+
+  10.updated:Dom已经完成了跟新。这个不能再更新数据。因为可能导致无限循环跟新。
+
+  11.调用$destory函数，完全销毁vm实例，清除它与其他实例的连接，解绑它的全部事件监听器和全部指令。
+
+  12.**beforeDestroy**： 实例销毁之前调用。在这一步，实例仍然完全可用。在这时会进行善后收尾工作，比如清除计时器。
+
+  13.**destroy**：Vue 实例销毁后调用。
+
+**vue实例销毁后自定义事件会失效，但是原生dom事件依然有效。**
 
 **activated** keep-alive 专属，组件被激活时调用
 
@@ -491,7 +646,7 @@ destroy：Vue 实例销毁后调用。
 
 
 
-## 6.v-if 和 v-show 的区别
+## 9.v-if 和 v-show 的区别
 
 v-if:是**“真正”的条件渲染**，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被**销毁**和**重建**。而且是惰性的，如果初始化渲染时条件值为假。则不什么也不做。直到为真时才渲染条件块。
 
@@ -519,15 +674,31 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 
 
 
-## 7.V-model
+## 10.V-model
 
 v-model就是语法糖。内部是不同type的输入元素绑定不同的属性和监听不同事件。
 
 例如 input  type 为 text 时 绑定的时 value和监听input事件。
 
+### 1.基础
+
+若<input type='text'>,v-model绑定的是value，是输入的值。
+
+若<input type='radio'>,v-model绑定的是value，要给value指定值
+
+![image-20211114131325660](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114131325660.png)
+
+若<input type='checkbok'>,如何没有配置value,那么v-model收集的是checked（布尔值）,
+
+​                                                          如果配置了value,那么v-model收集的是value.且v-model绑定的应该是一个数组
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114174035803.png" alt="image-20211114174035803" style="zoom:67%;" />
+
+v-model的三个修饰符.  .trim 去除首尾空格, number：输入的只能是数字，lazy:失去焦点时再收集
 
 
-1.**将V-model绑定到组件上时，组件内部应该如何封装？**
+
+### 2.**将V-model绑定到组件上时，组件内部应该如何封装？**
 
 在自定义组件内部可以通过model属性，来指定组件上v-model传入的值和监听的事件。
 
@@ -554,7 +725,7 @@ Vue.component('base-checkbox', {
 
 
 
-## 8vue的内置命令
+## 11.vue的内置命令
 
 
 
@@ -572,7 +743,26 @@ Vue.component('base-checkbox', {
 
 
 
-## 9 怎样理解 Vue 的单向数据流
+7.v-text:与插值语法类型,但是只将插入的内容当做文本插入，不会当作节点插入。插值语法插入的值可以被当作节点。
+
+```html
+<div v-text='str'></div>
+<div> {{ str }}}<div>
+
+str = '<div>你好</div>';
+```
+
+8.v-html：与插值语法类型，会当作节点插入。
+
+9.v-cloak:在vue实例创建完成后就会删除该属性，可以通过该属性配合css样式解决网速慢出现插值语法{{}}的问题。
+
+10.v-once所在的节点在初次动态渲染后就视为静态内容，后续数据改变不修改该节点的视图。
+
+11.v-pre可以跳过指定节点的编译过程
+
+
+
+## 12.怎样理解 Vue 的单向数据流
 
 数据总是从父组件传到子组件，子组件没有权利修改父组件传过来的数据，只能请求父组件对原始数据进行修改。这样会防止从子组件意外改变父级组件的状态，从而导致你的应用的数据流向难以理解。
 
@@ -582,7 +772,7 @@ Vue.component('base-checkbox', {
 
 
 
-## 10v-if 与 v-for 为什么不建议一起使用
+## 13.v-if 与 v-for 为什么不建议一起使用
 
 v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 再解析 v-if。如果遇到需要同时使用时可以考虑写成计算属性的方式。
 
@@ -590,7 +780,7 @@ v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 
 
 
 
-## 11 computed 和 watch 
+## 14. computed 和 watch 
 
 computed是计算属性，依赖于**其他值**计算得到结果。并且会对结果进行缓存。只有当依赖的数据变化时才会重新计算更新缓存。如果一个数据依赖于其他数据就可以使用computed。
 
@@ -680,7 +870,7 @@ watch:{
 
 使用：当我点击一个
 
-## 12v-for 为什么要加 key
+## 15.v-for 为什么要加 key
 
 key作为列表渲染中元素的唯一标识，可以在列表更新的时候更好地复用旧的元素，提高列表渲染的效率。
 
@@ -690,7 +880,7 @@ key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操
 
 
 
-## 13 虚拟 DOM 是什么 （模板编译）
+## 16. 虚拟 DOM 是什么 （模板编译）
 
 Virtual DOM 本质就是用一个原生的 JS 对象去描述一个 DOM 节点，是对真实 DOM 的一层抽象。
 
@@ -700,7 +890,7 @@ DOM变为虚拟dom的过程即是模板编译。
 
 
 
-## 14vue-router 
+## 17.vue-router 
 
 ### 1动态路由是什么
 
@@ -759,7 +949,7 @@ const User = {
 
 **Route(路由)**
 
-## 15diff
+## 18.diff
 
 [好文](https://blog.csdn.net/weixin_44972008/article/details/115620198)
 
@@ -916,7 +1106,7 @@ function patch(oldVnode, newVnode) {
 
 
 
-## 16nextTick
+## 19.nextTick
 
 vue更新dom的背景：
 
@@ -961,7 +1151,7 @@ methods: {
 
 
 
-## 17 组件库
+## 20. 组件库
 
 ### 1.vue.extend与 $mount一起使用  
 
@@ -1109,11 +1299,17 @@ new Vue({
 
 2.钩子函数
 
+**钩子函数内的this都是window**
+
 bind：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置。
 
 inserted：被绑定元素插入父节点时调用 (仅保证父节点存在，但不一定已被插入文档中)。
 
-updated:所在组件的 VNode 更新时调用，**但是可能发生在其子 VNode 更新之前**。指令的值可能发生了改变，也可能没有。但是你可以通过比较更新前后的值来忽略不必要的模板更新 (详细的钩子函数参数见下)。
+​                    可以指定元素的样式，value,绑定事件等。
+
+updated:指令所在模板被重新编译时调用，所在组件的 VNode 更新时调用，**但是可能发生在其子 VNode 更新之前**。指令的值可能发生了改变，也可能没有。但是你可以通过比较更新前后的值来忽略不必要的模板更新 (详细的钩子函数参数见下)。
+
+**updated和bind函数往往会需要进行相同的操作**
 
 componentUpdated：指令所在组件的 VNode **及其子 VNode** 全部更新后调用。
 
@@ -1152,7 +1348,7 @@ oldVnode:旧虚拟节点
 
 
 
-## 18keep-alive
+## 21keep-alive
 
 缓存组件，不需要重复渲染.如多个静态Tab页的切换优化性能.
 
@@ -1168,5 +1364,5 @@ oldVnode:旧虚拟节点
 
 
 
-## 20V-on事件监听
+## 22V-on事件监听
 
