@@ -384,6 +384,10 @@ new Vue中的 methods中的函数,computed中的函数,watch中的函数,data中
 
 1.Vue文件命名开头要大写 HelloWorld.vue
 
+2.Vue内的style标签可以通过 scoped属性将样式作用范围限制到该Vue文件内。否则所有Vue文件的样式都会汇总到一个css文件，可能会重名。
+
+3.可以通过安装less-loader来是的<style lang='less'>可执行。npm i less-loader@7  指定安装版本7，因为Vue@cli的webapck版本是4,只能用版本7,less版本8和9是为webpack5服务。
+
 
 
 
@@ -420,6 +424,95 @@ Vue脚手架创建的项目中：
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015500029.png" alt="image-20211115015500029" style="zoom: 80%;" />
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015929613.png" alt="image-20211115015929613" style="zoom:50%;" />
+
+
+
+### 1.vue.config.js
+
+默认配置可以通过命令输出
+
+vue inspect > output.js  
+
+
+
+可以在package.json同层下添加vue.config.js 配置文件
+
+[官方配置文档](https://cli.vuejs.org/zh/config/#pages)
+
+```js
+module.exports = {
+  pages: {
+    index: {
+      // page 的入口
+      entry: 'src/index/main.js',
+   
+  }
+}
+```
+
+
+
+2.Vue中的webpack版本等信息
+
+默认是4.46，稳定。
+
+![image-20211115150954884](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115150954884.png)
+
+
+
+## 5.Vue组件自定义事件
+
+
+
+1.props可以传入接收到父组件的数据或者**方法**，当是方法时可以通过方法修改父组件的数据。
+
+2.可以通过**v-on监听组件**抛出的自定义事件，从而子组件向父组件传递信息。
+
+3.也可以在父组件中的mouted函数内通过this.$ref获取子组件实例调用.$on或者.$once来注册监听事件
+
+```js
+	<!-- 通过父组件给子组件绑定一个自定义事件实现：子给父传递数据（第一种写法，使用@或v-on） -->
+	    <Student @atguigu="getStudentName" @demo="m1"/>
+
+		<!-- 通过父组件给子组件绑定一个自定义事件实现：子给父传递数据（第二种写法，使用ref） -->
+		<Student ref="student" @click.native="show"/>
+            
+         mounted() {
+			this.$refs.student.$on('atguigu',this.getStudentName) //绑定自定义事件
+			// this.$refs.student.$once('atguigu',this.getStudentName) //绑定自定义事件（一次性）
+		},
+```
+
+4.可以通过this.$ref.student.off()来解绑自定义事件
+
+```js
+mouted(){
+ this.$ref.student.$on('myEvent',myfunciton)
+}
+```
+
+5.当子组件实例实例被销毁时，或则vm实例被销毁时。子组件自定义的事件就会失效。但是原生事件仍然有效。
+
+6.自定义事件的回调中的this.
+
+```js
+mounted() {
+    //这样写getStudentName内的 this 是指向 父组件实例
+    //推荐这么写
+			this.$refs.student.$on('atguigu',this.getStudentName)
+    //这样写 this是指向子组件实例 student
+           this.$refs.student.$on('atguigu',function(){
+               console.log(this)
+           })
+			}
+
+```
+
+7.在组件上设置监听事件vue都默认将这些事件看做自定义事件，即不是原生事件，要想在vue组件上监听原生事件就得加.native.这样vue就会在组件的模板的根元素上添加原生事件监听。
+
+```js
+<student @click.natve = "myAction" />
+```
 
 
 
@@ -589,9 +682,25 @@ vm.items = vm.items.filter(item=>item!='c')
 
 3.VueX状态管理。
 
-4.父组件中通过**$ref**获取获取子组件实例的方法和属性。$ref是一个对象，持有注册过 [`ref` attribute](https://cn.vuejs.org/v2/api/#ref) 的所有 DOM 元素和组件实例。
+4.父组件中通过**$ref**获取获取**子组件实例**的方法和属性。$ref是一个对象，持有注册过 [`ref` attribute](https://cn.vuejs.org/v2/api/#ref) 的所有 DOM 元素和组件实例。
 
 5.事件总线 Event Bus.通过一个空的 Vue 实例作为中央事件总线（事件中心），用它来触发事件和注册监听事件，从而实现任何组件间的通信，包括父子、隔代、兄弟组件。
+
+两种方式添加事件总线：
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115220810491.png" alt="image-20211115220810491" style="zoom:50%;" />
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115224022809.png" alt="image-20211115224022809" style="zoom: 67%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115220840076.png" alt="image-20211115220840076" style="zoom:50%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115220848825.png" alt="image-20211115220848825" style="zoom:50%;" />
+
+在组件中通过$on 注册事件，在组件销毁时 beforeDestroy()调用$off 来 取消事件注册。
+
+![image-20211115222139776](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115222139776.png)
 
 
 
@@ -621,7 +730,7 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
   10.updated:Dom已经完成了跟新。这个不能再更新数据。因为可能导致无限循环跟新。
 
-  11.调用$destory函数，完全销毁vm实例，清除它与其他实例的连接，解绑它的全部事件监听器和全部指令。
+  11.调用$destory函数，完全销毁vm实例，清除它与其他实例的连接，解绑它的全部自定义事件监听器和全部指令。
 
   12.**beforeDestroy**： 实例销毁之前调用。在这一步，实例仍然完全可用。在这时会进行善后收尾工作，比如清除计时器。
 
@@ -1108,6 +1217,8 @@ function patch(oldVnode, newVnode) {
 
 ## 19.nextTick
 
+在DOM跟新结束后执行回调。
+
 vue更新dom的背景：
 
 vue更新DOM是异步的。只要侦听到数据发生变化，vue就会开启一个缓冲队列，存入同一事件循环内所有的数据变更。如果同一个watcher被多次触发，只会被推入到队列中一次。然后在下一次事件循环“tick"中，vue刷新队列并执行相应工作。
@@ -1364,5 +1475,5 @@ oldVnode:旧虚拟节点
 
 
 
-## 22V-on事件监听
+## 
 
