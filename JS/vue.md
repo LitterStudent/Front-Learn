@@ -452,11 +452,54 @@ module.exports = {
 
 
 
-2.Vue中的webpack版本等信息
+### 2.Vue中的webpack版本等信息
 
 默认是4.46，稳定。
 
 ![image-20211115150954884](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115150954884.png)
+
+
+
+### 3.跨域解决
+
+在开发情况下解决跨域，可以通过vue脚手架配置 webpack 自带的代理服务器。
+
+端口号4000是真正服务器请求的端口地址。通过代理服务器请求8080端口。
+
+代理服务器的根目录就是public目录。
+
+缺点：只能配置一个服务器的代理服务器，public下有的静态资源会被默认加载出来，不会再向服务器发送请求。
+
+```js
+module.exports = {
+  devServer: {
+    proxy: 'http://localhost:4000'
+  },
+  port:8080
+}
+```
+
+
+
+配置代理的第二种方式：
+
+```js
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {       //将带有api的路径 替换成空 ，再访问url
+        target: '<url>',
+        pathRewrite: {'^/api1':''}
+        ws: true,
+        changeOrigin: true
+      },
+      '/foo': {
+        target: '<other_url>'
+      }
+    }
+  }
+}
+```
 
 
 
@@ -512,6 +555,82 @@ mounted() {
 
 ```js
 <student @click.natve = "myAction" />
+```
+
+
+
+## 6.Vue中的动画
+
+通过 <transition> 标签将要使用动画的一个元素包裹在内，如果是多个元素要使用动画，可以使用<transition-group>包裹多个标签，同时需要在每个标签上添加key.
+
+
+
+Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚要退出。当使用transition过度效果实现动画时就要用到这四个属性。
+
+但是我们直接使用 anmation 去指定动画 ，只使用另外两个属性就可: v-enter-active ,v-leave-active.
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116145827128.png" alt="image-20211116145827128" style="zoom: 80%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116150200322.png" alt="image-20211116150200322" style="zoom:50%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116150149154.png" alt="image-20211116150149154" style="zoom:50%;" />
+
+
+
+## 7.常用请求库
+
+### 1.axios
+
+```js
+import axios from 'axios'
+
+axios({
+    url:'https://some-domain.com/api/',
+    method:'post',//默认
+     headers: { //请求头
+      'Content-Type': 'application/json'
+    },
+    params:{
+      name:'xiaoming'   //请求参数
+      age:12
+    },
+    data:{//请求体
+       
+    }
+})
+
+export default myAxios;
+```
+
+
+
+有时候后端要求Content-Type必须以application/x-www-form-urlencoded形式，那么通过上面传递的参数，后端是收不到的，我们必须对参数数据进行所谓的序列化处理才行，让它以普通表单形式(键值对)发送到后端，而不是json形式.
+
+通过 `headers` 来指定Content-Type的形式，对于 `transformRequest` 就是允许在向服务器发送前，修改请求数据，但只能用在 'PUT'，'POST' 和 'PATCH' 这几个请求方法，且后面数组中的函数必须返回一个字符串，或 ArrayBuffer，或 Stream，更多的还有 `transformResponse` 能在传递给 then/catch 前，允许修改响应数据，
+
+```js
+import myAxios from './axios';
+
+export function loginAPI(paramsList) {
+  return myAxios({
+    url: '/api/login',
+    method: 'post',
+    data: paramsList,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    transformRequest: [
+      (data) => {
+        let result = ''
+        for (let key in data) {
+          result += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]) + '&'
+        }
+        return result.slice(0, result.length - 1)
+      }
+    ],
+  });
+}
+
 ```
 
 
