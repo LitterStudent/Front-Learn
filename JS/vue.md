@@ -577,7 +577,9 @@ Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚
 
 
 
-## 7.常用请求库
+## 7.常用请求库 
+
+[请求头content-type格式好文](https://blog.csdn.net/baichoufei90/article/details/84030479)
 
 ### 1.axios
 
@@ -588,7 +590,7 @@ axios({
     url:'https://some-domain.com/api/',
     method:'post',//默认
      headers: { //请求头
-      'Content-Type': 'application/json'
+          'Content-Type': 'application/json'  //默认值
     },
     params:{
       name:'xiaoming'   //请求参数
@@ -601,6 +603,13 @@ axios({
 
 export default myAxios;
 ```
+
+| 值                                | 描述                                                         |
+| --------------------------------- | ------------------------------------------------------------ |
+| application/x-www-form-urlencoded | 在发送前编码所有字符（默认）                                 |
+| multipart/form-data               | 不对字符编码。在使用包含文件上传控件的表单时，必须使用该值。 |
+| application/json                  | 作为请求头告诉服务端**消息主体是序列化的JSON字符串**。除低版本的IE，基本都支持。 |
+| text/plain                        | 空格转换为 “+” 加号，但不对特殊字符编码。                    |
 
 
 
@@ -635,7 +644,7 @@ export function loginAPI(paramsList) {
 
 
 
-## 4 MVVM
+## 8 MVVM
 
 Model  View  ViewModel
 
@@ -692,7 +701,7 @@ var app = new Vue({
 
 
 
-## 5.响应式原理（数据双向绑定）
+## 9.响应式原理（数据双向绑定）
 
 [好文](https://juejin.cn/post/6844903903822086151#heading-1)
 
@@ -785,13 +794,13 @@ vm.items = vm.items.filter(item=>item!='c')
 
 
 
-## 6.为什么 data 是一个函数
+## 10.为什么 data 是一个函数
 
 组件中的data写成函数，数据以函数返回形式获取。这样每次**复用**一个组件时，都会获取到一份新的data.实现各自数据的独立。如果data是用对象写的话，所有的组件实例就会共用一个data对象。
 
 
 
-## 7.vue组件通讯的方式
+## 11.vue组件通讯的方式
 
 
 
@@ -804,6 +813,8 @@ vm.items = vm.items.filter(item=>item!='c')
 4.父组件中通过**$ref**获取获取**子组件实例**的方法和属性。$ref是一个对象，持有注册过 [`ref` attribute](https://cn.vuejs.org/v2/api/#ref) 的所有 DOM 元素和组件实例。
 
 5.事件总线 Event Bus.通过一个空的 Vue 实例作为中央事件总线（事件中心），用它来触发事件和注册监听事件，从而实现任何组件间的通信，包括父子、隔代、兄弟组件。
+
+通过 组件通过 $on 订阅事件名以及事件的回调，通过$emit发布事件并携带相关参数。一般是$emit传递出数据。
 
 两种方式添加事件总线：
 
@@ -823,7 +834,7 @@ vm.items = vm.items.filter(item=>item!='c')
 
 
 
-## 8.Vue的生命周期
+## 12.Vue的生命周期
 
 vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板，渲染,挂载Dom,更新,渲染，卸载的一系列过程。
 
@@ -874,7 +885,7 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
 
 
-## 9.v-if 和 v-show 的区别
+## 13.v-if 和 v-show 的区别
 
 v-if:是**“真正”的条件渲染**，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被**销毁**和**重建**。而且是惰性的，如果初始化渲染时条件值为假。则不什么也不做。直到为真时才渲染条件块。
 
@@ -902,7 +913,7 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 
 
 
-## 10.V-model
+## 14.V-model
 
 v-model就是语法糖。内部是不同type的输入元素绑定不同的属性和监听不同事件。
 
@@ -953,7 +964,7 @@ Vue.component('base-checkbox', {
 
 
 
-## 11.vue的内置命令
+## 15.vue的内置命令
 
 
 
@@ -990,7 +1001,7 @@ str = '<div>你好</div>';
 
 
 
-## 12.怎样理解 Vue 的单向数据流
+## 16.怎样理解 Vue 的单向数据流
 
 数据总是从父组件传到子组件，子组件没有权利修改父组件传过来的数据，只能请求父组件对原始数据进行修改。这样会防止从子组件意外改变父级组件的状态，从而导致你的应用的数据流向难以理解。
 
@@ -1000,7 +1011,7 @@ str = '<div>你好</div>';
 
 
 
-## 13.v-if 与 v-for 为什么不建议一起使用
+## 17.v-if 与 v-for 为什么不建议一起使用
 
 v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 再解析 v-if。如果遇到需要同时使用时可以考虑写成计算属性的方式。
 
@@ -1008,7 +1019,7 @@ v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 
 
 
 
-## 14. computed 和 watch 
+## 18. computed 和 watch 
 
 computed是计算属性，依赖于**其他值**计算得到结果。并且会对结果进行缓存。只有当依赖的数据变化时才会重新计算更新缓存。如果一个数据依赖于其他数据就可以使用computed。
 
@@ -1098,7 +1109,7 @@ watch:{
 
 使用：当我点击一个
 
-## 15.v-for 为什么要加 key
+## 19.v-for 为什么要加 key
 
 key作为列表渲染中元素的唯一标识，可以在列表更新的时候更好地复用旧的元素，提高列表渲染的效率。
 
@@ -1108,7 +1119,7 @@ key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操
 
 
 
-## 16. 虚拟 DOM 是什么 （模板编译）
+## 20. 虚拟 DOM 是什么 （模板编译）
 
 Virtual DOM 本质就是用一个原生的 JS 对象去描述一个 DOM 节点，是对真实 DOM 的一层抽象。
 
@@ -1118,9 +1129,53 @@ DOM变为虚拟dom的过程即是模板编译。
 
 
 
-## 17.vue-router 
+## 21.vue-router 
 
-### 1动态路由是什么
+路由：route,就是一组key，value的对应关系
+
+vue 中的route 就是  key 和 组件的映射
+
+### 1.Router和Route的区别
+
+**Router(路由器对象)**是VueRouter的一个对象。我们在new Vue()生成根实例时将Router实例注入进去。只要注入进去后，后续在使用都可以通过vue组件实例来获取Router对象：**this.$router**
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211024215848663.png" alt="image-20211024215848663" style="zoom: 67%;" />
+
+**$router.push({path:'home'})**;本质是向history栈中添加一个路由，在我们看来是 切换路由，但本质是在添加一个history记录
+
+**$router.replace({path:'home'})**;//替换路由，没有历史记录
+
+**Route(路由)是路由对象 ，是  路径和 组件的映射。**
+
+
+
+### 2.路由的映射方式：
+
+1.<router-link to:name>：转换成a标签切换组件。可以指定 **active-class** 指定样式
+
+2.编程式导航，通过按钮也可以切换组件。
+
+
+
+### 3.常见规则
+
+1.通过 <router-view>指定组件视图的显示位置。
+
+2.route映射的组件通常放在 /src/views下，普通组件时放在/src/components/下
+
+3.通过切换，“隐藏”了的路由组件，默认是被销毁掉的，需要的时候再去挂载。
+
+4.每个组件都有自己的```$route```属性，里面存储着自己的路由信息。
+
+5.整个应用只有一个router，可以通过组件的```$router```属性获取到。
+
+
+
+### 4.嵌套路由
+
+
+
+### 4.动态路由是什么
 
 把某种模式匹配到的所有路由，全都映射到同个组件。
 
@@ -1163,21 +1218,67 @@ const User = {
 
 
 
-### 2.Router和Route的区别
-
-**Router(路由器对象)**是VueRouter的一个对象。我们在new Vue()生成根实例时将Router实例注入进去。只要注入进去后，后续在使用都可以通过vue实例来获取Router对象：**this.$router**
-
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211024215848663.png" alt="image-20211024215848663" style="zoom: 67%;" />
-
-**$router.push({path:'home'})**;本质是向history栈中添加一个路由，在我们看来是 切换路由，但本质是在添加一个history记录
-
-**$router.replace({path:'home'})**;//替换路由，没有历史记录
 
 
 
-**Route(路由)**
 
-## 18.diff
+## 22Vuex
+
+Vuex是Vue中一个集中式状态管理的插件。
+
+多个组件的共享状态进行集中式管理，也是通信的一种方式，适用于任何组件间的通信。
+
+### 1.什么时候使用Vuex?
+
+多个组件共享同一状态，不同组件的行为需要改变同一状态。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117150030193.png" alt="image-20211117150030193" style="zoom:67%;" />
+
+### 2.如何使用？
+
+在 new  Vue({}) ,生成根组件实例的时候在options对象内传入配置选项**store**.然后Vue实例和VueComponent实例上都能访问的$store实例。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117163117350.png" alt="image-20211117163117350" style="zoom:80%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117163252920.png" alt="image-20211117163252920" style="zoom:80%;" />
+
+
+
+ 简写方式：
+
+![image-20211117174832400](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117174832400.png)
+
+
+
+### 3.module
+
+使用module时，引入的方式。state,mutation,action,getter的前缀不同。
+
+![image-20211117211306238](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117211306238.png)
+
+
+
+### 4.namespace
+
+当使用module时想在 mapState使用某一个模块的内容,可以在mapState添加该模块的指定名称，通过数组指定要提取的变量。 
+
+![image-20211117205939828](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117205939828.png)
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117210127340.png" alt="image-20211117210127340" style="zoom: 80%;" />
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117205809454.png" alt="image-20211117205809454" style="zoom:50%;" />
+
+
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117205824254.png" alt="image-20211117205824254" style="zoom:50%;" />
+
+
+
+
+
+
+
+## 23.diff
 
 [好文](https://blog.csdn.net/weixin_44972008/article/details/115620198)
 
@@ -1334,7 +1435,7 @@ function patch(oldVnode, newVnode) {
 
 
 
-## 19.nextTick
+## 24.nextTick
 
 在DOM跟新结束后执行回调。
 
@@ -1381,7 +1482,7 @@ methods: {
 
 
 
-## 20. 组件库
+## 25. 组件库
 
 ### 1.vue.extend与 $mount一起使用  
 
@@ -1578,7 +1679,7 @@ oldVnode:旧虚拟节点
 
 
 
-## 21keep-alive
+## 26keep-alive
 
 缓存组件，不需要重复渲染.如多个静态Tab页的切换优化性能.
 
@@ -1588,11 +1689,4 @@ oldVnode:旧虚拟节点
 
 
 
-## 
-
-
-
-
-
-## 
 
