@@ -1173,6 +1173,210 @@ vue 中的route 就是  key 和 组件的映射
 
 ### 4.嵌套路由
 
+1. 配置路由规则，使用children配置项：
+
+   ```js
+   routes:[
+   	{
+   		path:'/about',
+   		component:About,
+   	},
+   	{
+   		path:'/home',
+   		component:Home,
+   		children:[ //通过children配置子级路由
+   			{
+   				path:'news', //此处一定不要写：/news
+   				component:News
+   			},
+   			{
+   				path:'message',//此处一定不要写：/message
+   				component:Message
+   			}
+   		]
+   	}
+   ]
+   ```
+
+2. 跳转（要写完整路径）：
+
+   ```vue
+   <router-link to="/home/news">News</router-link>
+   ```
+
+### 5.query和params
+
+![image-20211118112421924](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211118112421924.png)
+
+1. 配置路由，声明接收params参数
+
+   ```js
+   {
+   	path:'/home',
+   	component:Home,
+   	children:[
+   		{
+   			path:'news',
+   			component:News
+   		},
+   		{
+   			component:Message,
+   			children:[
+   				{
+   					name:'xiangqing',
+   					path:'detail/:id/:title', //使用占位符声明接收params参数
+   					component:Detail
+   				}
+   			]
+   		}
+   	]
+   }
+   ```
+
+2. 传递参数
+
+   ```vue
+   <!-- 跳转并携带params参数，to的字符串写法 -->
+   <router-link :to="/home/message/detail/666/你好">跳转</router-link>
+   				
+   <!-- 跳转并携带params参数，to的对象写法 -->
+   <router-link 
+   	:to="{
+   		name:'xiangqing',
+   		params:{
+   		   id:666,
+               title:'你好'
+   		}
+   	}"
+   >跳转</router-link>
+   ```
+
+   > 特别注意：路由携带params参数时，若使用to的对象写法，则不能使用path配置项，必须使用name配置！
+
+### 6命名路由
+
+简化路径参数
+
+1. 作用：可以简化路由的跳转。
+
+2. 如何使用
+
+   1. 给路由命名：
+
+      ```js
+      {
+      	path:'/demo',
+      	component:Demo,
+      	children:[
+      		{
+      			path:'test',
+      			component:Test,
+      			children:[
+      				{
+                            name:'hello' //给路由命名
+      					path:'welcome',
+      					component:Hello,
+      				}
+      			]
+      		}
+      	]
+      }
+      ```
+
+   2. 简化跳转：
+
+      ```vue
+      <!--简化前，需要写完整的路径 -->
+      <router-link to="/demo/test/welcome">跳转</router-link>
+      
+      <!--简化后，直接通过名字跳转 -->
+      <router-link :to="{name:'hello'}">跳转</router-link>
+      
+      <!--简化写法配合传递参数 -->
+      <router-link 
+      	:to="{
+      		name:'hello',
+      		query:{
+      		   id:666,
+                  title:'你好'
+      		}
+      	}"
+      >跳转</router-link>
+      ```
+
+### 7.路由的props配置
+
+​	作用：让路由组件更方便的收到参数
+
+```js
+{
+	name:'xiangqing',
+	path:'detail/:id',
+	component:Detail,
+
+	//第一种写法：props值为对象，该对象中所有的key-value的组合最终都会通过props传给Detail组件
+	// props:{a:900}
+
+	//第二种写法：props值为布尔值，布尔值为true，则把路由收到的所有params参数通过props传给Detail组件
+	// props:true
+	
+	//第三种写法：props值为函数，该函数返回的对象中每一组key-value都会通过props传给Detail组件
+	props(route){
+		return {
+			id:route.query.id,
+			title:route.query.title
+		}
+	}
+}
+```
+
+### 8.编程式路由导航
+
+1. 作用：不借助```<router-link> ```实现路由跳转，让路由跳转更加灵活
+
+2. 具体编码：
+
+   ```js
+   //$router的两个API
+   this.$router.push({
+   	name:'xiangqing',
+   		params:{
+   			id:xxx,
+   			title:xxx
+   		}
+   })
+   
+   this.$router.replace({
+   	name:'xiangqing',
+   		params:{
+   			id:xxx,
+   			title:xxx
+   		}
+   })
+   this.$router.forward() //前进
+   this.$router.back() //后退
+   this.$router.go() //可前进也可后退
+   ```
+
+### 9.缓存路由组件
+
+1. 作用：让不展示的路由组件保持挂载，不被销毁。
+
+2. 具体编码：通过include指定要缓存的组件名称。多个可以写成数组。
+
+   ```vue
+   <keep-alive include="News"> 
+       <router-view></router-view>
+   </keep-alive>
+   ```
+
+### 10.两个新的生命周期钩子
+
+1. 作用：路由组件所独有的两个钩子，用于捕获路由组件的激活状态。
+2. 具体名字：
+   1. ```activated```路由组件被激活时触发。
+   2. ```deactivated```路由组件失活时触发。
+
 
 
 ### 4.动态路由是什么
@@ -1684,7 +1888,6 @@ oldVnode:旧虚拟节点
 缓存组件，不需要重复渲染.如多个静态Tab页的切换优化性能.
 
 希望组件被重新渲染影响使用体验；或者处于性能考虑，避免多次重复渲染降低性能。而是希望组件可以缓存下来,维持当前的状态。这时候就可以用到keep-alive组件。
-
 
 
 
