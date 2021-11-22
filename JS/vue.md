@@ -644,6 +644,22 @@ export function loginAPI(paramsList) {
 
 
 
+### 2.封装axios
+
+1.通过process.env环境变量对象来指定 axios 中的 baseUrl，对于不同模式（开发，生成，测试）下发送请求到不同的url。
+
+2.通过 timeout 字段设置请求超时时间
+
+3.通过withCredentials: true设置允许携带cookies
+
+4.通过methods指定请求方法，params指定请求参数，data指定请求体数据
+
+5.通过headers设置请求头 content-type等。'application/json; charset=utf-8' 'application/x-www-form-urlencoded; charset=utf-8' 'multipart/form-data'
+
+
+
+
+
 ## 8 MVVM
 
 Model  View  ViewModel
