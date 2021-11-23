@@ -167,7 +167,7 @@ entry:{
 
 **[chunkhash]**:是根据打包过程中当前chunk计算出的hash值。如果Webpack配置是多入口配置，那么通常会生成多个chunk，不同chunk对应的出口filename获得的[chunkhash]是不一样的。这样可以保证打包后每一个JS文件名都不一样（这么说不太严谨，但有助于理解）。
 
-**[contenthash]**是根据打包时CSS内容计算出的hash值。一般在使用提取CSS的插件的时候，我们使用contenthash。
+**[contenthash]**是根据打包时根据文件内容计算出的hash值。一般在使用提取CSS的插件的时候，我们使用contenthash。
 
 **[name]**：其中字符串和数组形式的entry，output.filename的[name]值都是main。
 
@@ -183,7 +183,7 @@ entry:{
 
 #### 3publicPath：所有资源引用路径的前缀
 
-一般用于生产模式
+一般用于生产模式和开发模式引用资源的公共路径前缀的切换。
 
 表示的是虚拟打包路径，文件夹不会真正生成，但是会添加到生成网页中静态资源的uri上。
 
@@ -246,6 +246,12 @@ Web中常见的协议名称有http和https，例如我的网站 https://www.jian
 两种方式会产生非入口chunk:  1.import()语法导入的模块
 
 ​                                                    2.optimatization打包的第三方库模块
+
+#### 5.library
+
+- libraryTarget: "commonjs" 当 library 加载完成，入口起点的返回值将分配给 exports 对象。这个名称也意味着模块用于 CommonJS 环境
+
+
 
 ## 3Loader
 
