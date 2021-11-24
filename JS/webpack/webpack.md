@@ -28,6 +28,14 @@ webpack 根据引用关系，**构建**一个依赖关系图，然后利用这�
     }
 ```
 
+1.module 是源码，一个源文件可以对应一个module，我们通过import可以导入另一个module
+
+2.chunk是从入口文件开始，包含其依赖的文件的集合 。entry如果是一个对象的话，其对象的每一项都对应一个chunk.
+
+可以通过import()和splitChunk 生成多个chunk.
+
+3.chunk是webpack打包过程生成的，bundle是webpack打包结束后输出的文件。一般一个chunk对应一个bundle文件.但是也有例外，例如可以通过MiniCssExtractPlugins插件将一个chunks中的css文件单独提取出来打包成一个chunk.
+
 
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112001116745.png" alt="image-20211112001116745" style="zoom:67%;" />
@@ -248,6 +256,19 @@ Web中常见的协议名称有http和https，例如我的网站 https://www.jian
 ​                                                    2.optimatization打包的第三方库模块
 
 #### 5.library
+
+```js
+output: {
+        path: path.resolve(process.cwd(), './lib'),
+        publicPath: '/dist/',
+        filename: 'element-ui.common.js',
+        libraryExport: 'default',
+        library: 'ELEMENT',
+        libraryTarget: 'commonjs2'
+    }
+```
+
+
 
 - libraryTarget: "commonjs" 当 library 加载完成，入口起点的返回值将分配给 exports 对象。这个名称也意味着模块用于 CommonJS 环境
 

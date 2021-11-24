@@ -81,19 +81,20 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/test.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/js/index.js":
-/*!*************************!*\
-  !*** ./src/js/index.js ***!
-  \*************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ "./src/js/test.js":
+/*!************************!*\
+  !*** ./src/js/test.js ***!
+  \************************/
+/*! exports provided: mul, count */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("function sum(...args) {\n  return args.reduce((p, c) => p + c, 0);\n}\n\n// eslint-disable-next-line\nconsole.log(sum(1, 2, 3, 4));\n\n\n//# sourceURL=webpack:///./src/js/index.js?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"mul\", function() { return mul; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"count\", function() { return count; });\n\r\nfunction mul(x, y) {\r\n  return x * y;\r\n}\r\n\r\nfunction count(x, y) {\r\n  return x - y;\r\n}\r\n\n\n//# sourceURL=webpack:///./src/js/test.js?");
 
 /***/ })
 

@@ -182,7 +182,7 @@ hover理论上任何元素都可以使用的，focus多是针对表单的，如i
 
 常见的4个伪类正确的设置顺序:  :link :visited :focus :hover :actived
 
-
+​	
 
 
 
@@ -717,4 +717,73 @@ transform: rotate(0.5turn); //旋转
  }
 }
 ```
+
+
+
+
+
+## 28 Scss语法
+
+1. ```scss
+   $变量名：变量值
+   #[变量名] 可以用变量值作为css选择器
+   
+   $namespace: 'el';
+   $element-separator: '__';
+   $modifier-separator: '--';
+   $state-prefix: 'is-';
+   
+   ```
+
+2. ```scss
+   @mixin定义混入逻辑
+   @include 使用混入逻辑    
+       
+   @mixin b($block) {
+       $B: $namespace+'-'+$block !global;
+     //用变量值加.作为css选择器
+       .#{$B} {
+         @content;
+       }
+   }
+   
+   @include b(card){
+     border-radius: $--card-border-radius;
+     border: 1px solid $--card-border-color;
+     background-color: $--color-white;
+     overflow: hidden;
+     color: $--color-text-primary;
+     transition: 0.3s;
+   }
+   ```
+
+3. ```scss
+   &表示选择父元素选择器
+   
+   el-button {
+       &:hover,
+       &:focus {
+         box-shadow: $--box-shadow-light;
+       }
+   }
+   
+   //等于，不会有空格，不是后代选择器
+   el-button:hover{
+         box-shadow: $--box-shadow-light;
+   }
+   el-button:focus{
+       box-shadow: $--box-shadow-light;
+   }
+   ```
+
+4. ```scss
+     // @at-root将元素上升到根，#{$state-prefix + $state}就会是自身
+     @at-root {
+       &.#{$state-prefix + $state} {
+         @content;
+       }
+     }
+   ```
+
+   
 
