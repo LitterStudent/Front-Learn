@@ -632,6 +632,22 @@ Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116145827128.png" alt="image-20211116145827128" style="zoom: 80%;" />
 
+```js
+/* 可以设置不同的进入和离开动画 */
+/* 设置持续时间和动画函数 */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+```
+
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116150200322.png" alt="image-20211116150200322" style="zoom:50%;" />
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116150149154.png" alt="image-20211116150149154" style="zoom:50%;" />

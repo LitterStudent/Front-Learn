@@ -432,6 +432,22 @@ async/await 其实就是 generator函数的语法糖。generator函数内部通�
 
 
 
+#### 3.forEach的使用
+
+```
+promiseArr.forEach(async(item)=>{
+ await item(); //无效异步  因为forEach内部的实现是通过遍历调用回调实现的。
+})
+
+for(let i=0; i<lenght ;i++){
+  await promiseArr[i]; //有效异步
+}
+```
+
+
+
+
+
 ## 3 var let const 
 
 使用 var声明的变量会提升到作用域的首部。被提升的是变量声明部分。

@@ -401,10 +401,32 @@ IFC IFC(Inline Formatting Contexts)直译为"内联格式化上下文"，IFC 的
 
 IFC一般有什么用呢？
 
-水平居中：在父盒子中通过**text-align：center**则可以使其水平居中。
-垂直居中：在子元素中设置其vertical-align: middle使得垂直居中。
+水平居中：在父盒子中通过**text-align：center**则可以使内部的内联盒子水平居中。
 
+垂直居中：创建一个 IFC，用其中一个元素撑开父元素的高度，然后设置其 vertical-align: middle，**其他行内元素**则可以在此父元素下垂直居中。
 
+```html
+<html>
+
+<head>
+<style type="text/css">
+img.top {vertical-align:middle}
+img.bottom {vertical-align:text-bottom}
+</style>
+</head>
+
+<body>
+
+<p>
+这是一幅<img class="top" border="0" src="/i/eg_cute.gif" />位于段落中的图像。
+</p> 
+
+</body>
+
+</html>
+```
+
+![image-20211126004147632](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211126004147632.png)
 
 
 
