@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 
+        圣杯布局 
+        中间盒子container设置左右padding预留空间。
+        .footer要清除浮动
+        .main .left .right 都要浮动left,.left .right 通过margin-left -100%和margin-right-200px来
+        */
+        body {
+            min-width: 550px;
+            background-color: darkgray;
+        }
+        .header {
+            background-color: darkgreen;
+        }
+        .container {
+            background-color: darkmagenta;
+            padding-left:150px;
+            padding-right: 200px;
+        }
+        .column {
+            float: left;
+
+        }
+        .main {
+            background-color: skyblue;
+            width: 100%;
+        }
+        .left {
+            width: 150px;
+            background-color: slateblue;
+            margin-left: -100%;
+            position: relative;
+            right: 150px;
+        }
+        .right {
+            width: 200px;
+            background-color: springgreen;
+            margin-right: -200px;
+        }
+        .footer {
+            background-color: tan;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">this is header</div>
+    <div class="container">
+        <div class="main column">this is main</div>
+        <div class="left column">this is left</div>
+        <div class="right column">this is right</div>
+    </div>
+    <div class="footer">this is footer</div>
+</body>
+</html>

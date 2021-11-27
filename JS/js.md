@@ -1,3 +1,23 @@
+## 0.1基础
+
+### 1.值类型和引用类型
+
+值类型存储在栈中，引用类型存储在堆中。这样设计是因为引用类型所占空间大，存储在堆中能提高性能。
+
+常见的值类型： Number,String,Boolean,Undefined,Null,Symbol,BigInt
+
+#### 1.undefined和null的区别？
+
+undefined表示未初始化，变量通过 var声明后不赋值默认就未undefined。null是空对象指针，当要初始化对象时可以使用null赋值。
+
+#### 2.类型的判断
+
+typeof可以判断出所有的值类型。Number,Undefined,String,Symbol,BigInt,Boolean.除了Null. 能判断出函数。
+
+
+
+
+
 ## 0回调
 
 ### 1.什么是回调？

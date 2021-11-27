@@ -14,6 +14,12 @@ box-sizing : content-box   border-box
 
 IE盒子模型：border-box 设置的width为盒子的content+border+padding
 
+**offsetWidth**:不包括外边距
+
+margin为负值时： margin-left margin-top 为负值时，元素会向上或者像左移动
+
+​                                 margin-right margin-bottom 为负值时，元素自身不变，其右边的元素向左移动，下面的元素会向上移动。
+
 
 
 ## 3CSS的选择器有哪些，哪些属性可以继承？
@@ -22,7 +28,17 @@ IE盒子模型：border-box 设置的width为盒子的content+border+padding
 
   通配符选择器(*), 属性选择器（a[rel='external']）,伪类选择器（a:hover,li:nth-child）
 
-可以继承的属性： font-size,font-family,color,
+可以继承的属性： font-size,font-family,color,line-height,
+
+**元素的line-height如果没有设置,直接继承父元素的line-height。**
+
+  如果父元素设置的line-height为 30px等，则子元素直接继承
+
+  如果父元素设置line-height为的百分比，则子元素会继承到百分比乘以父元素font-size后的数值。
+
+  如果设置为1,2,3这样的数字，子元素则会继承数字，并与子元素的font-size相乘得到结果。
+
+
 
 不可继承的属性：width,height,margin,padding,border.
 
@@ -446,7 +462,7 @@ img.bottom {vertical-align:text-bottom}
 
 
 
-absolute :相对最近的不是static定位的父元素进行定位。元素会脱离文档标准流。
+absolute :相对最近的有定位的父元素进行定位（直到body）。 元素会脱离文档标准流。
 
 relative:相对元素本身位置进行定位，移动。
 
