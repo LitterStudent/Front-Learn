@@ -1,5 +1,7 @@
 ##  0.1基础
 
+js是动态类型的语言
+
 ### 1.值类型和引用类型
 
 值类型存储在栈中，引用类型存储在堆中。这样设计是因为引用类型所占空间大，存储在堆中能提高性能。
@@ -26,7 +28,7 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 
 
 
-### 2.原型和原型链条
+### 
 
 
 
@@ -411,7 +413,7 @@ return new Promise(()=>{});
 
 ## 2 async 和 await
 
-async 和 await 能进一步改善promise的链式调用，**使得异步代码看起来更像是同步代码**。
+async 和 await 能进一步改善promise的链式调用，**使得异步代码看起来更像是同步代码，用同步的语法实现异步代码**。
 
 **async函数的返回值为 promise.**一个函数如果加上async ,那么该函数就会返回一个状态为fulfilled的promise，**除非async函数内抛出的错误或者await后面的promsie状态变为rejected.** 
 
@@ -470,10 +472,13 @@ async/await 其实就是 generator函数的语法糖。generator函数内部通�
 promiseArr.forEach(async(item)=>{
  await item(); //无效异步  因为forEach内部的实现是通过遍历调用回调实现的。
 })
+.map .filter 
+
 
 for(let i=0; i<lenght ;i++){
   await promiseArr[i]; //有效异步
 }
+for of 中 使用也有效
 ```
 
 
@@ -560,17 +565,28 @@ DOM事件：用户在界面上进行一些操作触发的响应。
 
 事件循环的机制是由宿主环境来决定的，在浏览器运行环境中是由浏览器内核引擎决定的。在NodeJS中是由libuv引擎实现的。
 
+**当js引擎执行栈为空时会先，执行微任务，再尝试dom渲染。然后才执行宏任务。**
+
+**1.先把Call Stack清空**
+**2.然后执行当前的微任务**
+**3.接下来DOM渲染**
+**微任务在dom渲染`之前`执行，宏任务在dom渲染`之后`执行**。
+
+为什么微任务比宏任务先执行？
+
+微任务时ES6语法规定的，宏任务时由浏览器规定的。
+
 （单线程）**js引擎在执行代码时**，通过将不同的执行上下文压入执行栈中来保证代码的有序执行。在执行代码的时候，如果遇到了异步任务，js 引擎并不会一直等待其返回结果，而是会将这个异步任务交给特定线程处理，继续执行执行栈中的其他任务。当异步任务执行完毕后，**再将异步任务对应的回调加入到**（与当前执行栈中不同的另一个）**任务队列中等待执行**。任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211026152035189.png" alt="image-20211026152035189" style="zoom:50%;" />
 
  先执行script脚本，执行过程中遇到微任务加入微任务队列，遇到宏任务加入宏任务队列。当script脚本执行完也就是js执行栈为空的时候，就会去清空微任务队列。当微任务队列执行，再取出宏任务队列的第一个任务执行。直至两个队列的所有任务都执行完。
 
-宏任务：<script> setTimeout setInerval  requestAnimationFrame ：希望在下一次浏览器重绘之前执行动画 setImmediate(node)
+宏任务：<script> setTimeout setInerval  requestAnimationFrame,Ajax,dom事件 ：希望在下一次浏览器重绘之前执行动画 setImmediate(node)
 
 `requestAnimationFrame`姑且也算是宏任务吧，`requestAnimationFrame`在[MDN的定义](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FAPI%2FWindow%2FrequestAnimationFrame)为，下次页面重绘前所执行的操作，而重绘也是作为宏任务的一个步骤来存在的，且该步骤晚于微任务的执行
 
-微任务： promise.then catch finally ; **MutationObserver**
+微任务： promise.then catch finally ，async  await ; **MutationObserver**
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211016193053562.png" alt="image-20211016193053562" style="zoom:50%;" />
 
@@ -580,7 +596,7 @@ DOM事件：用户在界面上进行一些操作触发的响应。
 
 this 就是当可执行代码的调用者。
 
-this的指向是函数被调用的时候决定的。
+this的指向是函数被调用  的时候决定的。
 
 
 
@@ -670,7 +686,7 @@ javaScript是词法作用域，即静态作用域。函数的作用域在函数�
 
 当**执行一个函数**的时候，就会创建一个**执行上下文**，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。
 
-对于每个执行上下文，都有三个重要属性：
+对于每个执行上下文，都有三个重要属性：    
 
 - 变量对象(Variable object，VO)
 
@@ -801,6 +817,8 @@ cookie一般由服务器生成，可以设置过期时间。大小为4k.每次�
 闭包的作用有两个：1.可以读取函数内部的变量。
 
 ​                                  2.将变量始终保存在内存中。
+
+​								  3.当作私有变量使用
 
 
 
@@ -1600,3 +1618,54 @@ param = encodeURIComponent(param);
 var url = "http://www.cnblogs.com?next=" + param;
 console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fseas
 ```
+
+
+
+## 28DOM
+
+### 1.property和attribute的区别 
+
+ property是dom节点的属性。
+
+node.style.with  node.style.color 等待
+
+ attribute是html的中标签的属性。 
+
+node.setAttribute() ，node.getAttribute() 等待
+
+
+
+### 2.常见dom的方法
+
+```js
+//获取节点
+document.getElementById('id')
+document.getElementsByClassName
+document.getElementsByTagName
+document.querySelector
+
+//获取父，子节点。
+node.childNodes
+node.parentNode
+
+//插入节点
+node.appendChild(node2)
+//删除节点
+node.removeChild(node2)
+```
+
+
+
+### 3.dom的性能优化
+
+频繁操作dom会消耗较多性能，所有应该尽量减少操作dom
+
+1.对dom查询进行缓存。
+
+ 
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211129012840426.png" alt="image-20211129012840426" style="zoom:50%;" />
+
+2.将频繁操作改为一次性操作，例如要插入多个元素时可以使用doucumentFragement()来实现一次性插入。
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211129013148467.png" alt="image-20211129013148467" style="zoom:67%;" />
