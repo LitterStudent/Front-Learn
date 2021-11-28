@@ -1,4 +1,4 @@
-## 0.1基础
+##  0.1基础
 
 ### 1.值类型和引用类型
 
@@ -14,7 +14,19 @@ undefined表示未初始化，变量通过 var声明后不赋值默认就未unde
 
 typeof可以判断出所有的值类型。Number,Undefined,String,Symbol,BigInt,Boolean.除了Null. 能判断出函数。
 
+instanceof 可以判断出引用类型。 [] instanceOf Array
 
+
+
+#### 3.类型转换
+
+1.  1+字符串    会转换成字符串
+2.  ==   
+3. if()
+
+
+
+### 2.原型和原型链条
 
 
 
@@ -501,9 +513,20 @@ ES5的继承有很多种
 3. 组合继承，即在子类中调用父类的构造函数也将子类的构造函数的原型指向父类实例。缺点：子类实例的属性会和子类的原型上的属性有重合。
 4. 寄生组合继承。通过在子类的构造函数中调用父类的构造函数，同时也将子类的原型的原型指向父类，实现对父类原型的继承。
 
+```js
+function inheritPrototype(subType, superType) {
+    let prototype = object(superType.prototype); // 创建对象
+    prototype.constructor = subType; // 增强对象
+    subType.prototype = prototype; // 赋值对象
+}
+
+```
+
 
 
 ES6的继承是通过 Class  Extends 语法糖实现的，本质上还是原型链实现的继承。（大概吧）
+
+类可以包含构造函数方法、实例方法、获取函数、设置函数和静态类方法，但这些都不是必需的。
 
 class 中的 constructor（类构造函数） 就是ES5中的构造函数。虽然使用  instanceof 去判断时为false .但是在使用 类创建实例时可以直接将constructor（类构造函数）当做构造函数。可以通过在constructor 内声明 类实例的属性。
 
@@ -637,7 +660,7 @@ document.querySelector('input').addEventListener('input',function(e){
 
 ### 1.执行上下文和作用域
 
-作用域是指上下文中定义变量（变量命和函数名）的区域。作用域规定了上下文如何查找变量。
+作用域是指上下文中定义变量（变量命和函数名）的合法使用范围。作用域规定了上下文如何查找变量。
 
 javaScript是词法作用域，即静态作用域。函数的作用域在函数定义时就决定了。
 
