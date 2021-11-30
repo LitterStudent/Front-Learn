@@ -542,8 +542,37 @@ DOM 树 和 渲染树 的区别：
 - 元素尺寸改变——边距、填充、边框、宽度和高度
 - 内容变化，比如用户在input框中输入文字
 - 浏览器窗口尺寸改变——resize事件发生时
-- 计算 offsetWidth 和 offsetHeight 属性
+- 计算 **offsetWidth** 和 **offsetHeight** 属性
 - 设置 style 属性的值
+
+```js
+//实际上只会发生1次重排 ,因为我们现代的浏览器都有渲染队列的机制 
+div.style.left = '10px';
+div.style.top = '10px';
+div.style.width = '10px';
+div.style.height = '10px'
+```
+
+
+
+```js
+//此时发生了4次重排！
+//当使用offsetLeft等属性时，这些会强制刷新队列要求样式修改任务立刻执行。
+//因为浏览器并不确定在下面的代码中是否还有修改同样的样式，为了获取到当前正确的的即时值不得不立刻执行渲染队列触发重排
+div.style.left = '10px';
+console.log(div.offsetLeft);
+ 
+div.style.top = '10px';
+console.log(div.offsetTop);
+ 
+div.style.width = '20px';
+console.log(div.offsetWidth);
+ 
+div.style.height = '20px';
+console.log(div.offsetHeight);
+```
+
+
 
 #### 常见引起重绘属性和方法
 
@@ -559,11 +588,80 @@ DOM 树 和 渲染树 的区别：
 - CSS 选择符从右往左匹配查找，避免节点层级过多
 - 将频繁重绘或者回流的节点设置为图层，图层能够阻止该节点的渲染行为影响别的节点。比如对于 video 标签来说，浏览器会自动将该节点变为图层。
 
+##### 1.分离读写操作
 
+```js
+//这样就仅仅发生1次重排了！
+div.style.left = '10px';
+div.style.top = '10px';
+div.style.width = '20px';
+div.style.height = '20px';
+ 
+console.log(div.offsetLeft);
+console.log(div.offsetTop);
+console.log(div.offsetWidth);
+console.log(div.offsetHeight);
+```
 
-渲染工作是由 GUI渲染线程完成的 js执行是由js引擎线程执行的。
+##### 2.样式集中改变
+
+```js
+//虽然现代浏览器有渲染队列的优化机制，但是古董浏览器效率仍然底下，触发了4次重排 ，即便这样，我们仍然可以做出优化 ，我们需要cssText属性合并所有样式改变
+div.style.left = '10px';
+div.style.top = '10px';
+div.style.width = '20px';
+div.style.height = '20px';
+
+//转为
+div.style.cssText = 'left:10px;top:10px;width:20px;height:20px;';
+```
+
+##### 3.缓存布局信息
+
+```js
+//相当于是分离读写操作，优化为1次重排
+var curLeft = div.offsetLeft;
+var curTop = div.offsetTop;
+div.style.left = curLeft + 1 + 'px';
+div.style.top = curTop + 1 + 'px';
+```
+
+##### 4.元素批量操作
+
+```js
+var ul = document.getElementById('demo');
+ul.style.display = 'none'; 
+for(var i = 0; i < 1e5; i++){
+    var li = document.createElement('li');
+    var text = document.createTextNode(i);
+    li.appendChild(text);
+    ul.appendChild(li);
+}
+ul.style.display = 'block';
+var ul = document.getElementById('demo');
+var frg = document.createDocumentFragment(); 
+for(var i = 0; i < 1e5; i++){
+    var li = document.createElement('li');
+    var text = document.createTextNode(i);
+    li.appendChild(text);
+    frg.appendChild(li); 
+}
+ 
+ul.appendChild(frg); 
+var ul = document.getElementById('demo');
+var clone = ul.cloneNode(true); 
+for(var i = 0; i < 1e5; i++){
+    var li = document.createElement('li');
+    var text = document.createTextNode(i);
+    li.appendChild(text);
+    clone.appendChild(li); 
+}
+ul.parentNode.replaceChild(clone,ul);
+```
 
 #### 为什么操作 DOM 慢
+
+渲染工作是由 GUI渲染线程完成的 js执行是由js引擎线程执行的。
 
 因为 DOM 是属于渲染引擎中的东西，而 JS 又是 JS 引擎中的东西。当我们通过 JS 操作 DOM 的时候，其实这个操作涉及到了两个线程之间的通信，那么势必会带来一些性能上的损耗。操作 DOM 次数一多，也就等同于一直在进行线程之间的通信，并且操作 DOM 可能还会带来重绘回流的情况，所以也就导致了性能上的问题。
 

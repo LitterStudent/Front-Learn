@@ -582,9 +582,13 @@ DOM事件：用户在界面上进行一些操作触发的响应。
 
  先执行script脚本，执行过程中遇到微任务加入微任务队列，遇到宏任务加入宏任务队列。当script脚本执行完也就是js执行栈为空的时候，就会去清空微任务队列。当微任务队列执行，再取出宏任务队列的第一个任务执行。直至两个队列的所有任务都执行完。
 
-宏任务：<script> setTimeout setInerval  requestAnimationFrame,Ajax,dom事件 ：希望在下一次浏览器重绘之前执行动画 setImmediate(node)
+宏任务：<script> setTimeout setInerval  requestAnimationFrame：希望在下一次浏览器重绘之前执行动。,Ajax,dom事件 
 
-`requestAnimationFrame`姑且也算是宏任务吧，`requestAnimationFrame`在[MDN的定义](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FAPI%2FWindow%2FrequestAnimationFrame)为，下次页面重绘前所执行的操作，而重绘也是作为宏任务的一个步骤来存在的，且该步骤晚于微任务的执行
+setImmediate(node)
+
+`requestAnimationFrame`姑且也算是宏任务吧，`requestAnimationFrame`在[MDN的定义](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FAPI%2FWindow%2FrequestAnimationFrame)为，下次页面重绘前所执行的操作，而重绘也是作为宏任务的一个步骤来存在的，且该步骤晚于微任务的执行。
+
+告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。回调函数执行次数通常是每秒60次。
 
 微任务： promise.then catch finally ，async  await ; **MutationObserver**
 
@@ -784,6 +788,8 @@ const isEmptyObj = object => {
 
 ### 1.sessionStorage,localStorage.
 
+**setItem,getItem**
+
 这两个window下的对象。都是key/value键值对的存储对象。大小为5m,不参与与服务端的通讯。
 
 localStorage会被长久存储只要不手动删除。而sessIonStorage在页面关闭时就会消失。
@@ -792,7 +798,7 @@ localStorage会被长久存储只要不手动删除。而sessIonStorage在页面
 
 一个源对应一个sessionStorage,localStorage.
 
-#### 2 cookie
+### 2 cookie
 
 cookie不是在window下，但也一起讲讲。
 
@@ -964,6 +970,10 @@ document.querySelector('input').addEventListener('input',(e)=>{
     console.log(this);
 })
 ```
+
+### 事件代理
+
+在父元素上绑定事件。      
 
 
 
@@ -1669,3 +1679,47 @@ node.removeChild(node2)
 2.将频繁操作改为一次性操作，例如要插入多个元素时可以使用doucumentFragement()来实现一次性插入。
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211129013148467.png" alt="image-20211129013148467" style="zoom:67%;" />
+
+
+
+## 29 BOM
+
+**brower object model**
+
+常用api  navigator screen location history 
+
+
+
+navigator.userAgent(UA )
+
+screen.width screen.height
+
+
+
+## 30前端性能优化
+
+### 1.让加载更快
+
+1.减少资源体积，压缩代码
+
+2.减少访问次数：合并代码，http缓存。
+
+3.使用更快的网络：CDN
+
+4.服务端渲染：将网页和数据一起加载，一起渲染。
+
+
+
+### 2. 让渲染更快
+
+1.css 放在head中，js放在body下面
+
+2.在DOMContentLoaded后执行js。
+
+3.懒加载图片等
+
+4.对dom查询进行缓存
+
+5.频繁dom操作合并到一起插入dom结构
+
+6.节流 throttle 防抖 debounce

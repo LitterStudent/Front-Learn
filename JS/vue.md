@@ -564,6 +564,26 @@ module.exports = {
 
 
 
+### 4. NODE_ENV
+
+首先介绍 **process.env**.  **process.env**是Node.js中的一个环境变量对象。vue-cli是由 webpack搭建的，而webapck是用node写的。
+
+所以vue中可以访问到 process.env.
+
+当使用  npm run serve 启动时 可以看到process.env的默认值是这样的。
+
+![image-20211130221514735](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211130221514735.png)
+
+vue-cli有三种模式。如图。
+
+![image-20211130221628922](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211130221628922.png)
+
+所以我们可以通过在 .env.development 和.env.production 文件中分别配置不同的路径，例如BASE_URL。
+
+
+
+
+
 ## 5.Vue组件自定义事件
 
 
@@ -1008,7 +1028,7 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 
 ## 14.V-model
 
-v-model就是语法糖。内部是不同type的输入元素绑定不同的属性和监听不同事件。
+v-model就是语法糖。内部是不同类型的输入元素绑定不同的property 和监听不同事件。
 
 例如 input  type 为 text 时 绑定的时 value和监听input事件。
 
