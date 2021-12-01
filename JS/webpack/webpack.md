@@ -2,7 +2,7 @@
 
 [npm命令](https://www.cnblogs.com/web-record/p/10904907.html)
 
-![image-20211030150844521](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211030150844521.png)
+![image-20211030150844521](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354516.png?token=AP3MTU7QQ5FB55EFM77W4KTBU4HD6)
 
 ## 0.常见问题
 
@@ -38,7 +38,7 @@ webpack 根据引用关系，**构建**一个依赖关系图，然后利用这�
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112001116745.png" alt="image-20211112001116745" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354577.png?token=AP3MTUZTHHPOUIX72CKXKUDBU4HEI" alt="image-20211112001116745" style="zoom:67%;" />
 
 1. 对于一份同逻辑的代码，当我们手写下一个一个的文件，它们无论是 ESM 还是 commonJS 或是 AMD，他们都是 **module** ；
 2. 当我们写的 module 源文件传到 webpack 进行打包时，webpack 会根据文件引用关系生成 **chunk** 文件，webpack 会对这个 chunk 文件进行一些操作；
@@ -197,7 +197,7 @@ entry:{
 
 [haowen](https://blog.csdn.net/wang839305939/article/details/85855967)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111145547566.png" alt="image-20211111145547566" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354553.png?token=AP3MTU3Z3ZGOV2NFM3XK7O3BU4HES" alt="image-20211111145547566" style="zoom:50%;" />
 
 ![image-20211111145533874](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111145533874.png)
 
@@ -969,7 +969,7 @@ devtool: 'eval-source-map'
 
 **总结：使用contenthash，当文件内容改变时，文件名也会改变，浏览器就会重新请求相应的资源**
 
-![image-20211111212006493](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111212006493.png)
+![image-20211111212006493](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354290.png?token=AP3MTU2GM7PUVC4NBHJJN5LBU4HFG)
 
 
 
@@ -1036,7 +1036,7 @@ console.log(sum(1, 2, 3, 4));
   },
 ```
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112002243415.png" alt="image-20211112002243415" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354209.png?token=AP3MTUY4RV3MCV54K2DBPGLBU4HFQ" alt="image-20211112002243415" style="zoom: 80%;" />
 
 
 
@@ -1092,7 +1092,7 @@ import(/* webpackChunkName: 'test' */'./test')
 
 构建打包后
 
-![image-20211112004435207](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112004435207.png)
+![image-20211112004435207](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354729.png?token=AP3MTU5AS7ZTGI5MHZDGMZ3BU4HFU)
 
 
 
@@ -1119,15 +1119,15 @@ document.getElementById('btn').onclick = function() {
 
 浏览器运行时先不加载test.js,当点击按钮后才加载。
 
-![image-20211112010335072](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010335072.png)
+![image-20211112010335072](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354145.png?token=AP3MTU3ZWWFF4SC4AHJIHU3BU4HFY)
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010422923.png" alt="image-20211112010422923" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354064.png?token=AP3MTU3BYIAP42XIAWPILHTBU4HGA" alt="image-20211112010422923" style="zoom: 80%;" />
 
 懒加载会在需要懒加载时在html的head中插入<script>标签。
 
-![image-20211112010709712](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010709712.png)
+![image-20211112010709712](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354218.png?token=AP3MTU6DH3VJXEESNUFGGQDBU4HGE)
 
 而预加载是浏览器有空就加载
 
@@ -1245,9 +1245,9 @@ bable解析js文件时会耗费比较久的时间，可以通过 thread-loader �
 
 `production`模式下会进行`tree shaking`(去除无用代码)和`uglifyjs`(代码压缩混淆)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111161327571.png" alt="image-20211111161327571" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354993.png?token=AP3MTU6NPFMACNIFNPEXWY3BU4HGM" alt="image-20211111161327571" style="zoom:50%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111161408776.png" alt="image-20211111161408776" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354697.png?token=AP3MTU6AU5ES6PWHGV752ELBU4HGQ" alt="image-20211111161408776" style="zoom:50%;" />
 
 | 选项        | 描述                                                         |
 | ----------- | ------------------------------------------------------------ |
@@ -1272,7 +1272,7 @@ bable解析js文件时会耗费比较久的时间，可以通过 thread-loader �
 
 ### 1.如何从vue脚手架中配置好的项目提取webpack配置文件？
 
-![image-20211113004721918](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113004721918.png)
+![image-20211113004721918](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354051.png?token=AP3MTU2I3UR6G37VOY2YG3LBU4HGW)
 
 ### 2.开发环境的配置文件。
 
