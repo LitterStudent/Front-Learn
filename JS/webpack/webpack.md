@@ -2,7 +2,7 @@
 
 [npm命令](https://www.cnblogs.com/web-record/p/10904907.html)
 
-![image-20211201142135734](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011437913.png?token=AP3MTU6YHTA54CWB2HUDKD3BU4MHO)
+![image-20211201144641637](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011446862.png?token=AP3MTU5KDCDVMD24OJQOKGDBU4NJA)
 
 ## 0.常见问题
 
@@ -38,7 +38,7 @@ webpack 根据引用关系，**构建**一个依赖关系图，然后利用这�
 
 
 
-![image-20211201143915835](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011439871.png?token=AP3MTUYFFGUWI62ZU62EX2DBU4MNG)
+![image-20211201143915835](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011447125.png?token=AP3MTU4MXTWZT4PFUNBFTHDBU4NKQ)
 
 1. 对于一份同逻辑的代码，当我们手写下一个一个的文件，它们无论是 ESM 还是 commonJS 或是 AMD，他们都是 **module** ；
 2. 当我们写的 module 源文件传到 webpack 进行打包时，webpack 会根据文件引用关系生成 **chunk** 文件，webpack 会对这个 chunk 文件进行一些操作；
@@ -197,9 +197,9 @@ entry:{
 
 [haowen](https://blog.csdn.net/wang839305939/article/details/85855967)
 
-![image-20211201143952778](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011439814.png?token=AP3MTU7FLC3KDDCXKABZJZDBU4MPQ)
+![image-20211201143952778](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011447238.png?token=AP3MTU7IOIGDIJC7W5CZLOTBU4NMW)
 
-![image-20211111145533874](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011439744.png?token=AP3MTUZK5TSR6FQVLTAROATBU4MOA)
+![image-20211111145533874](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011447135.png?token=AP3MTU52DPWRBGVFIMDI3O3BU4NNS)
 
 表示形式有两大类：相对路径与绝对路径。
 
@@ -969,7 +969,7 @@ devtool: 'eval-source-map'
 
 **总结：使用contenthash，当文件内容改变时，文件名也会改变，浏览器就会重新请求相应的资源**
 
-![image-20211201144046938](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011440567.png?token=AP3MTUZB5ZGRDT3BWJW4VU3BU4MS2)
+![image-20211201144046938](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011448159.png?token=AP3MTU7ADQZG6SVF2JCZJTDBU4NP2)
 
 
 
@@ -1090,7 +1090,7 @@ import(/* webpackChunkName: 'test' */'./test')
 
 构建打包后
 
-![image-20211201144147594](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211201144147594.png)
+![image-20211201144147594](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011448382.png?token=AP3MTU2CR2PCAU5WPXW2WBTBU4NRM)
 
 
 
@@ -1098,7 +1098,7 @@ import(/* webpackChunkName: 'test' */'./test')
 
 通过在回调函数中调用 import() 实现懒加载 js文件
 
-注意：import()导入的模块会被单独打包
+注意：import()导入的模块会被单独打包.
 
 
 
