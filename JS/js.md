@@ -578,7 +578,7 @@ DOM事件：用户在界面上进行一些操作触发的响应。
 
 （单线程）**js引擎在执行代码时**，通过将不同的执行上下文压入执行栈中来保证代码的有序执行。在执行代码的时候，如果遇到了异步任务，js 引擎并不会一直等待其返回结果，而是会将这个异步任务交给特定线程处理，继续执行执行栈中的其他任务。当异步任务执行完毕后，**再将异步任务对应的回调加入到**（与当前执行栈中不同的另一个）**任务队列中等待执行**。任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行。当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211026152035189.png" alt="image-20211026152035189" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011357178.png?token=AP3MTU647HNKEOZUUV7NYJTBU4HQW" alt="image-20211026152035189" style="zoom:50%;" />
 
  先执行script脚本，执行过程中遇到微任务加入微任务队列，遇到宏任务加入宏任务队列。当script脚本执行完也就是js执行栈为空的时候，就会去清空微任务队列。当微任务队列执行，再取出宏任务队列的第一个任务执行。直至两个队列的所有任务都执行完。
 
@@ -592,7 +592,7 @@ setImmediate(node)
 
 微任务： promise.then catch finally ，async  await ; **MutationObserver**
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211016193053562.png" alt="image-20211016193053562" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011357962.png?token=AP3MTU35MZIY7ACYZT4SLJ3BU4HQ2" alt="image-20211016193053562" style="zoom:50%;" />
 
 
 
@@ -804,7 +804,7 @@ cookie不是在window下，但也一起讲讲。
 
 cookie一般由服务器生成，可以设置过期时间。大小为4k.每次都会http请求都会携带在 header 中，对于请求性能影响。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017001919692.png" alt="image-20211017001919692" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011357089.png?token=AP3MTU6UJJ5NHHZATSWMPT3BU4HRE" alt="image-20211017001919692" style="zoom: 67%;" />
 
 
 
@@ -956,7 +956,7 @@ document.querySelector('input').addEventListener('input',function(e) {
 })
 ```
 
-![image-20211025210120858](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211025210120858.png)
+![image-20211025210120858](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011357377.png?token=AP3MTU2APGCYOMBK7XVIDQDBU4HRO)
 
 而当使用箭头函数时，this的执行为父级上下文的this.一般都是window
 
@@ -1674,11 +1674,11 @@ node.removeChild(node2)
 
  
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211129012840426.png" alt="image-20211129012840426" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011357331.png?token=AP3MTU3FT7NU24OMMQQQU3DBU4HSK" alt="image-20211129012840426" style="zoom:50%;" />
 
 2.将频繁操作改为一次性操作，例如要插入多个元素时可以使用doucumentFragement()来实现一次性插入。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211129013148467.png" alt="image-20211129013148467" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011358553.png?token=AP3MTU4SNS4MBN25REIXTULBU4HSQ" alt="image-20211129013148467" style="zoom:67%;" />
 
 
 

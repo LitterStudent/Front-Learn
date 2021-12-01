@@ -22,13 +22,13 @@
 
 ### 1.Vue实例上常用方法。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113171123378.png" alt="image-20211113171123378" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359898.png?token=AP3MTU7DGMYJC4SDW3F5GMDBU4HX2" alt="image-20211113171123378" style="zoom:80%;" />
 
 
 
 原型上的方法
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113171155363.png" alt="image-20211113171155363" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359825.png?token=AP3MTU52JFBZARKRFXQHAB3BU4HYE" alt="image-20211113171155363" style="zoom: 80%;" />
 
 
 
@@ -49,7 +49,7 @@
 vm._data === data //同一个对象
 ```
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113174016175.png" alt="image-20211113174016175" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359538.png?token=AP3MTU5CWQU6FOQBSMBDS6TBU4HYI" alt="image-20211113174016175" style="zoom:67%;" />
 
 
 
@@ -411,11 +411,11 @@ export default {
 
 new Vue中只有一个组件app,app内再放入所有其他组件
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114195055825.png" alt="image-20211114195055825" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359481.png?token=AP3MTU7OSXL7RWEA7OLNZXLBU4HYU" alt="image-20211114195055825" style="zoom:50%;" />
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114194942520.png" alt="image-20211114194942520" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359664.png?token=AP3MTUZVR26O7SN2UFCLW7TBU4HYW" alt="image-20211114194942520" style="zoom:50%;" />
 
 
 
@@ -439,7 +439,7 @@ new Vue中的 methods中的函数,computed中的函数,watch中的函数,data中
 
 
 
-![image-20211115000542851](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115000542851.png)
+![image-20211115000542851](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359840.png?token=AP3MTUZ2GLUFRK22Q2A2A63BU4HY4)
 
 ### 7.Vue文件编写
 
@@ -459,11 +459,11 @@ Vue脚手架创建的项目中：
 
 页面在public/index.html中，创建了id为app的容器
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015114854.png" alt="image-20211115015114854" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359617.png?token=AP3MTUYRZSJNRPHHIYGGI3DBU4HY6" alt="image-20211115015114854" style="zoom:50%;" />
 
 在入口文件src/main.js中，通过调用render函数的参数,creatElement()函数，将收到的App.vue编译成真正的DOM后挂载到了app上。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015210797.png" alt="image-20211115015210797" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359071.png?token=AP3MTU2NXEVQSZJMYWGCLRDBU4HZC" alt="image-20211115015210797" style="zoom:50%;" />
 
 1.import Vue from 'vue' ，通过ES6module语法导入的Vue是 vue.runtime.esm.js，没有解析模板的功能.无法像直接导入vue.js那样在new Vue的过程中直接通过 template 指定模板让vue编译。
 
@@ -480,11 +480,11 @@ Vue脚手架创建的项目中：
 			render函数接收到的createElement函数去指定具体内容。
 ```
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015628620.png" alt="image-20211115015628620" style="zoom: 50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359523.png?token=AP3MTU2FZZ7P4HPWOSRV7X3BU4HZE" alt="image-20211115015628620" style="zoom: 50%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015500029.png" alt="image-20211115015500029" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359881.png?token=AP3MTUZEYQKEBSJCZKLBKRDBU4HZI" alt="image-20211115015500029" style="zoom: 80%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115015929613.png" alt="image-20211115015929613" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359864.png?token=AP3MTU6OCJUUKENG5KJHUCTBU4HZM" alt="image-20211115015929613" style="zoom:50%;" />
 
 
 
@@ -517,7 +517,7 @@ module.exports = {
 
 默认是4.46，稳定。
 
-![image-20211115150954884](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115150954884.png)
+![image-20211115150954884](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359503.png?token=AP3MTU73MLMPVNV5EIZ7NCLBU4HZU)
 
 
 
@@ -572,11 +572,11 @@ module.exports = {
 
 当使用  npm run serve 启动时 可以看到process.env的默认值是这样的。
 
-![image-20211130221514735](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211130221514735.png)
+![image-20211130221514735](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359976.png?token=AP3MTU5XWVCELUB6IS2VVLDBU4HZY)
 
 vue-cli有三种模式。如图。
 
-![image-20211130221628922](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211130221628922.png)
+![image-20211130221628922](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400416.png?token=AP3MTU3YAU4NYH5GDKXCIULBU4HZ6)
 
 所以我们可以通过在 .env.development 和.env.production 文件中分别配置不同的路径，例如BASE_URL。
 
@@ -650,7 +650,7 @@ Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚
 
 但是我们直接使用 anmation 去指定动画 ，只使用另外两个属性就可: v-enter-active ,v-leave-active.
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116145827128.png" alt="image-20211116145827128" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400208.png?token=AP3MTUZKMMY4KTSHGWERY63BU4H2I" alt="image-20211116145827128" style="zoom: 80%;" />
 
 ```js
 /* 可以设置不同的进入和离开动画 */
@@ -668,9 +668,9 @@ Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚
 }
 ```
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116150200322.png" alt="image-20211116150200322" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400016.png?token=AP3MTU6QVS2PPJRCLYWAIPDBU4H2M" alt="image-20211116150200322" style="zoom:50%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211116150149154.png" alt="image-20211116150149154" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400483.png?token=AP3MTU2JY7DCYCTK5V75WQDBU4H2Q" alt="image-20211116150149154" style="zoom:50%;" />
 
 
 
@@ -830,7 +830,7 @@ var app = new Vue({
 
 Observer（观察者）：Observer观查传入的data对象。遍历data对象并通过defineProperty(obj,key,{get，set})去拦截每个数据的获取与设置
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211017212021275.png" alt="image-20211017212021275" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400959.png?token=AP3MTU25FWZNRK37KG774WDBU4H24" alt="image-20211017212021275" style="zoom: 67%;" />
 
 ### 1.Vue.set()
 
@@ -931,19 +931,19 @@ vm.items = vm.items.filter(item=>item!='c')
 
 两种方式添加事件总线：
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115220810491.png" alt="image-20211115220810491" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400073.png?token=AP3MTU6Q54BYEJ5MDLDJS7TBU4H3G" alt="image-20211115220810491" style="zoom:50%;" />
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115224022809.png" alt="image-20211115224022809" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400057.png?token=AP3MTUZRQUVXKGKUPMNWN53BU4H3I" alt="image-20211115224022809" style="zoom: 67%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115220840076.png" alt="image-20211115220840076" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400543.png?token=AP3MTU6QFNUUOHLUACEX3DTBU4H3K" alt="image-20211115220840076" style="zoom:50%;" />
 
 <img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115220848825.png" alt="image-20211115220848825" style="zoom:50%;" />
 
 在组件中通过$on 注册事件，在组件销毁时 beforeDestroy()调用$off 来 取消事件注册。
 
-![image-20211115222139776](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211115222139776.png)
+![image-20211115222139776](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400263.png?token=AP3MTU56AA7IJBKWFRLCSALBU4H3S)
 
 
 
@@ -985,7 +985,7 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
 **deactivated** keep-alive 专属，组件被销毁时调用
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\16ca74f183827f46_tplv-t2oaga2asx-watermark (1).png" alt="16ca74f183827f46_tplv-t2oaga2asx-watermark (1)" style="zoom:200%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400752.png?token=AP3MTU5PNC75XJSHRGHK2DDBU4H34" alt="16ca74f183827f46_tplv-t2oaga2asx-watermark (1)" style="zoom:200%;" />
 
 异步请求在哪一步发起？
 
@@ -1038,13 +1038,13 @@ v-model就是语法糖。内部是不同类型的输入元素绑定不同的prop
 
 若<input type='radio'>,v-model绑定的是value，要给value指定值
 
-![image-20211114131325660](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114131325660.png)
+![image-20211114131325660](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400337.png?token=AP3MTU3EXNAZYJNOJ2YDF23BU4H4G)
 
 若<input type='checkbok'>,如何没有配置value,那么v-model收集的是checked（布尔值）,
 
 ​                                                          如果配置了value,那么v-model收集的是value.且v-model绑定的应该是一个数组
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211114174035803.png" alt="image-20211114174035803" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400608.png?token=AP3MTUYCQZHLJGOPBYNXJSTBU4H4K" alt="image-20211114174035803" style="zoom:67%;" />
 
 v-model的三个修饰符.  .trim 去除首尾空格, number：输入的只能是数字，lazy:失去焦点时再收集
 
@@ -1252,7 +1252,7 @@ vue 中的route 就是  key 和 组件的映射
 
 **Router(路由器对象)**是VueRouter的一个对象。我们在new Vue()生成根实例时将Router实例注入进去。只要注入进去后，后续在使用都可以通过vue组件实例来获取Router对象：**this.$router**
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211024215848663.png" alt="image-20211024215848663" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400559.png?token=AP3MTU6VNMARBCEWY6VFRQDBU4H5A" alt="image-20211024215848663" style="zoom: 67%;" />
 
 **$router.push({path:'home'})**;本质是向history栈中添加一个路由，在我们看来是 切换路由，但本质是在添加一个history记录
 
@@ -1319,7 +1319,7 @@ vue 中的route 就是  key 和 组件的映射
 
 ### 5.query和params
 
-![image-20211118112421924](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211118112421924.png)
+![image-20211118112421924](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400096.png?token=AP3MTU4Q7GIEC2BBAC2TG6LBU4H5I)
 
 1. 配置路由，声明接收params参数
 
@@ -1549,21 +1549,21 @@ Vuex是Vue中一个集中式状态管理的插件。
 
 多个组件共享同一状态，不同组件的行为需要改变同一状态。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117150030193.png" alt="image-20211117150030193" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401241.png?token=AP3MTU736P7XCRYZ62W4PUDBU4H5Y" alt="image-20211117150030193" style="zoom:67%;" />
 
 ### 2.如何使用？
 
 在 new  Vue({}) ,生成根组件实例的时候在options对象内传入配置选项**store**.然后Vue实例和VueComponent实例上都能访问的$store实例。
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117163117350.png" alt="image-20211117163117350" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401032.png?token=AP3MTU55O43IYRJ3F7OLSB3BU4H56" alt="image-20211117163117350" style="zoom:80%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117163252920.png" alt="image-20211117163252920" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401712.png?token=AP3MTU36EWRQ3F7VMISOJFLBU4H6K" alt="image-20211117163252920" style="zoom:80%;" />
 
 
 
  简写方式：
 
-![image-20211117174832400](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117174832400.png)
+![image-20211117174832400](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401056.png?token=AP3MTUZJGR3ZSI6V3JQCQ5DBU4H6W)
 
 
 
@@ -1571,7 +1571,7 @@ Vuex是Vue中一个集中式状态管理的插件。
 
 使用module时，引入的方式。state,mutation,action,getter的前缀不同。
 
-![image-20211117211306238](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117211306238.png)
+![image-20211117211306238](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401049.png?token=AP3MTU5L5RUCEEKCUXJGK2DBU4H62)
 
 
 
@@ -1579,15 +1579,15 @@ Vuex是Vue中一个集中式状态管理的插件。
 
 当使用module时想在 mapState使用某一个模块的内容,可以在mapState添加该模块的指定名称，通过数组指定要提取的变量。 
 
-![image-20211117205939828](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117205939828.png)
+![image-20211117205939828](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401384.png?token=AP3MTU7ZXKXQEZ4CQ6OVFSTBU4H66)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117210127340.png" alt="image-20211117210127340" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401696.png?token=AP3MTU7S54W7TD63627K2VDBU4H7A" alt="image-20211117210127340" style="zoom: 80%;" />
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117205809454.png" alt="image-20211117205809454" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401847.png?token=AP3MTU7AFQGOIQVMQ4T33Y3BU4H7C" alt="image-20211117205809454" style="zoom:50%;" />
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211117205824254.png" alt="image-20211117205824254" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401593.png?token=AP3MTU6HVI3RWYKQDNHYLU3BU4H7G" alt="image-20211117205824254" style="zoom:50%;" />
 
 
 
@@ -1605,7 +1605,7 @@ Vuex是Vue中一个集中式状态管理的插件。
 
 一个虚拟节点拥有的属性
 
-![image-20211108205747320](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108205747320.png)
+![image-20211108205747320](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401336.png?token=AP3MTUY2IAKBMGNDMX7JUQLBU4H7M)
 
 ### 1.虚拟dom被h函数产生
 
@@ -1625,13 +1625,13 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 调用完后生成的对象。
 
-![image-20211108230132891](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108230132891.png)
+![image-20211108230132891](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401921.png?token=AP3MTUYVG72UEUYZF63SEADBU4H7Q)
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108225632507.png" alt="image-20211108225632507" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401368.png?token=AP3MTUZ6NWEJ52LGMCIQGA3BU4H7U" alt="image-20211108225632507" style="zoom: 67%;" />
 
-![image-20211108225526942](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108225526942.png)
+![image-20211108225526942](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401352.png?token=AP3MTU6HXK7L7JBIMWRYZTDBU4H7Y)
 
 ### 2.diff算法原理。
 
@@ -1639,13 +1639,13 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 演示：当增加一个节点在尾部时是直接插入
 
-![image-20211108233114327](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233114327.png)
+![image-20211108233114327](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401065.png?token=AP3MTUZRFCC4KBNUQKETOBTBU4H74)
 
 如果是增加在头部，后面的不会复用。但是如果虚拟节点内data对象有key值，则会被复用。
 
-![image-20211108233244424](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233244424.png)
+![image-20211108233244424](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401407.png?token=AP3MTU4BUTEGLCEE5JTTMNLBU4H76)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108233431224.png" alt="image-20211108233431224" style="zoom: 50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401839.png?token=AP3MTUZGY22MQULZ2PUYUYLBU4IAC" alt="image-20211108233431224" style="zoom: 50%;" />
 
 
 
@@ -1659,15 +1659,15 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211108234149320.png" alt="image-20211108234149320" style="zoom: 50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401904.png?token=AP3MTU4CWJ5GEHBGQYWC6H3BU4IAO" alt="image-20211108234149320" style="zoom: 50%;" />
 
 patch函数内的
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211109131113009.png" alt="image-20211109131113009" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401465.png?token=AP3MTU7BF2TE5GGGEXQL66DBU4IAS" alt="image-20211109131113009" style="zoom:50%;" />
 
 ​                                              下图为精细化比较的过程
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211109160239786.png" alt="image-20211109160239786" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401489.png?token=AP3MTUY7XK3DRWDN77SEZ3TBU4IAW" alt="image-20211109160239786" style="zoom:67%;" />
 
 ```typescript
 function patch(oldVnode, newVnode) {
@@ -1718,7 +1718,7 @@ function patch(oldVnode, newVnode) {
 
 
 
-![image-20211018005624667](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211018005624667.png)
+![image-20211018005624667](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401945.png?token=AP3MTU6G6RHXGE6DQOUNPS3BU4IA4)
 
 
 
