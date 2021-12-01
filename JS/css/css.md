@@ -328,9 +328,9 @@ window.screen.height 为 屏幕的高度
 
 window.innerHeight 为浏览器的可视窗口的高度
 
-document.body.clientHeight 为文档高度
+document.body.clientHeight 为文档高度.
 
-<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402385.png?token=AP3MTU4LMXEKA5CQUGI2PJDBU4IC4" alt="image-20211127214738506" style="zoom:67%;" />
+![image-20211201141516860](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011415190.png?token=AP3MTU5LA5OOBIGIP7J6EUTBU4JTK)
 
 布局视口：整个html的最大宽度，100%时。浏览器默认的布局视口就是浏览器的窗口大小
 
