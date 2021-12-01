@@ -78,7 +78,7 @@ span:nth-child(-n+3)
 
 ​                 ![img](https://docimg10.docs.qq.com/image/8EAJUUXjg3g9QIV6KjU30A?w=657&h=302)        
 
-![image-20211015112837860](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211015112837860.png)
+![image-20211015112837860](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402753.png?token=AP3MTU3J57FNKB2CMOOXSQDBU4ICM)
 
 ## 5 posintion
 
@@ -172,7 +172,7 @@ display:block;
 
 普通伪类：  :first-child, :last-child,  :only-child:匹配没有任何兄弟元素的元素 
 
-用户行为伪类选择器：link :visited :focus :hover :actived
+用户行为伪类选择器：link :visited :focus :hover :actived.
 
 
 
@@ -330,13 +330,13 @@ window.innerHeight 为浏览器的可视窗口的高度
 
 document.body.clientHeight 为文档高度
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211127214738506.png" alt="image-20211127214738506" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402385.png?token=AP3MTU4LMXEKA5CQUGI2PJDBU4IC4" alt="image-20211127214738506" style="zoom:67%;" />
 
 布局视口：整个html的最大宽度，100%时。浏览器默认的布局视口就是浏览器的窗口大小
 
 视觉视口
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211019215951278.png" alt="image-20211019215951278" style="zoom: 50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402624.png?token=AP3MTU5CHTWW3UNBYXGELWTBU4IC6" alt="image-20211019215951278" style="zoom: 50%;" />
 
 
 
@@ -450,7 +450,7 @@ img.bottom {vertical-align:text-bottom}
 </html>
 ```
 
-![image-20211126004147632](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211126004147632.png)
+![image-20211126004147632](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402961.png?token=AP3MTUYF3PVNVPMSDDAPRSDBU4IDI)
 
 
 
@@ -482,7 +482,7 @@ fixed:脱离标准流，相对于可视窗口进行定位。
 
 
 
-​                 ![img](https://docimg2.docs.qq.com/image/mhP9xWzZaxvYFkDkJp15jw?w=702&h=222)        
+​                 ![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402077.png?token=AP3MTU347Z2XOAAHYNFGOB3BU4IDQ)        
 
 
 
@@ -576,7 +576,7 @@ console.log(div.offsetHeight);
 
 #### 常见引起重绘属性和方法
 
-![image-20211022005724630](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211022005724630.png)
+![image-20211022005724630](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402928.png?token=AP3MTU237G7SXJK6PRFE7ITBU4IDW)
 
 #### 如何减少回流、重绘
 
@@ -687,7 +687,7 @@ cssom树和dom树时同步构建的，所以css的加载不会阻塞dom的加载
 
 ## 23 defer 和 async 的区别？
 
-![image-20211029004604103](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211029004604103.png)
+![image-20211029004604103](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402456.png?token=AP3MTU6JHG35KOU5ZY374WTBU4ID6)
 
 1.<script src="script.js">
 
