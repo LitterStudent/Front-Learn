@@ -2,7 +2,7 @@
 
 [npm命令](https://www.cnblogs.com/web-record/p/10904907.html)
 
-![image-20211030150844521](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011354516.png?token=AP3MTU7QQ5FB55EFM77W4KTBU4HD6)
+![image-20211201142135734](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211201142135734.png)
 
 ## 0.常见问题
 
