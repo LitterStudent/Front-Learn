@@ -74,11 +74,11 @@ span:nth-child(-n+3)
 - 考虑到就近原则，同权重情况下样式定义以最近者为准
 - 载入的样式按照最后的定位为准
 
-!important >内联样式>ID选择器>类选择器，伪类选择器>元素选择器>通配符选择器
+!important >内联样式>ID选择器>类选择器，伪类选择器>元素选择器>通配符选择器 .
 
-​                 ![img](https://docimg10.docs.qq.com/image/8EAJUUXjg3g9QIV6KjU30A?w=657&h=302)        
+​                 ![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011410135.png?token=AP3MTUY73ZMLO36MITPT5PTBU4JA2)        
 
-![image-20211015112837860](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402753.png?token=AP3MTU3J57FNKB2CMOOXSQDBU4ICM)
+![image-20211015112837860](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011410793.png?token=AP3MTU4GLVBTLCJEGJF4LJTBU4I7S)
 
 ## 5 posintion
 
