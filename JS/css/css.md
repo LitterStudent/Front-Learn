@@ -336,7 +336,7 @@ document.body.clientHeight 为文档高度
 
 视觉视口
 
-<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402624.png?token=AP3MTU5CHTWW3UNBYXGELWTBU4IC6" alt="image-20211019215951278" style="zoom: 50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011413120.png?token=AP3MTU2TFSELACEH5VYDRCDBU4JMU" alt="image-20211019215951278" style="zoom: 50%;" />
 
 
 
@@ -450,7 +450,7 @@ img.bottom {vertical-align:text-bottom}
 </html>
 ```
 
-![image-20211126004147632](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402961.png?token=AP3MTUYF3PVNVPMSDDAPRSDBU4IDI)
+![image-20211126004147632](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011413896.png?token=AP3MTU4O5PCGH3CWZ3FSNYLBU4JNC)
 
 
 
@@ -482,7 +482,7 @@ fixed:脱离标准流，相对于可视窗口进行定位。
 
 
 
-​                 ![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402077.png?token=AP3MTU347Z2XOAAHYNFGOB3BU4IDQ)        
+​                 ![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011413637.png?token=AP3MTUZ36UCBVOBWGDFM2OTBU4JNO)        
 
 
 
@@ -576,7 +576,7 @@ console.log(div.offsetHeight);
 
 #### 常见引起重绘属性和方法
 
-![image-20211022005724630](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402928.png?token=AP3MTU237G7SXJK6PRFE7ITBU4IDW)
+![image-20211022005724630](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011413031.png?token=AP3MTUZFQ5XTQXV4EAEKTPDBU4JN2)
 
 #### 如何减少回流、重绘
 
@@ -687,7 +687,7 @@ cssom树和dom树时同步构建的，所以css的加载不会阻塞dom的加载
 
 ## 23 defer 和 async 的区别？
 
-![image-20211029004604103](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011402456.png?token=AP3MTU6JHG35KOU5ZY374WTBU4ID6)
+![image-20211029004604103](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011413455.png?token=AP3MTU26AUKKI256SQQ6OHTBU4JOE)
 
 1.<script src="script.js">
 
@@ -897,7 +897,7 @@ transform: rotate(0.5turn); //旋转
      background-color: $--color-white;
      overflow: hidden;
      color: $--color-text-primary;
-     transition: 0.3s;
+     transition: 0.3s;;
    }
    ```
 
