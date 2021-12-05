@@ -9,9 +9,34 @@
 </head>
 
 <body>
-    <div id="app" style="width: 90px; height: 90px; background-color: skyblue;"></div>
+    <input type="text" name="" id="text">
+    <input type="radio" name='ra' id="rad" >
+    <input type="radio" name='ra' >
+    <input type="radio" name='ra' >
+
+    <select id="select" value="3">
+        <option disabled value="">请选择</option>
+        <option value="1">A</option>
+        <option value="2">B</option>
+        <option value="3">C</option>
+    </select>
     <script>
-    console.log({...{name:'xiaoming',arr:[1,2],is:1},...{name:'xiaohong',arr:[3,4]}});
+    let text =  document.getElementById('text');
+        console.log(text);
+        text.oninput = function(e){
+            console.log(e.target.value);
+        }
+     let rad =  document.getElementById('rad');
+        console.log(rad);
+        rad.onchange = function(e){
+            console.log(e.target.checked);
+        }
+        
+    let select =  document.getElementById('select');
+        console.log(select);
+        select.onchange = function(e){
+            console.log(e.target.value);
+        }
     </script>
 </body>
 

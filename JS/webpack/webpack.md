@@ -2,7 +2,7 @@
 
 [npm命令](https://www.cnblogs.com/web-record/p/10904907.html)
 
-![image-20211030150844521](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211030150844521.png)
+![image-20211030150844521](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011535730.png?token=AP3MTU43CUZXRYF5UQX3W4TBU4TAC)
 
 ## 0.常见问题
 
@@ -38,7 +38,7 @@ webpack 根据引用关系，**构建**一个依赖关系图，然后利用这�
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112001116745.png" alt="image-20211112001116745" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011535426.png?token=AP3MTU6V2EWGE4QSDJTPNRTBU4TAM" alt="image-20211112001116745" style="zoom:67%;" />
 
 1. 对于一份同逻辑的代码，当我们手写下一个一个的文件，它们无论是 ESM 还是 commonJS 或是 AMD，他们都是 **module** ；
 2. 当我们写的 module 源文件传到 webpack 进行打包时，webpack 会根据文件引用关系生成 **chunk** 文件，webpack 会对这个 chunk 文件进行一些操作；
@@ -1036,9 +1036,7 @@ console.log(sum(1, 2, 3, 4));
   },
 ```
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112002243415.png" alt="image-20211112002243415" style="zoom: 80%;" />
-
-
+![image-20211201144123018](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011441301.png?token=AP3MTU4NUQUNUZKLVL4G42DBU4MVE)
 
 #### 2.配置optimization
 
@@ -1092,7 +1090,7 @@ import(/* webpackChunkName: 'test' */'./test')
 
 构建打包后
 
-![image-20211112004435207](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112004435207.png)
+![image-20211201144147594](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011448382.png?token=AP3MTU2CR2PCAU5WPXW2WBTBU4NRM)
 
 
 
@@ -1119,15 +1117,15 @@ document.getElementById('btn').onclick = function() {
 
 浏览器运行时先不加载test.js,当点击按钮后才加载。
 
-![image-20211112010335072](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010335072.png)
+![image-20211201144303826](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011443727.png?token=AP3MTUZTAR7U4JEO3T2IASDBU4M3M)
 
 
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010422923.png" alt="image-20211112010422923" style="zoom: 80%;" />
+![image-20211201144325874](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011443294.png?token=AP3MTU4UWWCWCE5EJ6BN6DDBU4M4Y)
 
 懒加载会在需要懒加载时在html的head中插入<script>标签。
 
-![image-20211112010709712](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211112010709712.png)
+![image-20211201144348361](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011443670.png?token=AP3MTU3A43TDICK5PYHGNLDBU4M6E)
 
 而预加载是浏览器有空就加载
 
@@ -1245,9 +1243,9 @@ bable解析js文件时会耗费比较久的时间，可以通过 thread-loader �
 
 `production`模式下会进行`tree shaking`(去除无用代码)和`uglifyjs`(代码压缩混淆)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111161327571.png" alt="image-20211111161327571" style="zoom:50%;" />
+![image-20211201144413164](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011444101.png?token=AP3MTU7BUCKNTFHYPETGRM3BU4M7Y)
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211111161408776.png" alt="image-20211111161408776" style="zoom:50%;" />
+![image-20211201144433651](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011444135.png?token=AP3MTU2NIKY4VOCTVXGOBBLBU4NBA)
 
 | 选项        | 描述                                                         |
 | ----------- | ------------------------------------------------------------ |
@@ -1272,7 +1270,7 @@ bable解析js文件时会耗费比较久的时间，可以通过 thread-loader �
 
 ### 1.如何从vue脚手架中配置好的项目提取webpack配置文件？
 
-![image-20211113004721918](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211113004721918.png)
+![image-20211201144506865](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011445943.png?token=AP3MTU6TTDZ535BJEYTOLN3BU4NDA)
 
 ### 2.开发环境的配置文件.
 
@@ -1301,3 +1299,23 @@ module: {
 ### 3.生产环境的配置文件。
 
 webpack.prod..js
+
+
+
+## 14常用api
+
+### [require.context()](https://webpack.docschina.org/api/module-methods/#requirecontext)
+
+![image-20211204164640314](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211204164640314.png)
+
+require.context接收四个参数后返回一个webpackContext函数，该函数内有一个静态函数 **keys()**，该方法调用后返回一个所有 引入文件的 文件名 组成的数组
+
+![image-20211204164733738](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211204164733738.png)
+
+作用：自动引入'./modules'文件夹下的js文件，注册到Vuex的module中
+
+
+
+![image-20211204165256474](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112041652995.png)
+
+![image-20211204165218308](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112041652453.png)

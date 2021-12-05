@@ -1,4 +1,5 @@
 import updateChildren from './updateChildren.js'
+// patchVnode方法 对比 新旧虚拟节点 跟新到旧虚拟节点上 进行打补丁
 
 export default function patchVnode(oldVnode, newVnode) {
     // 1. 判断新旧 vnode 是否是同一个对象

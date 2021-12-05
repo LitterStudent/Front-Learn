@@ -32,9 +32,9 @@
 
 
 
-### 2.模板语法
+### 2.数据代理和数据劫持
 
-
+[好文](https://blog.csdn.net/weixin_44976833/article/details/104540455)
 
 ```js
 {{name}}
@@ -48,6 +48,12 @@
 
 vm._data === data //同一个对象
 ```
+
+vm_data = options.data
+
+数据代理就是将 vm_data 中的数据,代理到 vm上。可以直接通过 vm.name 代替 vm._data.name 来访问。
+
+数据劫持是通过Observer对象将data中的每一项数据的get和set进行劫持。
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011359538.png?token=AP3MTU5CWQU6FOQBSMBDS6TBU4HYI" alt="image-20211113174016175" style="zoom:67%;" />
 
@@ -929,6 +935,8 @@ vm.items = vm.items.filter(item=>item!='c')
 
 通过 组件通过 $on 订阅事件名以及事件的回调，通过$emit发布事件并携带相关参数。一般是$emit传递出数据。
 
+当子组件要改变父组件的值是可以在父组件中 $on 订阅事事件名，在回调中改变父组件的值。子组件通过$emit 发布事件并携带数据传入回调函数中。
+
 两种方式添加事件总线：
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400073.png?token=AP3MTU6Q54BYEJ5MDLDJS7TBU4H3G" alt="image-20211115220810491" style="zoom:50%;" />
@@ -1026,11 +1034,41 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 
 
 
-## 14.V-model
+## 14.V-model 
+
+**单项数据流的过程，传入给子组件的值只能通过父元素来修改。**
 
 v-model就是语法糖。内部是不同类型的输入元素绑定不同的property 和监听不同事件。
 
 例如 input  type 为 text 时 绑定的时 value和监听input事件。
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040101788.png" alt="image-20211204005358414" style="zoom: 80%;" />
+
+常见的表单元素
+
+1.**input**元素常用有4种：text文本框,checkbox复选框，ridio单选按钮，submit提交按钮。
+
+2.**textarea** 元素
+
+3.**select** 元素
+
+text文本框 **textarea**文本域 输入时 会触发 input 事件
+
+checkbox复选框， 点击复选框会触发 **change** 事件，改变 元素的 checked 值。复选框可以为一个也可以为一组。
+
+![image-20211204010713582](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040150255.png)
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040127555.png" alt="image-20211204012732236" style="zoom:80%;" />
+
+ridio 单选按钮通过name指定同一组单选按钮，也是点击复选框会触发 **change** 事件，改变 元素的 checked 值。单选按钮必须为一个以上。
+
+![image-20211204013638059](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040150008.png)
+
+select元素默认触发的时 change事件 ，改变 value 值获取的时option上的value.
+
+![image-20211204014846074](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040150796.png)
+
+![image-20211204015017926](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040150937.png)
 
 ### 1.基础
 
@@ -1040,9 +1078,11 @@ v-model就是语法糖。内部是不同类型的输入元素绑定不同的prop
 
 ![image-20211114131325660](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400337.png?token=AP3MTU3EXNAZYJNOJ2YDF23BU4H4G)
 
-若<input type='checkbok'>,如何没有配置value,那么v-model收集的是checked（布尔值）,
+若<input type='checkbok'>,如何没有配置value,那么v-model收集的是checked（布尔值）,**而且v-model绑定的值只能在一个checkbox上**。
 
-​                                                          如果配置了value,那么v-model收集的是value.且v-model绑定的应该是一个数组
+​                                                          如果配置了value,那么v-model收集的是value.且v-model绑定的应该是一个数组	
+
+**单个复选框，绑定到布尔值。多个复选框，绑定到同一个数组：**
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400608.png?token=AP3MTUYCQZHLJGOPBYNXJSTBU4H4K" alt="image-20211114174035803" style="zoom:67%;" />
 
@@ -1050,7 +1090,17 @@ v-model的三个修饰符.  .trim 去除首尾空格, number：输入的只能�
 
 
 
+**select** 单选时绑定字符串,多选时绑定数组。
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112040152829.png" alt="image-20211204015221546" style="zoom: 80%;" />
+
+
+
+
+
 ### 2.**将V-model绑定到组件上时，组件内部应该如何封装？**
+
+一个组件上的 `v-model` **默认会利用名为 `value` 的 prop 和名为 `input` 的事件**，但是像单选框、复选框等类型的输入控件可能会将 `value` attribute 用于[不同的目的](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#Value)。`model` 选项可以用来避免这样的冲突：
 
 在自定义组件内部可以通过model属性，来指定组件上v-model传入的值和监听的事件。
 
@@ -1647,6 +1697,12 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401839.png?token=AP3MTUZGY22MQULZ2PUYUYLBU4IAC" alt="image-20211108233431224" style="zoom: 50%;" />
 
+#### 为什么不用 index 作为 key值？
+
+在 v-for 中 如果使用 index 作为key值时，如果在数组的首部插入一个元素，此时数组内所有元素的index都改变。两个不同的元素的key会相同，isSameNode方法会判断正确，后续会通过 pathVnode方法去跟新元素内的内容，无法让元素节点复用。降低性能。
+
+
+
 
 
 #### diff算法特点
@@ -1663,11 +1719,11 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 patch函数内的
 
-<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401465.png?token=AP3MTU7BF2TE5GGGEXQL66DBU4IAS" alt="image-20211109131113009" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401465.png?token=AP3MTU7BF2TE5GGGEXQL66DBU4IAS" alt="image-20211109131113009"  />
 
-​                                              下图为精细化比较的过程
+​                                              下图为精细化比较的过程 **patchVnode**
 
-<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401489.png?token=AP3MTUY7XK3DRWDN77SEZ3TBU4IAW" alt="image-20211109160239786" style="zoom:67%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401489.png?token=AP3MTUY7XK3DRWDN77SEZ3TBU4IAW" alt="image-20211109160239786"  />
 
 ```typescript
 function patch(oldVnode, newVnode) {
@@ -1722,9 +1778,19 @@ function patch(oldVnode, newVnode) {
 
 
 
-1.首先在patch方法，在patch方法内调用sameVNode方法判断新老虚拟节点是否为同一类型的节点
+**patch**方法：对比**当前同层**的虚拟节点是否为同一种类型的标签
 
-2.如果不是则直接更换跟新虚拟节点
+**sameVnode**方法：判断断是否为同一类型节点
+
+**pathVnode**方法：真正更新dom的方法
+
+**updateChildren**方法： 新旧虚拟节点的子节点对比，
+
+
+
+1.首先在patch方法，对新旧虚拟节点进行同层级比较，在patch方法内调用sameVNode方法判断新老虚拟节点是否为同一类型的节点
+
+2.如果不是则直接更换跟新虚拟节点到dom上。
 
 3.如果类型相同，则对新旧虚拟节点进行深层比较。调用patchVnode（oldVnode, newVnode）方法。
 
@@ -1742,9 +1808,9 @@ function patch(oldVnode, newVnode) {
 
 2.新尾与旧尾（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，然后这两个指针分别向上移动）
 
-3.新尾与旧首（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，新尾指针指向的节点插入旧尾节点之后，然后移动新尾指针和旧首指针）
+3.新尾与旧首（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，新尾指针指向的节点插入真实dom中旧尾节点之后，然后移动新尾指针和旧首指针）
 
-4.新首与旧尾（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，新首指向的节点插入到旧首节点之前，然后移动新首指针和旧尾指针）
+4.新首与旧尾（如果命中，调用patchVnode（oldVnode, newVnode）进行更新，新首指向的节点插入真实dom中到旧首节点之前，然后移动新首指针和旧尾指针）
 
 ​			**b**如果以上逻辑都匹配不到，再把所有旧子节点的 `key` 做一个映射到旧节点下标的 `key -> index` 表，然后用新 虚拟节点的首指针指向的节点的 `key` 在映射中找出在旧节点中可以复用的位置。
 

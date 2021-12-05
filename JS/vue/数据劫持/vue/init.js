@@ -11,13 +11,14 @@ function initState(vm) {
 function initData (vm) {
     var data = vm.$options.data;
     
+
     data = vm._data = typeof data === "function" ? data.call(vm):data||{};
     
     for(let key in data){
-        // 数据劫持
+        // 数据代理
         proxyData(vm,"_data",key)
     }
-    // 观察 data
+    // 数据劫持
      observe(data)
 }
 

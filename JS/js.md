@@ -1723,3 +1723,13 @@ screen.width screen.height
 5.频繁dom操作合并到一起插入dom结构
 
 6.节流 throttle 防抖 debounce.
+
+
+
+
+
+## 31 如何防止表单重复提交？
+
+
+
+1.服务器端根据会话生成一个唯一的token保存在session中同时发送给浏览器，浏览器提交表单时携带该token.就算提交了多次表单，服务器也会依据唯一的token值去除掉重复的提交。

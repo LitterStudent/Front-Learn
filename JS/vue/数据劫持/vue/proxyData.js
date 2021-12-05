@@ -4,11 +4,11 @@ function proxyData(vm,target,key) {
     // vm[key] = vm.options.data[key]
     Object.defineProperty(vm,key,{
         get(){
-            // console.log("代理拦截get 数据劫持",);
+            // console.log("代理拦截get 数据代理",);
             return vm[target][key];
         },
         set(newValue){
-            // console.log("代理拦截set 数据劫持");
+            // console.log("代理拦截set 数据代理");
             vm[target][key] = newValue; 
         }
     })
