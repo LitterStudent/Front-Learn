@@ -12,6 +12,7 @@
     "snabbdom": "^3.1.0"
   },
   "devDependencies": {
+    "@webpack-cli/serve": "^1.6.0",
     "webpack": "^5.62.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.2"

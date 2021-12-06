@@ -1717,6 +1717,12 @@ h('a',{props:{href:'http://www.baidu.com',target:'_blank'}},[h('span',{},'子节
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401904.png?token=AP3MTU4CWJ5GEHBGQYWC6H3BU4IAO" alt="image-20211108234149320" style="zoom: 50%;" />
 
+path函数有两个作用：1.patch(container, myVnode1) 将虚拟节点上树到container容器内，生成真正的dom节点。
+
+​									  2.对比**当前同层**的虚拟节点是否为同一种类型的标签。
+
+以下说明patch函数的作用都是说第二种。
+
 patch函数内的
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401465.png?token=AP3MTU7BF2TE5GGGEXQL66DBU4IAS" alt="image-20211109131113009"  />
@@ -1778,7 +1784,7 @@ function patch(oldVnode, newVnode) {
 
 
 
-**patch**方法：对比**当前同层**的虚拟节点是否为同一种类型的标签
+**patch**方法：对比**当前同层**的虚拟节点是否为同一种类型的标签。
 
 **sameVnode**方法：判断断是否为同一类型节点
 
@@ -2070,5 +2076,32 @@ oldVnode:旧虚拟节点
 
 
 
+## 27模板编译
+
+插件： vue-template-compiler
+
+模板编译后生成 render函数， render函数调用后生成vnode。
+
+开发环境中 .vue文件传入的 <template>标签是经过 vue-loader 编译的，在打包过程中执行。
 
 
+
+
+
+## 28Vue组件渲染过程
+
+1.初次渲染过程： 
+
+ 解析模板为 render 函数（可能在开发环境已完成, vue-loader）
+
+ 触发响应式，监听 data属性中的 getter 和 setter
+
+ 执行 render 函数， 生成 vnode,  调用path(el,vnode) **将虚拟节点的元素生成到dom当中**（注意这一步是在响应式之后，因为当执行 render函数 生成 vnode 时 会触发 相应的 getter ,例如 {{message}}等插值语法在解析时。）
+
+2.更新过程：
+
+ 修改 data, 触发setter (此前在getter 中已被监听)
+
+ 重新执行 render 函数， 生成 newVnode
+
+ patch(vnode, newVnode)

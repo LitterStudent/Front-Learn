@@ -21,22 +21,18 @@
         <option value="3">C</option>
     </select>
     <script>
-    let text =  document.getElementById('text');
-        console.log(text);
-        text.oninput = function(e){
-            console.log(e.target.value);
-        }
-     let rad =  document.getElementById('rad');
-        console.log(rad);
-        rad.onchange = function(e){
-            console.log(e.target.checked);
-        }
-        
-    let select =  document.getElementById('select');
-        console.log(select);
-        select.onchange = function(e){
-            console.log(e.target.value);
-        }
+        let obj = {val:2 }
+        val = 1;
+        Object.defineProperty(obj,'val',{
+            enumerable:true,
+            configurable:true,
+            get(){
+                return val;
+            },
+            set(val2){
+                val = val2
+            }
+        })
     </script>
 </body>
 
