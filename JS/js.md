@@ -1633,15 +1633,53 @@ console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fs
 
 ## 28DOM
 
-### 1.property和attribute的区别 
+### 1.property和attributes的区别 
 
- property是dom节点的属性。
+[haowen](https://www.jb51.net/article/50686.htm)
 
-node.style.with  node.style.color 等待
+ attributes是dom元素节点上的一个属性，是一个类数组容器，存放了html的中标签的属性。 
 
- attribute是html的中标签的属性。 
+```js
+<div class="box" id="box" gameid="880">hello</div>
+
+// 该节点的attributes如下
+[ class="box", id="box", gameid="880" ]
+```
 
 node.setAttribute() ，node.getAttribute() 等待
+
+很多attribute节点还有一个相对应的property属性，比如上面的div元素的**id和class**既是attribute，也有对应的property.
+
+```js
+console.log( elem.getAttribute('id') ); // box
+console.log( elem.id ); // box
+elem.id = 'hello';
+console.log( elem.getAttribute('id') ); // hello
+```
+
+但是对于自定义的attribute节点，或者自定义property，两者就没有关系了。
+
+```js
+console.log( elem.getAttribute('gameid') ); // 880
+console.log( elem.gameid ); // undefined
+elem.areaid = '900';
+console.log( elem.getAttribute('areaid') ) // null
+```
+
+
+
+ property是dom节点元素对象上的属性。
+
+可以直接通过元素节点 直接访问到 node.style.with  node.style.color 等等。
+
+```
+<div id="div1" class="divClass" title="divTitle" title1="divTitle1"></div>
+ 
+var in1=document.getElementById("div1");
+console.log(in1)
+```
+
+![image-20211208000509708](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112080005126.png)
 
 
 

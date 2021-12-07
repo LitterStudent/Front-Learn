@@ -767,7 +767,7 @@ export function loginAPI(paramsList) {
 
 Model  View  ViewModel
 
-`Model-View-ViewModel` ，` Model` 表示数据模型层。` view` 表示视图层，` ViewModel` 是` View` 和` Model` 层的桥梁。视图变化触发模型修改，用到的时事件监听。模型变化触发视图变化，用到的是数据绑定。
+`Model-View-ViewModel` ，` Model` 表示数据模型层。` view` 表示视图层，` ViewModel` 是` View` 和` Model` 层的桥梁。视图变化触发模型修改，用到的时**事件监听**。模型变化触发视图变化，用到的是**数据绑定**。
 
 （1）View 层
 
@@ -820,11 +820,11 @@ var app = new Vue({
 
 
 
-## 9.响应式原理（数据双向绑定）
+## 9.响应式原理（数据绑定实现原理）
 
 [好文](https://juejin.cn/post/6844903903822086151#heading-1)
 
-数据劫持+观察者模式
+**数据劫持+观察者模式**
 
 `第一种说法： Object.defineProperty` 重新定义` data` 中所有的属性，` Object.defineProperty` 可以使数据的获取与设置增加一个拦截的功能，**拦截属性的获取，进行依赖收集。拦截属性的更新操作，进行通知。**
 
