@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 直接变成黑色
+    // 因为 dom渲染是在微任务之后的
+    // 如果是在微任务之前，会蓝变黑
+document.body.style = "background:blue";
+console.log(1); 
+Promise.resolve().then(function () {
+  console.log(2);
+  alert('')
+  document.body.style = "background:black";
+});
+console.log(3);
+debugger
+</script>
+</html>

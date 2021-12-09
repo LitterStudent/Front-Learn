@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+    <h2>nihao</h2>
+    <button id="add">add</button>
+    <button id="add2">add2</button>
+    </div>
+</body>
+<script>
+var mutationObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    console.log(mutation);
+  });
+});
+    let button = document.querySelector('#add');
+    let app = document.querySelector('#app');
+    button.onclick = function(){
+    let h3 = document.createElement('h3')
+    h3.innerHTML = 1
+    app.appendChild(h3)
+  }
+  mutationObserver.observe(app, {
+  attributes: true,
+  characterData: true,
+  childList: true,
+  subtree: true,
+  attributeOldValue: true,
+  characterDataOldValue: true
+});
+
+// 可以监听不在 dom文档上的节点
+let ul = document.createElement('ul')
+  let button2 = document.querySelector('#add2');
+  button2.onclick = function(){
+      Promise.resolve().then(()=>{
+          console.log("object");
+      })
+    let h3 = document.createElement('h3')
+    h3.innerHTML = 1
+    ul.appendChild(h3)
+  }
+mutationObserver.observe(ul, {
+  attributes: true,
+  characterData: true,
+  childList: true,
+  subtree: true,
+  attributeOldValue: true,
+  characterDataOldValue: true
+});
+
+
+</script>
+</html>

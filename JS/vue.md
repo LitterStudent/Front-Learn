@@ -1830,9 +1830,15 @@ function patch(oldVnode, newVnode) {
 
 vue更新dom的背景：
 
-vue更新DOM是异步的。只要侦听到数据发生变化，vue就会开启一个缓冲队列，存入同一事件循环内所有的数据变更。如果同一个watcher被多次触发，只会被推入到队列中一次。然后在下一次事件循环“tick"中，vue刷新队列并执行相应工作。
+响应式触发： setter->Dep->Watcher->update->queueWatcher->All Run
 
-nextTick的作用：当我们跟新数据时，dom会在下一次事件循环发送跟新渲染。如果我们要访问更新渲染后的dom进行相应操作的话，可以通过**this.$nextTick**内。
+vue更新DOM是异步的。只要侦听到数据发生变化，vue就会开启一个缓冲队列，存入同一事件循环内所有的数据变更。我们称该队列为异步队列。如果同一个watcher被多次触发，只会被推入到队列中一次。然后在下一次事件循环“tick"中，vue刷新队列并执行相应工作。
+
+nextTick的作用：当我们跟新数据时，dom会在下一次事件循环发送跟新渲染。如果我们要访问更新渲染后的dom进行相应操作的话，可以通过**this.$nextTick**。
+
+nextTick的原理：内部设置一个callback数组作为异步队列存放回调，然后会进行环境判断看支持哪种形式清空callback数组。会以Promise.then, MutationObserver（微任务）和 setImmediate（1米地儿）或 setTimeout(fn,0)的顺序去判断 。
+
+nextTick 也是将 回调加入到任务队列当中，只是会根据环境不同判断采用微任务还是宏任务的方式去清空。 
 
 
 
