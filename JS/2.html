@@ -21,18 +21,8 @@
         <option value="3">C</option>
     </select>
     <script>
-        let obj = {val:2 }
-        val = 1;
-        Object.defineProperty(obj,'val',{
-            enumerable:true,
-            configurable:true,
-            get(){
-                return val;
-            },
-            set(val2){
-                val = val2
-            }
-        })
+        var a = 1
+        console.log(window.a);
     </script>
 </body>
 
