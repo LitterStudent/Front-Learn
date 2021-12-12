@@ -143,6 +143,155 @@ ES6 是支持块级作用域的，当执行到代码块时，如果代码块中�
 
 
 
+## 0.3 执行上下文栈
+
+作用域是指上下文中定义变量（变量命和函数名）的合法使用范围。作用域规定了上下文如何查找变量。
+
+
+
+### 1.执行上下文和作用域
+
+javaScript是词法作用域，即静态作用域。函数的作用域在函数定义时就决定了。
+
+```js
+// 题目一
+function bar() {
+  var myName = ' 极客世界 '
+  let test1 = 100
+  if (1) {
+    let myName = 'Chrome 浏览器 '
+    console.log(test)
+  }
+}
+function foo() {
+  var myName = ' 极客邦 '
+  let test = 2
+  {
+    let test = 3
+    bar()
+  }
+}
+var myName = ' 极客时间 '
+let myAge = 10
+let test = 1
+foo()  // 1
+```
+
+```js
+// 题目二
+var bar = {
+  myName: 'time.geekbang.com',
+  printName: function () {
+    console.log(myName)
+  },
+}
+function foo() {
+  let myName = ' 极客时间 '
+  return bar.printName
+}
+let myName = ' 极客邦 '
+let _printName = foo()  // 注意这里赋值操作，重新生成函数的词法作用域
+_printName()
+bar.printName()
+```
+
+es6之前只有函数作用域和全局作用域。es6之后新增了块级作用域。
+
+全局作用域内定义的变量在任何位置都能访问。
+
+函数作用域定义的变量只有函数内部能够访问。函数执行结束后会被销毁。
+
+块级作用域即{}。判断语句，循环语句，甚至单独的一个{}.
+
+```js
+function bar() {
+  var myName = ' 极客世界 '
+  let test1 = 100
+  if (1) {
+    let myName = 'Chrome 浏览器 '
+    console.log(test)
+  }
+}
+function foo() {
+  var myName = ' 极客邦 '
+  let test = 2
+  {
+    let test = 3
+    bar()
+  }
+}
+var myName = ' 极客时间 '
+let myAge = 10
+let test = 1
+foo()
+```
+
+**词法环境**
+
+ES6 是支持块级作用域的，当执行到代码块时，如果代码块中有 let 或者 const 声明的变量，那么变量就会存放到该函数的词法环境中。对于上面这段代码，当执行到 bar 函数内部的 if 语句块时，其调用栈的情况如下图所示：
+
+
+
+![image-20211211002719131](https://s2.loli.net/2021/12/11/obDpIgxMmSlu9hX.png)
+
+变量提升。
+
+```js
+function varTest() {
+  var x = 1;
+  if (true) {
+    var x = 2;  // 同样的变量!
+    console.log(x);  // 2
+  }
+  console.log(x);  // 2
+}
+```
+
+<img src="https://s2.loli.net/2021/12/11/NXrYRwtnh37zLdQ.png" alt="image-20211211000555217" style="zoom:50%;" />
+
+
+
+#### 1.ES3执行上下文
+
+当**执行一个函数**的时候，就会创建一个**执行上下文**，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。
+
+对于每个执行上下文，都有三个重要属性：    
+
+- 变量对象(Variable object，VO)
+
+**变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明**。不同执行上下文下的变量对象稍有不同.全局执行上下文的变量对象是window,函数执行上下文的变量对象
+
+- 作用域链(Scope chain)
+
+一条变量对象的链条。包含了当前的变量对象以及父级上下文的变量对象，直到全局对象。
+
+当查找变量的时候，会先从当前上下文的变量对象中查找，如果没有找到，就会从父级(词法层面上的父级)执行上下文的变量对象中查找，一直找到全局上下文的变量对象，也就是全局对象。这样由多个执行上下文的变量对象构成的链表就叫做作用域链
+
+- this
+
+  当前执行上下文的调用者。
+
+
+
+var 声明会被拿到函数或全局作用域的顶部，位于作用域中所有代码之前。这个现象叫作“提升”.
+
+
+
+2.**函数声明和函数表达式**
+
+函数声明会提升，且比变量提升优先级高。
+
+```
+//函数声明语句写法function test(){}; test();  
+//函数表达式写法var test = function(){}; test();
+```
+
+
+
+
+
+
+
 ## 0回调
 
 ### 1.什么是回调？
@@ -606,7 +755,7 @@ DOM事件：用户在界面上进行一些操作触发的响应。
 
 **1.先把Call Stack清空**
 **2.然后执行当前的微任务**
-**3.接下来DOM渲染**
+**3.接下来DOM渲染（dom渲染是否执行是由浏览器来决定的，如果浏览器在后台执行，则不会进行dom渲染，还有其他情况，虽然我不知道）**
 **微任务在dom渲染`之前`执行，宏任务在dom渲染`之后`执行**。
 
 
@@ -651,21 +800,29 @@ console.log('done')
 
 requestAnimationFrame：希望在下一次浏览器重绘之前执行动。浏览器重绘是在微任务结束之后，所以 requestAnimationFrame 会在微任务结束之后，宏任务开始之前执行。
 
-**setImmediate**(node):
-
 `requestAnimationFrame`姑且也算是宏任务吧，`requestAnimationFrame`在[MDN的定义](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FAPI%2FWindow%2FrequestAnimationFrame)为，下次页面重绘前所执行的操作，而重绘也是作为宏任务的一个步骤来存在的，且该步骤晚于微任务的执行。
 
 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。回调函数执行次数通常是每秒60次。
+
+当使用 setTimeout执行指定的动画时，执行的频率难以控制。我们知道定时器的最小时间间隔为 4ms，所以最多每秒执行250次。但是即使能够每秒执行250次，250次修改样式，浏览器也不会每秒重新渲染页面250次，所以一些样式的修改是不会被渲染到页面上，这样就造成了一些操作的。浏览器会自动选择合适的时机渲染。一般与显示器的刷新频率一致，60Hz.每秒刷新60次。16.6ms刷新一次。
+
+
+
+
+
+
+
+**setImmediate**(node):
 
 微任务： promise.then catch finally ，async  await ; **MutationObserver**
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011451103.png?token=AP3MTU3NI5CYO4PMLTH4FDLBU4N2I" alt="image-20211016193053562" style="zoom:50%;" />
 
-### 1.MutationObserve
+### 1.MutationObserver
 
 监听DOM树的变化。
 
-
+MutationObserver 将响应函数改成异步调用，可以不用在每次 DOM 变化都触发异步调用，而是等多次 DOM 变化后，一次触发异步调用加入到微任务队列当中，并且还会使用一个数据结构来记录这期间所有的 DOM 变化。这样即使频繁地操纵 DOM，也不会对性能造成太大的影响。
 
 
 
@@ -673,7 +830,7 @@ requestAnimationFrame：希望在下一次浏览器重绘之前执行动。浏�
 
 this 就是当可执行代码的调用者。
 
-this的指向是函数被调用  的时候决定的。
+函数内的this的指向是函数被调用  的时候决定的。
 
 
 
@@ -681,7 +838,7 @@ this一般有几种调用场景
 
 var obj = {a: 1, b: function(){console.log(this);}}
 
-\0. 在全局中，不论是否严格模式，this都指向全局对象。
+0.在全局中，不论是否严格模式，this都指向全局对象。
 
 1、作为对象调用时，指向该对象 obj.b(); // 指向obj
 
@@ -693,19 +850,25 @@ var obj = {a: 1, b: function(){console.log(this);}}
 
 \5. 在Dom中事件处理函数中，this指向触发事件的元素 e.currentTarget
 
+```
+
+```
+
 6.箭头函数本身没有this,是通过父级上下文获取的this。如果在对象中定义箭头函数，通过对象obj.a，来访问箭头函数时，它的this指向全局上下文。如果时在函构造中定义箭头函数，它的this指向实例的this.
 
-7.在函数A内部再**单独调用函数B**，即使函数A有相应的this,但是函数B内的this还是指向window.就像2.一样。作为一个函数调用。默认指向全局，严格模式下指向window
+7.在函数A内部再**单独调用函数B**，即使函数A有相应的this,但是函数B内的this还是指向window.就像2.一样。作为一个函数调用。默认指向全局，严格模式下指向window.即嵌套函数不会从调用它的函数中继承 this。
 
 ```javascript
-function name(params) {
-    console.log(this);
-     let b = function(params){
-        console.log(this);      //window
-    }
-    b()
+var myObj = {
+  name : " 极客时间 ", 
+  showThis: function(){
+    console.log(this)
+    function bar(){console.log(this)} //window
+    bar()
+  }
 }
-new name()
+myObj.showThis()
+
 
 document.querySelector('input').addEventListener('input',function(e){
     console.log(this);
@@ -713,6 +876,27 @@ document.querySelector('input').addEventListener('input',function(e){
 })
 
 ```
+
+所以一般都这样解决，或者通过箭头函数来获取父级上下文的this
+
+```js
+var myObj = {
+  name : " 极客时间 ", 
+  showThis: function(){
+    console.log(this)
+    var self = this
+    function bar(){
+      self.name = " 极客邦 "
+    }
+    bar()
+  }
+}
+myObj.showThis()
+console.log(myObj.name)
+console.log(window.name)
+```
+
+
 
 在标准函数和箭头函数中有不同的指向。
 
@@ -746,149 +930,24 @@ document.querySelector('input').addEventListener('input',function(e){
 函数也是对象，也可以拥有属性和方法。
 
 ```javascript
-// add(1)(2)(3)....function add(...args){    let allArgs = args    let fn = function(...args2){        allArgs = [...allArgs,...args2];        return fn;    }    // js是词法作用域 函数的作用域在函数定义时就决定了    fn.toString = function(){        // 通过作用域链攀升获得变量 allArgs        return allArgs.reduce((sum,value)=>{return sum+value},0)    }    fn.dd = 'dd'    return fn;}let a = add(1)(2)(3)console.log(a);
+// add(1)(2)(3)....function add(...args){ 
+let allArgs = args  
+let fn = function(...args2){ 
+    allArgs = [...allArgs,...args2]; 
+    return fn;   
+}    // js是词法作用域 函数的作用域在函数定义时就决定了 
+fn.toString = function(){
+    // 通过作用域链攀升获得变量 allArgs        
+    return allArgs.reduce((sum,value)=>{return sum+value},0)   
+}    
+fn.dd = 'dd'    
+return fn;
+}
+let a = add(1)(2)(3)
+console.log(a);
 ```
 
 
-
-### 1.执行上下文和作用域
-
-作用域是指上下文中定义变量（变量命和函数名）的合法使用范围。作用域规定了上下文如何查找变量。
-
-javaScript是词法作用域，即静态作用域。函数的作用域在函数定义时就决定了。
-
-```js
-// 题目一
-function bar() {
-  var myName = ' 极客世界 '
-  let test1 = 100
-  if (1) {
-    let myName = 'Chrome 浏览器 '
-    console.log(test)
-  }
-}
-function foo() {
-  var myName = ' 极客邦 '
-  let test = 2
-  {
-    let test = 3
-    bar()
-  }
-}
-var myName = ' 极客时间 '
-let myAge = 10
-let test = 1
-foo()  // 1
-```
-
-```js
-// 题目二
-var bar = {
-  myName: 'time.geekbang.com',
-  printName: function () {
-    console.log(myName)
-  },
-}
-function foo() {
-  let myName = ' 极客时间 '
-  return bar.printName
-}
-let myName = ' 极客邦 '
-let _printName = foo()  // 注意这里赋值操作，重新生成函数的词法作用域
-_printName()
-bar.printName()
-```
-
-es6之前只有函数作用域和全局作用域。es6之后新增了块级作用域。
-
-全局作用域内定义的变量在任何位置都能访问。
-
-函数作用域定义的变量只有函数内部能够访问。函数执行结束后会被销毁。
-
-块级作用域即{}。判断语句，循环语句，甚至单独的一个{}.
-
-```js
-function bar() {
-  var myName = ' 极客世界 '
-  let test1 = 100
-  if (1) {
-    let myName = 'Chrome 浏览器 '
-    console.log(test)
-  }
-}
-function foo() {
-  var myName = ' 极客邦 '
-  let test = 2
-  {
-    let test = 3
-    bar()
-  }
-}
-var myName = ' 极客时间 '
-let myAge = 10
-let test = 1
-foo()
-```
-
-**词法环境**
-
-ES6 是支持块级作用域的，当执行到代码块时，如果代码块中有 let 或者 const 声明的变量，那么变量就会存放到该函数的词法环境中。对于上面这段代码，当执行到 bar 函数内部的 if 语句块时，其调用栈的情况如下图所示：
-
-
-
-![image-20211211002719131](https://s2.loli.net/2021/12/11/obDpIgxMmSlu9hX.png)
-
-变量提升。
-
-```js
-function varTest() {
-  var x = 1;
-  if (true) {
-    var x = 2;  // 同样的变量!
-    console.log(x);  // 2
-  }
-  console.log(x);  // 2
-}
-```
-
-<img src="https://s2.loli.net/2021/12/11/NXrYRwtnh37zLdQ.png" alt="image-20211211000555217" style="zoom:50%;" />
-
-
-
-#### 1执行上下文
-
-当**执行一个函数**的时候，就会创建一个**执行上下文**，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。
-
-对于每个执行上下文，都有三个重要属性：    
-
-- 变量对象(Variable object，VO)
-
-**变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明**。因为不同执行上下文下的变量对象稍有不同，所以我们来聊聊全局上下文下的变量对象和函数上下文下的变量对象
-
-- 作用域链(Scope chain)
-
-一条变量对象的链条。包含了当前的变量对象以及父级上下文的变量对象，直到全局对象。
-
-当查找变量的时候，会先从当前上下文的变量对象中查找，如果没有找到，就会从父级(词法层面上的父级)执行上下文的变量对象中查找，一直找到全局上下文的变量对象，也就是全局对象。这样由多个执行上下文的变量对象构成的链表就叫做作用域链
-
-- this
-
-  当前执行上下文的调用者。
-
-
-
-var 声明会被拿到函数或全局作用域的顶部，位于作用域中所有代码之前。这个现象叫作“提升”.
-
-
-
-2.**函数声明和函数表达式**
-
-函数声明会提升，且比变量提升优先级高。
-
-```
-//函数声明语句写法function test(){}; test();  
-//函数表达式写法var test = function(){}; test();
-```
 
 
 
@@ -1825,6 +1884,15 @@ console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fs
 
 
 ## 28DOM
+
+
+
+### 0.什么是 DOM
+
+- 从页面的视角来看，DOM 是生成页面的基础数据结构。
+- 从 JavaScript 脚本视角来看，DOM 提供给 JavaScript 脚本操作的接口，通过这套接口，JavaScript 可以对 DOM 结构进行访问，从而改变文档的结构、样式和内容。
+
+
 
 ### 1.property和attributes的区别 
 

@@ -20,9 +20,13 @@
         <option value="2">B</option>
         <option value="3">C</option>
     </select>
+    <button id='button1'>button1</button>
     <script>
-        var a = 1
-        console.log(window.a);
+        let button1 = document.querySelector('#button1');
+        button1.addEventListener('click',function(){
+            console.log("object");
+        })
+        
     </script>
 </body>
 

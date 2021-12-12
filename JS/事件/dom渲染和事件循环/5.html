@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="button">click</button>
+</body>
+<script>
+    // dom 事件 回调是宏任务
+    // 当为button添加监听事件时，浏览器的此时的js执行栈为空。
+    // 发生点击事件后 会添加两个 宏任务 到 宏任务队列当中
+    // js执行栈先执行一个宏任务，期间产生的微任务会进入微任务队列内，js引擎栈为空时再执行微任务
+const button = document.querySelector("#button");
+button.addEventListener('click',function(e){
+    Promise.resolve().then(()=>{
+        console.log("macroTask");
+    })
+    console.log("Hello");
+})
+button.addEventListener('click',function(e){
+    Promise.resolve().then(()=>{
+        console.log("macroTask");
+    })
+    console.log("Hello");
+})
+</script>
+</html>
