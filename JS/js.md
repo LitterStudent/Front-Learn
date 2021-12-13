@@ -141,15 +141,79 @@ ES6 是支持块级作用域的，当执行到代码块时，如果代码块中�
 
 
 
+### 4.浏览器的渲染流程
+
+按照渲染的时间顺序，可以分为以下几个阶段：构建dom树，样式计算，布局阶段，分层，绘制，分块，光栅化和合成。
+
+1.根据html解析生成dom树。
+
+在控制台输入 documnet 可以查看 dom树
+
+2.计算出dom节点中每个元素的具体样式
+
+​			1.渲染引擎会先将收到的css文本数据转换称浏览器可以识别的数据结构，styleSheets. 可以通过document.styleSheets查看到.
+
+ 		   2.然后根据css的继承性和层叠性计算出每个dom节点的具体样式并保存到ComputedStyle中。
+
+<!--源码中没有cssom这个词，所有很多文章说的cssom应该就是styleSheets，而且渲染树是16年前的说法，现在代码重构了，我们可以把 Layout Tree 看成是渲染树，不过还是有些区别的-->
+
+3.创建布局树
+
+​        1.根据dom树和ComputedStyle生成布局树。遍历dom树的可见节点，并将这些节点添加到布局树上 
+
+​		2.在dom上不可见的元素如 head和其他 display:none 的元素不会出现在 布局树上
+
+​		3.布局计算，计算布局树上每个节点的坐标位置。
+
+4.分层
+
+​			1.根据布局树上的节点，为一些含有 层叠上下文的特殊节点生成专用图层，生成一颗对应的图层树。如果一个节点没有图层就会从属于父节点的图层。
+
+​									1HTML根元素本身就具有层叠上下文。
+
+​									2普通元素设置**position不为static**并且**设置了z-index属性**，会产生层叠上下文。
+
+​									3元素的 **opacity** 值不是 1
+
+​									4元素的 **transform** 值不是 none
 
 
-## 0.3 执行上下文栈
+
+
+![image-20211213200644741](https://s2.loli.net/2021/12/13/ZTiyBjt14DS6nEG.png)
+
+5.图层绘制
+
+​			 1.将每一个图层的绘制步骤拆分成很多绘制指令组成的绘制列表
+
+6.栅格化操作
+
+​			 1.主线程将绘制列表提交给合成线程，合成线程将图层划分为图块，合成线程再选择视口附近的图块，把它交给栅格化线程池生成				位图。栅格化的过程会使用GPU来进行栅格化，生成的位图被保存在GPU内存中。（GPU是在GPU进程当中）
+
+<img src="https://s2.loli.net/2021/12/13/SELsiyRqjCU6lp3.png" alt="image-20211213223254293" style="zoom: 80%;" />
+
+7.合成和显示
+
+## 0.3 js执行原理
 
 作用域是指上下文中定义变量（变量命和函数名）的合法使用范围。作用域规定了上下文如何查找变量。
+
+var 声明会被拿到函数或全局作用域的顶部，位于作用域中所有代码之前。这个现象叫作“提升”.
+
+**函数声明和函数表达式**
+
+函数声明会提升，且比变量提升优先级高。
+
+```
+//函数声明语句写法function test(){}; test();  
+//函数表达式写法var test = function(){}; test();
+```
 
 
 
 ### 1.执行上下文和作用域
+
+#### 1.作用域
 
 javaScript是词法作用域，即静态作用域。函数的作用域在函数定义时就决定了。
 
@@ -228,7 +292,7 @@ foo()
 
 **词法环境**
 
-ES6 是支持块级作用域的，当执行到代码块时，如果代码块中有 let 或者 const 声明的变量，那么变量就会存放到该函数的词法环境中。对于上面这段代码，当执行到 bar 函数内部的 if 语句块时，其调用栈的情况如下图所示：
+ES6 是支持块级作用域的，当执行到代码块时，如果代码块中有 let 或者 const 声明的变量，那么变量就会存放到该函数的词法环境中。（关于词法环境，在下面的ES5执行上下文中还会有说明）对于上面这段代码，当执行到 bar 函数内部的 if 语句块时，其调用栈的情况如下图所示：
 
 
 
@@ -251,46 +315,198 @@ function varTest() {
 
 
 
-#### 1.ES3执行上下文
+#### 2.ES3执行上下文
 
-当**执行一个函数**的时候，就会创建一个**执行上下文**，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。
+当js引擎刚开始执行全局代码时，会创建全局执行上下文压入执行栈中，直到全局代码执行完成后才弹出。 当**执行一个函数**的时候，就会创建一个**执行上下文**，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。
 
-对于每个执行上下文，都有三个重要属性：    
+1.**三个重要属性**：    
 
-- 变量对象(Variable object，VO)
+对于每个执行上下文，都有三个重要属性
 
-**变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明**。不同执行上下文下的变量对象稍有不同.全局执行上下文的变量对象是window,函数执行上下文的变量对象
+- **变量对象**(Variable object，VO)
 
-- 作用域链(Scope chain)
+变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明。不同执行上下文下的变量对象稍有不同.
+
+全局执行上下文的变量对象是window,
+
+函数执行上下文的变量对象会用当前函数的参数列表先初始化，函数代码块中声明的变量和函数也会被添加到变量对象上。
+
+- **活动对象**(activation object，AO)
+
+函数进入执行阶段，原本不能访问的变量对象会被激活称为一个活动对象，自此我们可以通过活动对象访问到各种属性。
+
+- **作用域链**(Scope chain)
 
 一条变量对象的链条。包含了当前的变量对象以及父级上下文的变量对象，直到全局对象。
 
 当查找变量的时候，会先从当前上下文的变量对象中查找，如果没有找到，就会从父级(词法层面上的父级)执行上下文的变量对象中查找，一直找到全局上下文的变量对象，也就是全局对象。这样由多个执行上下文的变量对象构成的链表就叫做作用域链
 
-- this
+- **this**
 
   当前执行上下文的调用者。
 
+**2.执行上下文的创建过程**
+
+1.函数被调用
+
+2.执行具体的代码前，创建相应的执行上下文
+
+3.进入执行上下文的创建阶段：
+
+​			1.初始化作用域链条
+
+​			2.通过函数参数创建 argument objects 
+
+​			3.扫描上下文找到所有的函数声明和 var 变量声明
+
+​					根据声明在变量对象中创建相应的属性，如果是函数声明，则值为指向堆内存的地址。如果是变量声明则为undefined.
+
+4.进入执行上下文的执行阶段
+
+​             执行函数内的代码，为变量对象内的属性赋值。
 
 
-var 声明会被拿到函数或全局作用域的顶部，位于作用域中所有代码之前。这个现象叫作“提升”.
+
+#### 3.ES5执行上下文
+
+ES5规范中上下文和ES3相比，删除了变量对象和活动对象，新增了 **变量环境**（variable enviroment）和 **词法环境**（lexical enviroment）**词法** 环境和 **变量** 环境的区别在于前者用于存储**函数声明和变量（ `let` 和 `const` ）**绑定，而后者仅用于存储**变量（ `var` ）**绑定。
 
 
 
-2.**函数声明和函数表达式**
+**This Binding**
 
-函数声明会提升，且比变量提升优先级高。
+**全局**执行上下文中，`this` 的值指向全局对象，在浏览器中`this` 的值指向 `window`对象，而在`nodejs`中指向这个文件的`module`对象。
+
+**函数**执行上下文中，`this` 的值取决于函数的调用方式。具体有：默认绑定、隐式绑定、显式绑定（硬绑定）、`new`绑定、箭头函数。
+
+
+
+**词法环境两个组成部分：**
+
+  			1.环境记录：存储变量声明（ `let` 和 `const` ）和函数声明的位置。函数中还包含arguments对象。
+
+​			  2.对外部环境的引用：可以访问其外部的词法环境
+
+**变量环境两个组成部分：**
+
+​			  1.环境记录：存储变量声明（ var）.
+
+​			  2.对外部环境的引用：可以访问其外部的变量环境
+
+```js
+let a = 20;  
+const b = 30;  
+var c;
+
+function multiply(e, f) {  
+ var g = 20;  
+ return e * f * g;  
+}
+
+c = multiply(20, 30);
+//执行上下文如下所示
+```
+
+```js
+GlobalExectionContext = {
+
+  ThisBinding: <Global Object>,
+
+  LexicalEnvironment: {  
+    EnvironmentRecord: {  
+      Type: "Object",  
+      // 标识符绑定在这里  
+      a: < uninitialized >,  
+      b: < uninitialized >,  
+      multiply: < func >  
+    }  
+    outer: <null>  
+  },
+
+  VariableEnvironment: {  
+    EnvironmentRecord: {  
+      Type: "Object",  
+      // 标识符绑定在这里  
+      c: undefined,  
+    }  
+    outer: <null>  
+  }  
+}
+
+FunctionExectionContext = {  
+   
+  ThisBinding: <Global Object>,
+
+  LexicalEnvironment: {  
+    EnvironmentRecord: {  
+      Type: "Declarative",  
+      // 标识符绑定在这里  
+      Arguments: {0: 20, 1: 30, length: 2},  
+    },  
+    outer: <GlobalLexicalEnvironment>  
+  },
+
+  VariableEnvironment: {  
+    EnvironmentRecord: {  
+      Type: "Declarative",  
+      // 标识符绑定在这里  
+      g: undefined  
+    },  
+    outer: <GlobalLexicalEnvironment>  
+  }  
+}
 
 ```
-//函数声明语句写法function test(){}; test();  
-//函数表达式写法var test = function(){}; test();
+
+### 2.原型
+
+原型（prototype）：为其他对象提供共享属性的对象。原型本身也是一个对象。每一个对象上都有一个隐式引用指向它的原型。所谓的隐式，是指不是由开发者亲自创建的。
+
+原型链：原型对象上也有隐式属性指向它的原型或者null，这样就构成了原型链。在访问一个对象的属性时，实际上就是在查询原型链。这个对象是原型链的第一个元素，先检查它是否包含属性名，如果包含则返回属性值，否则检查原型链上的第二个元素，以此类推。
+
+
+
+#### 1.原型的继承方式
+
+显示继承和隐式继承
+
+**显示继承**：通过调用 Object.setPrototypeOf(son,father) 或者 Object.create( father ).
+
+**隐式继承**：通过 构造函数， new 出 一个对象实例。该实例就会有一个原型，该原型为一个以 Object.prototype 为原型的对象。如下图
+
+![image-20211213142015275](https://s2.loli.net/2021/12/13/nqoze51V2UMmvak.png)
+
+
+
+#### 2.内置构造函数的隐式继承
+
+JavaScript 的主流继承方式，选择了隐式原型继承，它提供了几个内置的 constructor 函数，如 Object, Array, Boolean, String, Number 等。
+
+```js
+let obj = new Object() //默认会使用 Object.prototype 对象 作为obj的原型
+obj.firstname = 'd'
+obj.lastname = 'e'
+
+// 语法糖写法
+// 等价继承原型
+obj = {
+    firstname = 'd',
+    lastname = 'e'
+}
+
+// 同样，数组写法也是
+
+let arr = new Array(1,2,3);
+// 
+let arr = [1,2,3]
+
 ```
 
+#### 3.Object和Function的原型
 
+**最后总结： ** **先有Object.prototype（原型链顶端），Function.prototype继承Object.prototype而产生，最后，Function和Object和其它构造函数继承Function.prototype而产生。**
 
-
-
-
+![image-20211213144404079](https://s2.loli.net/2021/12/13/zvIC4OwQhEcq2J7.png)
 
 ## 0回调
 
@@ -704,14 +920,14 @@ ES5的继承有很多种
 
 ```js
 function inheritPrototype(subType, superType) {
-    let prototype = object(superType.prototype); // 创建对象
+    let prototype = Object.create(superType.prototype); // 创建对象
     prototype.constructor = subType; // 增强对象
     subType.prototype = prototype; // 赋值对象
 }
 
 ```
 
-
+![image-20211213134541815](https://s2.loli.net/2021/12/13/ST3CoHPy8UlqEXY.png)
 
 ES6的继承是通过 Class  Extends 语法糖实现的，本质上还是原型链实现的继承。（大概吧）
 
@@ -848,11 +1064,7 @@ var obj = {a: 1, b: function(){console.log(this);}}
 
 4、作为call与apply调用 obj.b.apply(object, []); // this指向当前的object
 
-\5. 在Dom中事件处理函数中，this指向触发事件的元素 e.currentTarget
-
-```
-
-```
+5.在Dom中事件处理函数中，this指向触发事件的元素 e.currentTarget
 
 6.箭头函数本身没有this,是通过父级上下文获取的this。如果在对象中定义箭头函数，通过对象obj.a，来访问箭头函数时，它的this指向全局上下文。如果时在函构造中定义箭头函数，它的this指向实例的this.
 
@@ -973,27 +1185,15 @@ Object.getOwnPropertySymbols()方法返回一个给定对象自身的所有 Symb
 
 
 
-### 2.原型
-
- 原型就一个为其他对象提供共享属性访问的对象。在创建对象时每个对象都有一个隐式属性指向它的原型或者null.
-
-原型也是对象，所以原型也有自己的原型。这样就构成了原型链。
 
 
-
-### 3原型链
-
-对象实例在访问属性时就是在攀升原型链。当前对象是原型链的第一个元素，当属性在这个对象找不到时，就回去访问它的原型，一直攀升原型链直至找到。
-
-
-
-### 4.遍历对象
+### 2.遍历对象
 
 for in + obj.hasOwnPrperty()
 
 
 
-### 5判断一个对象是否为空
+### 3判断一个对象是否为空
 
 使用 Object 的 getOwnPropertyNames 方法，获取所有属性名，这样就算是不可枚举属性依然能够获取到，算是比较 ok 的方法。
 
