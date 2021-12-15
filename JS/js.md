@@ -117,15 +117,15 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 
 ### 3.浏览器的v8引擎解析js代码的过程
 
-<img src="https://s2.loli.net/2021/12/10/QPdy5CfokVxmq7F.png" alt="image-20211210234356311" style="zoom:67%;" />
+![image-20211213225126970](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225126970.png)
 
-![image-20211210234417274](https://s2.loli.net/2021/12/10/IUg5LuSJma4H1yA.png)
+![image-20211213225108548](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225108548.png)
 
 1.当js代码执行时，js引擎首先会进行编译，编译的过程中，会创建执行上下文和可执行代码，执行上下文包含变量环境和词法环境，并将变量声明和函数声明放入到变量环境中（variable enviroment）,变量值设为undefined,函数值为堆内函数定义的地址。
 
 
 
-![image-20211210233720430](https://s2.loli.net/2021/12/10/R3MwVOcJ8buoUiD.png)
+![image-20211213225051274](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225051274.png)
 
 执行上下文一般有三种，全局代码编译后产生的全局上下文，函数代码编译后产生的函数上下文，eval函数编译后产生的上下文。
 
@@ -133,15 +133,15 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 
 ES6 是支持块级作用域的，当执行到代码块时，如果代码块中有 let 或者 const 声明的变量，那么变量就会存放到该函数的词法环境中。对于上面这段代码，当执行到 bar 函数内部的 if 语句块时，其调用栈的情况如下图所示：
 
-
-
-![image-20211211002719131](https://s2.loli.net/2021/12/11/obDpIgxMmSlu9hX.png)
+![image-20211213225018661](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225018661.png)
 
 2.编译完成后，js引擎开始执行代码。js引擎会使用一个调用栈来压入执行上下文。当刚开始将全局上下文压入调用栈中，然后开始执行代码。当遇到函数调用时，会找到函数的代码进行编译，生成执行上下文后压入调用栈中然后再执行函数代码。
 
 
 
 ### 4.浏览器的渲染流程
+
+#### 1.渲染流程
 
 按照渲染的时间顺序，可以分为以下几个阶段：构建dom树，样式计算，布局阶段，分层，绘制，分块，光栅化和合成。
 
@@ -167,7 +167,7 @@ ES6 是支持块级作用域的，当执行到代码块时，如果代码块中�
 
 4.分层
 
-​			1.根据布局树上的节点，为一些含有 层叠上下文的特殊节点生成专用图层，生成一颗对应的图层树。如果一个节点没有图层就会从属于父节点的图层。
+​			1.根据布局树上的节点，为一些含有 层叠上下文的特殊节点生成专用图层，生成一颗对应的图层树。如果一个节点没有图层就会从			属于父节点的图层。
 
 ​									1HTML根元素本身就具有层叠上下文。
 
@@ -180,7 +180,7 @@ ES6 是支持块级作用域的，当执行到代码块时，如果代码块中�
 
 
 
-![image-20211213200644741](https://s2.loli.net/2021/12/13/ZTiyBjt14DS6nEG.png)
+![image-20211213200644741](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213200644741.png)
 
 5.图层绘制
 
@@ -188,11 +188,186 @@ ES6 是支持块级作用域的，当执行到代码块时，如果代码块中�
 
 6.栅格化操作
 
-​			 1.主线程将绘制列表提交给合成线程，合成线程将图层划分为图块，合成线程再选择视口附近的图块，把它交给栅格化线程池生成				位图。栅格化的过程会使用GPU来进行栅格化，生成的位图被保存在GPU内存中。（GPU是在GPU进程当中）
+<!--栅格化就是将图块转换成位图-->
 
-<img src="https://s2.loli.net/2021/12/13/SELsiyRqjCU6lp3.png" alt="image-20211213223254293" style="zoom: 80%;" />
+​			 1.主线程将绘制列表提交给合成线程，合成线程将图层划分为图块，合成线程再选择视口附近的图块，把它交给栅格化线程池生成				位图。栅格化的过程会使用GPU来加速栅格化，生成的位图被保存在GPU内存中。（GPU是指GPU进程）
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213223254293.png" alt="image-20211213223254293" style="zoom: 80%;" />
 
 7.合成和显示
+
+所有图层的图块栅格化（光栅化）完成后，合成线程会发生‘DarwQuad'命令给浏览器进程，浏览器进程收到命令后将页面内容绘制到显卡的显存当中，最后显卡再将显存显示到屏幕上。
+
+![image-20211214005221047](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211214005221047.png)
+
+#### 2.js阻塞dom树的解析
+
+dom从页面的角度看是生成页面的基础数据结构。
+
+​		从js的角度看，是浏览器提供的操作文档接口。
+
+
+
+首先，html解析成dom树的这个过程是 html 边加载 边解析的，网络进程和渲染进程之间会建立一个共享数据的管道，网络进程加载多少数据后就会放到管道内，渲染进程则会在管道的一端不断读取数据并喂给 html解析器，从而实现 **边加载边解析**。
+
+如果在解析dom树时发现了js脚本，就会停止dom树的解析，转而先加载并执行js脚本,因为js脚本可能修改dom树的结构。但是Chrome做了优化，会做预解析操作，渲染引擎收到字节流后，会开启一个预解析线程，解析html中需要加载的js,css资源，然后提前加载。而js引擎在解析js之前是不知道js是否操作了cssom的，所以渲染引擎会先加载解析css，再执行js脚本。
+
+所以综上所述，js脚本会阻塞html的解析，而样式文件会阻塞js脚本的执行。
+
+
+
+#### 3.css如何影响首次加载的白屏时间
+
+当html没有js时，会先解析html构建dom,预解析会先加载css文件，当dom构建完成后就会开始构建cssom.(styleSheets).让js能操作样式表和给布局树提供样式信息。
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211214133757347.png" alt="image-20211214133757347" style="zoom:50%;" />
+
+
+
+而当html中即有css,又有js时，会阻塞dom的构建，先构建cssom,再执行js，再构建dom
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211214134158183.png" alt="image-20211214134158183" style="zoom: 67%;" />
+
+所以为了缩短白屏时间：1.减少css文件的体积，将一个大的css文件通过媒体查询属性分为不同用途的css文件，不同场景下加载不同的											css文件。
+
+​											2.压缩js文件
+
+​											3.对于不需要html解析阶段使用的js可以使用 async或defer标签。
+
+```js
+1:<script src="foo.js" type="text/javascript"></script> // 会，因为加载了js文件
+2:<script defer src="foo.js" type="text/javascript"></script> // 不会，因为是在DOM解析完成后， DOMContentLoaded 之前执行
+3:<script sync src="foo.js" type="text/javascript"></script> // 会，因为加载后立即执行
+4:<link rel="stylesheet" type="text/css" href="foo.css" /> // 会，因为需要生成CSSOM
+5:<link rel="stylesheet" type="text/css" href="foo.css" media="screen"/> // 会，因为针对屏幕
+6:<link rel="stylesheet" type="text/css" href="foo.css" media="print" /> // 不会，因为在打印机才生效
+7:<link rel="stylesheet" type="text/css" href="foo.css" media="orientation:landscape" /> // 会，因为横屏
+8:<link rel="stylesheet" type="text/css" href="foo.css" media="orientation:portrait" /> // 不会，因为竖屏
+```
+
+#### 4.DOMContentLoaded 和 Load
+
+1.DOMContentLoaded，这个事件发生后，说明页面已经构建好 DOM 了，这意味着构建 DOM 所需要的 HTML 文件、JavaScript 文件、CSS 文件都已经下载完成了。
+
+2.Load，说明浏览器已经加载了所有的资源（图像、样式表等）。
+
+### 5.回流-重绘-合成
+
+#### 1.回流（重排）
+
+对dom修改引发了dom的几何尺寸的变化就会触发回流。
+
+具体一点，有以下的操作会触发回流:
+
+1. 一个 DOM 元素的几何属性变化，常见的几何属性有`width`、`height`、`padding`、`margin`、`left`、`top`、`border` 等等, 这个很好理解。
+2. 使 DOM 节点发生`增减`或者`移动`。
+3. 读写 `offset`族、`scroll`族和`client`族属性的时候，浏览器为了获取这些值，需要进行回流操作。
+4. 调用 `window.getComputedStyle` 方法。
+
+一些常用且会导致回流的属性和方法：
+
+- `clientWidth`、`clientHeight`、`clientTop`、`clientLeft`
+- `offsetWidth`、`offsetHeight`、`offsetTop`、`offsetLeft`
+- `scrollWidth`、`scrollHeight`、`scrollTop`、`scrollLeft`
+- `scrollIntoView()`、`scrollIntoViewIfNeeded()`
+- `getComputedStyle()`
+- `getBoundingClientRect()`
+- `scrollTo()`
+
+
+
+依照上面的渲染流水线，触发回流的时候，如果 DOM 结构发生改变，则重新渲染 DOM 树，然后将后面的流程(包括主线程之外的任务)全部走一遍。
+
+![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/1732ec388e85bd2d%7Etplv-t2oaga2asx-watermark.awebp)
+
+#### 2.重绘
+
+当页面中元素样式的改变并不影响它在文档流中的位置时（例如：`color`、`background-color`、`visibility`等），浏览器会将新样式赋予给元素并重新绘制它，这个过程称为重绘。
+
+根据概念，我们知道由于没有导致 DOM 几何属性的变化，因此元素的位置信息不需要更新，从而省去布局的过程，流程如下：
+
+
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2020/7/8/1732ec3b24ec43c9~tplv-t2oaga2asx-watermark.awebp)
+
+
+
+跳过了`布局树`和`建图层树`,直接去绘制列表，然后在去分块,生成位图等一系列操作。
+
+可以看到，重绘不一定导致回流，但回流一定发生了重绘。
+
+
+
+#### 3.合成
+
+还有一种情况：就是**更改了一个既不要布局也不要绘制**的属性，那么渲染引擎会跳过布局和绘制，直接执行后续的**合成**操作，这个过程就叫**合成**。
+
+举个例子：比如使用CSS的transform来实现动画效果，**避免了回流跟重绘**，直接在非主线程中执行合成动画操作。显然这样子的效率更高，毕竟这个是在非主线程上合成的，没有占用主线程资源，另外也避开了布局和绘制两个子阶段，所以**相对于重绘和重排，合成能大大提升绘制效率。**
+
+利用这一点好处：
+
+-  合成层的位图，会交由 GPU 合成，比 CPU 处理要快
+-  当需要 repaint 时，只需要 repaint 本身，不会影响到其他的层
+-  对于 transform 和 opacity 效果，不会触发 layout 和 paint
+
+
+
+#### 实践意义
+
+-  使用`createDocumentFragment`进行批量的 DOM 操作
+-  对于 resize、scroll 等进行防抖/节流处理。
+-  动画使用transform或者opacity实现
+-  将元素的will-change 设置为 opacity、transform、top、left、bottom、right 。这样子渲染引擎会为其单独实现一个图层，当这些变换发生时，仅仅只是利用合成线程去处理这些变换，而不牵扯到主线程，大大提高渲染效率。
+-  rAF优化等等
+
+
+
+```css
+
+.box {
+will-change: transform, opacity;
+}
+```
+
+这段代码就是提前告诉渲染引擎 box 元素将要做几何变换和透明度变换操作，这时候渲染引擎会将该元素单独实现一层，等这些变换发生时，渲染引擎会通过合成线程直接去处理变换，这些变换并没有涉及到主线程，这样就大大提升了渲染的效率。这也是 CSS 动画比 JavaScript 动画高效的原因。
+
+如果涉及到一些可以使用合成线程来处理 CSS 特效或者动画的情况，就尽量使用 will-change 来提前告诉渲染引擎，让它为该元素准备独立的层。但是凡事都有两面性，每当渲染引擎为一个元素准备一个独立层的时候，它占用的内存也会大大增加，因为从层树开始，后续每个阶段都会多一个层结构，这些都需要额外的内存，所以你需要恰当地使用 will-change。总结
+
+
+
+### 6浏览器面板功能
+
+![image-20211214142754526](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211214142754526.png)
+
+### 7.优化浏览器页面
+
+从两个层面优化，首次加载和加载完后与用户交互的时候。
+
+1.加载阶段
+
+​	   1.减少加载资源的个数，可以将 css和js 改为内联的形式，或者如果js没有dom操作可以添加defer或async标签，或者使用媒体查询		来取消某些css文件的加载
+
+​		2.减少加载资源的大小，压缩css和js文件，删除内部的注释等。
+
+​		3.引用cdn来减少资源的请求时间。
+
+![image-20211214151802759](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211214151802759.png)
+
+2.交互阶段
+
+交互阶段的优化其实就是优化渲染进程渲染帧的速度，渲染进程渲染帧的速度决定了交互的流畅度。和加载阶段不同的是，在交互阶段通常都是由js来触发动画的。![image-20211214172231344](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211214172231344.png)
+
+1.避免强制同步布局。避免js强制将计算样式和布局操作提前到当前的任务中
+
+2.合理使用css合成动画，因为合成动画是在合成线程上执行的，不会主线程阻塞。
+
+3.避免频繁的垃圾回收。频繁的垃圾回收会占用主线程从而影响其他任务的执行。
+
+
+
+减少重排和重绘的操作。
+
+
 
 ## 0.3 js执行原理
 
@@ -296,7 +471,7 @@ ES6 是支持块级作用域的，当执行到代码块时，如果代码块中�
 
 
 
-![image-20211211002719131](https://s2.loli.net/2021/12/11/obDpIgxMmSlu9hX.png)
+![image-20211213225230580](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225230580.png)
 
 变量提升。
 
@@ -311,7 +486,7 @@ function varTest() {
 }
 ```
 
-<img src="https://s2.loli.net/2021/12/11/NXrYRwtnh37zLdQ.png" alt="image-20211211000555217" style="zoom:50%;" />
+![image-20211213225243702](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225243702.png)
 
 
 
@@ -474,7 +649,7 @@ FunctionExectionContext = {
 
 **隐式继承**：通过 构造函数， new 出 一个对象实例。该实例就会有一个原型，该原型为一个以 Object.prototype 为原型的对象。如下图
 
-![image-20211213142015275](https://s2.loli.net/2021/12/13/nqoze51V2UMmvak.png)
+![](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225256739.png)
 
 
 
@@ -506,7 +681,7 @@ let arr = [1,2,3]
 
 **最后总结： ** **先有Object.prototype（原型链顶端），Function.prototype继承Object.prototype而产生，最后，Function和Object和其它构造函数继承Function.prototype而产生。**
 
-![image-20211213144404079](https://s2.loli.net/2021/12/13/zvIC4OwQhEcq2J7.png)
+![image-20211213144404079](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/zvIC4OwQhEcq2J7.png)
 
 ## 0回调
 
@@ -927,7 +1102,7 @@ function inheritPrototype(subType, superType) {
 
 ```
 
-![image-20211213134541815](https://s2.loli.net/2021/12/13/ST3CoHPy8UlqEXY.png)
+![](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225325661.png)
 
 ES6的继承是通过 Class  Extends 语法糖实现的，本质上还是原型链实现的继承。（大概吧）
 
@@ -1288,11 +1463,11 @@ console.log(bar.getName())
 
 当执行到 bar.setName 方法中的 myName = "极客邦"这句代码时，JavaScript 引擎会沿着“当前执行上下文–>foo 函数闭包–> 全局执行上下文”的顺序来查找 myName 变量
 
-<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211211003240422.png" alt="image-20211211003240422" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211211003240422.png" alt="image-20211211003240422" style="zoom:50%;" />
 
 通过“开发者工具”来看看闭包的情况，打开 Chrome 的“开发者工具”，在 bar 函数任意地方打上断点，然后刷新页面，可以看到如下内容：
 
-<img src="https://s2.loli.net/2021/12/11/lVJKO36gypUxB1m.png" alt="image-20211211003423772" style="zoom: 67%;" />
+![image-20211213225403642](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225403642.png)
 
 ## 14 隐式转换和显示转换
 
@@ -2292,7 +2467,7 @@ V8是谷歌使用C++开发的开源 javascript 虚拟机引擎，运用于Chrom�
 
 并行回收：新生代对象空间就采用并行策略，在执行垃圾回收的过程中，会启动了多个线程来负责新生代中的垃圾清理操作，这些线程同时将对象空间中的数据移动到空闲区域，这个过程中由于数据地址会发生改变，所以还需要同步更新引用这些对象的指针，此即并行回收.
 
-![image-20211210111749264](https://s2.loli.net/2021/12/10/CGRHWrnJ7m5y4p2.png)
+![image-20211213225509919](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225509919.png)
 
 
 
@@ -2308,7 +2483,7 @@ GC ：垃圾回收
 
 增量就是将一次 `GC` 标记的过程，分成了很多小步，每执行完一小步就让应用逻辑执行一会儿，这样交替多次后完成一轮 `GC` 标记.
 
-![image-20211210002944186](https://s2.loli.net/2021/12/10/G8gTHOXYmKisqSP.png)
+![](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225520943.png)
 
 **三色标记法和写屏障**：由于增量标记的使用V8增加了三色标记和写屏障。
 
