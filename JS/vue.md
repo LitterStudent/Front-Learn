@@ -1030,6 +1030,24 @@ v-if有着更高的切换开销，v-show有着较高的初始化渲染开销。
 
 
 
+```vue
+// v-if 可以 搭配 tmeplate使用
+// template标签不会被渲染出来，可以减少v-if上的标签
+
+<template>
+<template v-if="isShow">
+ ......
+</template>
+
+<template v-else>
+.....
+</template>
+
+</template>
+```
+
+
+
 
 
 
@@ -1136,6 +1154,20 @@ Vue.component('base-checkbox', {
 2.v-model
 
 3.v-on
+
+```js
+// v-on 和 v-bind 的语法糖
+// 当绑定的属性和监听的事件多时，可以使用对象
+
+<div v-bind="{name: MyName , age: MyAge}" >
+</div>
+
+<div v-on={click:clickEvent , mousemove: mouseMove}>
+</div>
+
+```
+
+
 
 4.v-if v-else
 

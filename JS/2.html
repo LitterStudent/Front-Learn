@@ -22,11 +22,21 @@
     </select>
     <button id='button1'>button1</button>
     <script>
-        let button1 = document.querySelector('#button1');
-        button1.addEventListener('click',function(){
-            console.log("object");
-        })
-        
+        "use strict"
+        var c = 2
+        console.log(this.c);
+        if(true)
+     {
+         var a = 2;
+         let b = 3;
+     }
+     d = 4
+     function b (){
+         d = 4
+         console.log(this);
+     }
+     b()
+     console.log(a);
     </script>
 </body>
 
