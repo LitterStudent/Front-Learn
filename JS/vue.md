@@ -588,7 +588,27 @@ vue-cli有三种模式。如图。
 
 
 
+### 5.执行原理
 
+10集 开始
+
+![image-20211222002035570](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222002035570.png)
+
+
+
+执行 vue-cli-service serve 时，会到 node_modultes/bin 下找 vue-cli-service, 而 该文件是个软链接，真实地址是在 node_modules\@vue\cli-service\bin\vue-cli-service.js  下，
+
+![image-20211222002728304](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222002728304.png)
+
+所以会到 node_modules\@vue\cli-service\package.json 文件夹下执行bin 命令
+
+![image-20211222004143983](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222004143983.png)
+
+然后执行  node_modules\@vue\cli-service\bin\vue-cli-service.js  文件
+
+command 就是 service 或者 build
+
+![image-20211222004706763](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222004706763.png)
 
 ## 5.Vue组件自定义事件
 
