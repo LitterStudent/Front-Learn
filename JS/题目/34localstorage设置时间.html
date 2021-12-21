@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //  如何让 localStorage 支持过期时间设置
+    // https://juejin.cn/post/7040671388025225229#heading-3
+
+    // 1.简单实现
+    // 通过一个对象 store ，
+    // 维护一张存储过期时间的映射表，
+    // 封装 localstorage 的 setItem和getItem操作，setItem时将过期时间加入到映射表中
+    // getItem时判断是否过期，过期就返回null,并从localstorage 中删除
+    const store = {
+  // 存储过期时间映射
+  setExpireMap: (key, expire) => {
+    const expireMap = localStorage.getItem('EXPIRE_MAP') || "{}"
+    localStorage.setItem(
+      'EXPIRE_MAP', 
+      JSON.stringify({
+      ...JSON.parse(expireMap),
+      key: expire
+    }))
+  },
+  setItem: (key, value, expire) => {
+  store.setExpireMap(key, expire)
+    localStorage.setItem(key, value)
+  },
+  getItem: (key) => {
+    // 在取值之前先判断是否过期
+    const expireMap = JSON.parse(
+      localStorage.getItem('EXPIRE_MAP') || "{}"
+    )
+    if(expireMap[key] && expireMap[key] < Date.now()) {
+      return localStorage.getItem(key)
+    }else {
+      localStorage.removeItem(key)
+      return null
+    }
+  }
+  // ...
+}
+
+
+//  方法2
+const store = {
+  preId: 'xi-',
+  timeSign: '|-door-|',
+  status: {
+    SUCCESS: 0,
+    FAILURE: 1,
+    OVERFLOW: 2,
+    TIMEOUT: 3,
+  },
+  storage: localStorage || window.localStorage,
+  getKey: function (key) {
+    return this.preId + key;
+  },
+  set: function (
+    key,//: string,
+    value,//: string | number,
+    time,//?: Date & number,
+    cb//?: (status: number, key: string, value: string | number) => void,
+  ) {
+    let _status = this.status.SUCCESS,
+      _key = this.getKey(key),
+      _time;
+    // 设置失效时间，未设置时间默认为一个月
+    try {
+      _time = time
+        ? new Date(time).getTime() || time.getTime()
+        : new Date().getTime() + 1000 * 60 * 60 * 24 * 31;
+    } catch (e) {
+      _time = new Date().getTime() + 1000 * 60 * 60 * 24 * 31;
+    }
+    try {
+      this.storage.setItem(_key, _time + this.timeSign + value);
+    } catch (e) {
+      _status = this.status.OVERFLOW;
+    }
+    cb && cb.call(this, _status, _key, value);
+  },
+  get: function (
+    key,//: string,
+    cb//?: (status: number, value: string | number | null) => void,
+  ) {
+    let status = this.status.SUCCESS,
+      _key = this.getKey(key),
+      value = null,
+      timeSignLen = this.timeSign.length,
+      that = this,
+      index,
+      time,
+      result;
+    try {
+      value = that.storage.getItem(_key);
+    } catch (e) {
+      result = {
+        status: that.status.FAILURE,
+        value: null,
+      };
+      cb && cb.call(this, result.status, result.value);
+      return result;
+    }
+    if (value) {
+      index = value.indexOf(that.timeSign);
+      time = +value.slice(0, index);
+      if (time > new Date().getTime() || time == 0) {
+        value = value.slice(index + timeSignLen);
+      } else {
+        (value = null), (status = that.status.TIMEOUT);
+        that.remove(_key);
+      }
+    } else {
+      status = that.status.FAILURE;
+    }
+    result = {
+      status: status,
+      value: value,
+    };
+    cb && cb.call(this, result.status, result.value);
+    return result;
+  },
+  // ...
+};
+
+
+</script>
+</html>

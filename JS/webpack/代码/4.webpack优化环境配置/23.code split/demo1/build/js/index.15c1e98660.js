@@ -81,20 +81,41 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/test.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/js/test.js":
-/*!************************!*\
-  !*** ./src/js/test.js ***!
-  \************************/
-/*! exports provided: mul, count */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/image/1.png":
+/*!*************************!*\
+  !*** ./src/image/1.png ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"mul\", function() { return mul; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"count\", function() { return count; });\n\r\nfunction mul(x, y) {\r\n  return x * y;\r\n}\r\n\r\nfunction count(x, y) {\r\n  return x - y;\r\n}\r\n\n\n//# sourceURL=webpack:///./src/js/test.js?");
+eval("module.exports = __webpack_require__.p + \"1_60c1189fb8.png\";\n\n//# sourceURL=webpack:///./src/image/1.png?");
+
+/***/ }),
+
+/***/ "./src/image/2.png":
+/*!*************************!*\
+  !*** ./src/image/2.png ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("module.exports = __webpack_require__.p + \"2_6bd98fd8f2.png\";\n\n//# sourceURL=webpack:///./src/image/2.png?");
+
+/***/ }),
+
+/***/ "./src/js/index.js":
+/*!*************************!*\
+  !*** ./src/js/index.js ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const img1 = __webpack_require__(/*! ../image/1.png */ \"./src/image/1.png\")\r\nconst img2 = __webpack_require__(/*! ../image/2.png */ \"./src/image/2.png\")\r\n\r\nfunction sum(...args) {\r\n  return args.reduce((p, c) => p + c, 0);\r\n}\r\n\r\n// eslint-disable-next-line\r\nconsole.log(sum(1, 2, 3, 4));\r\n\n\n//# sourceURL=webpack:///./src/js/index.js?");
 
 /***/ })
 

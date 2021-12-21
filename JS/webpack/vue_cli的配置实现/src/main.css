@@ -1,0 +1,19 @@
+.app {
+    width: 100px;
+    height: 100px;
+    background-color: aqua;
+}
+
+#imgBox1 {
+    height: 400px;
+    width: 400px;
+    background: url('./1.png');
+    background-size: contain;
+  }
+
+  #imgBox2 {
+    height: 400px;
+    width: 400px;
+    background: url('./2.jpg');
+    background-size: contain;
+  }

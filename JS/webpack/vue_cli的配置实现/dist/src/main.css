@@ -1,0 +1,22 @@
+/*!****************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/main.css ***!
+  \****************************************************************/
+.app {
+    width: 100px;
+    height: 100px;
+    background-color: aqua;
+}
+
+#imgBox1 {
+    height: 400px;
+    width: 400px;
+    background: url(../634ac83df4263772719f.png);
+    background-size: contain;
+  }
+
+  #imgBox2 {
+    height: 400px;
+    width: 400px;
+    background: url(../a7058ec2fa9a7f2e3db7.jpg);
+    background-size: contain;
+  }
