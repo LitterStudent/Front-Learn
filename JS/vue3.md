@@ -508,4 +508,153 @@ export default{
 
 
 
-# 2.
+# 2.vite
+
+官方定位：下一代的前端开发与构建工具。
+
+ vite由两个部分组成： 一个开发服务器，它基于原生的ES模块提供丰富的内建功能，HMR的速度非常块
+
+​										一套构建指令，它使用 rollup打开我们的代码，并且是预配置的，可以输出生成环境的优化过的静态资源。
+
+
+
+## 1.前言
+
+现代浏览器虽然默认支持 ESmodule,但是不支持 ts,vue 文件的识别，还有当引用文件的依赖过多时，浏览器需要发送过多的网络请求。vite就是想利用浏览器esmodule的特点，在开发阶段不对文件进行打包，而是将代码进行简单转换，转换成EsModule的代码，直接将资源运行在浏览器上，节省构建时间，而在项目开发完成时再将代码进行打包构建。 
+
+
+
+**直接在浏览器使用ESmodule的弊端：**
+
+1.导入文件时必须指定后缀名 （js,css,等），引入第三方库时必须指定完整路径，过于繁琐。
+
+![image-20211222150830317](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222150830317.png)
+
+2.引入第三方库时，如果一个文件依赖过度需要浏览器去逐一请求，消耗性能过大。
+
+ 如上图请求 lodash 库时，该文件有两百多个js依赖需要浏览器去逐一请求。
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222151204980.png" alt="image-20211222151204980" style="zoom: 50%;" />
+
+## 2.起步
+
+vite 依赖于node 12版后。
+
+### 1.安装： npm install vite -D
+
+### 2.启动： npx vite 目录如下
+
+![image-20211222203052073](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222203052073.png)
+
+### 3.使用vite后，文件引入的可以不用把路径写全，也可以不用后缀名，网络请求时也不会请求第三方库过多的依赖文件。
+
+![image-20211222203920625](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222203920625.png)
+
+![image-20211222203928796](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222203928796.png)
+
+
+
+### 4.vite对css的处理当导入普通css时，不需要添加任何loader，vite自动帮我们解析完成。
+
+![image-20211222204830186](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222204830186.png)
+
+​	但是不能解析less文件，解析less时需要添加  npm install less -D 
+
+![image-20211222205525568](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222205525568.png)
+
+![image-20211222205516042](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222205516042.png)
+
+css的兼容性处理需要添加相应的第三方库。
+
+​		npm install postcss -D
+
+​		npm install postcss-preset-env -D
+
+​		配置postcss.config.js 
+
+![image-20211222210110026](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222210110026.png)
+
+兼容性如下
+
+![image-20211222210411377](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222210411377.png)
+
+### 5.默认对typescript的支持
+
+
+
+### 6.对vue的支持
+
+1.安装 Vue3 npm install  vue@next -D  vue的核心代码
+
+![image-20211222223314600](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222223314600.png)
+
+2. 安装  @vite/plugin-vue 让vite能够支持vue
+3. 配置 vite.config.js 文件
+
+![image-20211222234716829](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222234716829.png)
+
+4.安装 npm install @vue/compiler-sfc -D  负责对vue文件进行解析
+
+### 7.vite的预打包
+
+vite会对第三方库进行预打包存放到/node_modules/vite/ 文件夹下。 因为第三库的文件我们只是引用，不会去修改，所以可以预打包,预打包后下次重新使用vite加载时就可以减少项目的启动时间。
+
+![image-20211222235215400](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222235215400.png)
+
+
+
+
+
+
+
+## 3.vite的原理
+
+内部搭建的一个服务器 Connect(Conntect服务器非常容易做请求的转发 )，将请求的资源以esmodule的格式返回。 
+
+![image-20211222222336241](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222222336241.png)
+
+![image-20211222211619901](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222211619901.png)
+
+
+
+## 4.vite 打包
+
+1.npx vite build 进行打包
+
+![image-20211222235701939](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222235701939.png)
+
+2.npx vite preview 对打包后的文件进行预览
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222235756742.png" alt="image-20211222235756742" style="zoom: 80%;" />
+
+3. 对package.json 内的 script 进行配置， 可以不加 npx ,就去 node_modules/bin 下找相应的启动文件
+
+![image-20211223000013115](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223000013115.png)
+
+## 5.ESBuild
+
+vite是基于ESBuild的
+
+![image-20211223001243365](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223001243365.png)
+
+
+
+## 6.vite脚手架
+
+在开发中，我们可以不用从零开始使用vite去搭建项目，可以通过vite脚手架搭建 
+
+1.安装 npm install @vitejs/create-app -g  
+
+2.创建项目 create-app 项目名称
+
+3.npm install  安装依赖
+
+
+
+创建完成的项目目录
+
+![image-20211223002144698](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223002144698.png)
+
+运行脚本
+
+![image-20211223002204419](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211223002204419.png)

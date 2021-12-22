@@ -720,6 +720,8 @@ bable 实际上就是一个编译器，将一种源代码(ES6,TypeScript)转换�
 
 工作流程如下： 解析阶段（parsing）转换阶段(transformation)    生成阶段( generating )
 
+
+
 ![image-20211221195915436](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211221195915436.png)
 
 ![image-20211221110302534](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211221110302534.png)
