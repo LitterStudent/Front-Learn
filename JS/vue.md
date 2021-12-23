@@ -230,9 +230,19 @@ new Vue({
 
 ### 5.插槽
 
-1.新语法：v-slot    
+**概念：**
 
-在组件上 通过 slot标签 声明name 指定插槽名 . 使用组件时通过<template>和v-slot指定插槽名称。还有默认插槽
+在开发过程中， 在封装组件的时候，使用元素<slot>可以为封装的组件开启一个插槽，插件插入什么内容取决于父组件如何使用。
+
+ 插槽可以让 开发者 决定 组件中的某一块区域到底存放什么标签元素。
+
+
+
+
+
+#### 1.新语法：v-slot    
+
+在组件上 通过 slot标签 声明name 指定插槽名 . 使用组件时通过<template>和v-slot指定插槽名称。还有默认插槽。
 
 ```html
 <div class="container">
@@ -261,11 +271,11 @@ new Vue({
 </base-layout>
 ```
 
+在组件上 通过 slot标签 声明name 指定插槽名 . 使用组件时通过<template>和v-slot指定插槽名称。还有默认插槽。
 
+![image-20211223171502325](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223171502325.png)
 
-2.旧语法 ： slot:name
-
-
+#### 2.旧语法 ： slot:name
 
 ```html
 <base-layout>
@@ -291,6 +301,46 @@ new Vue({
 
   <p slot="footer">Here's some contact info</p>
 </base-layout>
+```
+
+#### 3.作用域插槽
+
+##### 1.前言：渲染作用域
+
+vue中有渲染作用域的概念，父级模板里的所有内容都是在父级作用域中编译的，子模版的所有内容都是在子作用域中编译的。
+
+![image-20211223172402430](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223172402430.png)
+
+```vue
+//子组件  show-name
+<template>
+	<div>
+        <template v-for="(item,index) in names" :key="item">
+			<slot name='haha' :item="item" :index="index"></slot>
+		</template>
+    </div>
+</template>
+
+// 父组件
+<template>
+	<show-name>
+    	<template v-solt:haha='slotProps'>
+            <button>
+            {{slotProps.item}}-{{slotProps.index}}    
+    		</button>
+		</template>
+    </show-name>
+</template>
+
+// 当子组件只有一个插槽时，父组件在调用时可以省略 <template> ,直接将 v-slot 添加到 子组件标签上
+// 独占默认插槽
+<template>
+	<show-name v-solt:haha='slotProps'>
+            <button>
+            {{slotProps.item}}-{{slotProps.index}}    
+    		</button>
+    </show-name>
+</template>
 ```
 
 
@@ -439,7 +489,9 @@ new Vue中的 methods中的函数,computed中的函数,watch中的函数,data中
 
 
 
-###  6.VueComponent.prototype.__proto === Vue.prototype
+### 6.Vue.prototype
+
+VueComponent.prototype.__proto __=== Vue.prototype
 
 为了让vue组件的实例对象可以访问的vue原型上的方法。
 
@@ -456,6 +508,49 @@ new Vue中的 methods中的函数,computed中的函数,watch中的函数,data中
 3.可以通过安装less-loader来是的<style lang='less'>可执行。npm i less-loader@7  指定安装版本7，因为Vue@cli的webapck版本是4,只能用版本7,less版本8和9是为webpack5服务。
 
 
+
+### 8.attributes
+
+通常往一个组件上 添加 attribute可以分为两类，一类是 可以作为 prop的attribute(即自定义的 attribute),另一种是非prop的attribute(即标签内置的 attribute 如 id class style). 可以作为 prop的attribute。
+
+后者的继承默认是继承在组件的根标签上的attribute中。如果不希望根标签继承 attribute ,可以在组件中设置 inheritAttrs:false,然后使用$attrs, 将attribute 绑定到要继承的标签上。
+
+```vue
+// header组件
+<template>
+<div>
+	<h2 v-bind="$attrs ">
+    </h2>    
+</div>    
+</template>
+
+<script>
+export default {
+    inheritAttrs: false,
+    props:{
+        ....
+    }
+    ....
+}
+</script>
+```
+
+当组件时有多个根时，我们需要通过 $attrs 来指定要绑定到哪个根标签上。  
+
+```vue
+// header组件
+<template>
+<div v-bind = "$attrs">
+	<h2>
+    </h2>    
+</div>
+<div>
+	<h2>
+    </h2>    
+</div>    
+</template>
+
+```
 
 
 
@@ -2132,9 +2227,13 @@ oldVnode:旧虚拟节点
 
 ## 26keep-alive
 
-缓存组件，不需要重复渲染.如多个静态Tab页的切换优化性能.
+**缓存组件,本身就是一个组件**，不需要重复渲染.如多个静态Tab页的切换优化性能.
 
 希望组件被重新渲染影响使用体验；或者处于性能考虑，避免多次重复渲染降低性能。而是希望组件可以缓存下来,维持当前的状态。这时候就可以用到keep-alive组件。
+
+![image-20211223223313023](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223223313023.png)
+
+
 
 
 

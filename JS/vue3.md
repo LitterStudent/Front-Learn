@@ -393,7 +393,37 @@ setup(){
    }
    ```
 
-   
+
+#### 1.optionsApi写法
+
+```vue
+<script>
+export default {
+        // 写法一 写成对象形式
+    provode{
+    	name: 'why',
+    	age:18,
+    	length: this.names.legnth // 注意，对象形式无法获取到this,这里的this是 script标签的 this 为 undefined
+	},
+    // 写法二 函数形式
+    provide(){
+        return {
+            name: "why",
+            age: 18,
+            length: this.names.length  // 注意看这里，使用到了this,所以provide应该使用函数形式才能获取到vue实例的作为										  //this
+        }
+    },
+
+    data(){
+        return {
+            names:["a","c","b"]
+        }
+    }
+}
+</script>
+```
+
+
 
 ### 6.响应式数据的判断
 
@@ -475,7 +505,41 @@ export default{
 </script>
 ```
 
+ vue_cli在打包时默认会将我们编写的代码打包到 app.js内，第三方依赖库打包到 chunk-vendors.js内，当异步导入Child 组件时，Child 组件就会被单独打包为一个文件，chunk.[chunkhash].js. 这样 就可以使得该组件要显示时才下载相应的文件，提高首屏加载速度。
 
+![image-20211223225334751](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223225334751.png)
+
+```vue
+<template>
+  <div id="app">
+    我是父组件
+      <child></child>
+  </div>
+
+</template>
+
+<script>
+import Loading from "./Loading.vue"
+import { defineAsyncComponent } from 'vue'
+const child = defineAsyncComponent({
+    //defineAsyncComponent函数的传入值还可以是对象，可以通过loadingComponent指定 加载时显示的组件
+     ()=>import('./components/Child') ,
+      loadingComponent: Loading，
+      // 在显示组件前，等待多长时间
+      delay:2000
+})
+
+export default{
+    components:{
+        child
+    }
+}
+</script>
+```
+
+Suspense是一个全局内置的组件，目前（2021-12-24）是一个还在实验当中，API可能会改。
+
+ 该组件有两个插槽， defult: 默认显示内容， fallback: default还未加载出来时显示的内容
 
 ```vue
 <template>
@@ -507,6 +571,38 @@ export default{
 ```
 
 
+
+## 11.组件
+
+1.事件
+
+
+
+
+
+## 12.事件总线
+
+vue3的实例移除了 $on,$off和$once 方法，所以使用全局事件总线得采用和vue2不同的方式。可以通过第三方库。
+
+vue3官方推荐 **mitt 库**
+
+ 
+
+1.npm install mitt
+
+2.定义一个工具文件夹编写 eventbus.js
+
+![image-20211223163533947](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223163533947.png)
+
+3.在父组件引入。通过on,定义事件和事件回调。
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223163754310.png" alt="image-20211223163754310" style="zoom:67%;" />
+
+4.在后代组件中，通过 emit,触发事件，并传入相应参数。
+
+5.可以通过 off(事件名称，回调名称)，来取消某一个事件的回调。
+
+6.可以通过  **.all.clear()**的方式清除空事件总线。
 
 # 2.vite
 
@@ -657,4 +753,4 @@ vite是基于ESBuild的
 
 运行脚本
 
-![image-20211223002204419](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211223002204419.png)
+![image-20211223002204419](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223002204419.png)
