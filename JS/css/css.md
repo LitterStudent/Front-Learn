@@ -766,6 +766,14 @@ DOMContentLoaded -> load。
 
 ## 27 transform transition animation
 
+### 0.css中支持动画的属性
+
+[css动画](https://www.w3school.com.cn/cssref/css_animatable.asp)
+
+动画一般有两种：一种时搭配 transition 使用的过渡动画，一种是css3的 animation 属性的关键帧动画。
+
+
+
 ### 1.transform（变形）
 
 ```css
@@ -825,6 +833,21 @@ transform: rotate(0.5turn); //旋转
 
 ### 3.animation
 
+通过@keyfram 定义关键帧, 关键帧的定义可以通过 百分号的形式和 from to 的形式来定义
+
+```css
+@keyframe  slidein {
+ from{
+  transform:translatex(-100%)
+ }
+ to{
+   transform:translatex(0)
+ }
+}
+```
+
+定义完关键帧后再使用 animation 来使用动画
+
 [制作网站](https://animista.net/play/basic)
 
 语法：**animation: name duration timing-function delay iteration-count direction play-state fill-mode;**
@@ -850,17 +873,6 @@ transform: rotate(0.5turn); //旋转
 - ease-out - 规定慢速结束的动画
 - ease-in-out - 指定开始和结束较慢的动画
 - cubic-bezier(n,n,n,n) - 运行您在三次贝塞尔函数中定义自己的值
-
-```
-@keyframe  slidein {
- from{
-  transform:translatex(-100%)
- }
- to{
-   transform:translatex(0)
- }
-}
-```
 
 
 

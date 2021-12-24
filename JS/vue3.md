@@ -28,7 +28,7 @@ vue3的setup用于代替methods和data.并且需要使用 ref来包装数据 为
 
 context 如下，含有 attrs ,emit,slot 对应 vue2组件实例上的 $emit, $slot,$attrs
 
-![image-20211216222145802](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211216222145802.png)
+![image-20211216222145802](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211216222145802.png)
 
 
 
@@ -153,6 +153,10 @@ export default {
 
 
 ## 5.生命周期
+
+
+
+生命周期中的钩子函数：在Vue源码内部的某个时间会被调用的函数。
 
 ![](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211217154730879.png)
 
@@ -603,6 +607,56 @@ vue3官方推荐 **mitt 库**
 5.可以通过 off(事件名称，回调名称)，来取消某一个事件的回调。
 
 6.可以通过  **.all.clear()**的方式清除空事件总线。
+
+
+
+## 13引用元素
+
+1.vue3中 $refs绑定到组件上时，输出的为一个 proxy对象
+
+![image-20211224113538908](C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211224113538908.png)
+
+
+
+2. $root 和 $parent 也都是 prxy对象
+3. VUE3移除了$children属性
+
+
+
+
+
+## 14 表单绑定
+
+#### 1.标签元素上的 v-model
+
+标签上的表单绑定 和 vue2 一样， 不赘述。
+
+
+
+#### 2.组件上 的 v-model.
+
+ 在组件上，表单绑定更改 为
+
+- **非兼容**：用于自定义组件时，v-model 
+
+  prop 和事件默认名称已更改：
+
+  - prop：`value` -> `modelValue`；
+  - 事件：`input` -> `update:modelValue`；
+
+- **非兼容**：`v-bind` 的 `.sync` 修饰符和组件的 `model` 选项已移除，可在 `v-model` 上加一个参数代替；
+
+- **新增**：现在可以在同一个组件上使用多个 `v-model` 绑定；
+
+- **新增**：现在可以自定义 `v-model` 修饰符。
+
+
+
+
+
+## 15.动画
+
+
 
 # 2.vite
 

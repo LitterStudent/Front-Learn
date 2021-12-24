@@ -728,6 +728,12 @@ command 就是 service 或者 build
 		},
 ```
 
+其中， 如果是在组件上，则$refs.名称 为 VueComponent 实例。如果在普通标签上，则输出的是普通标签。
+
+![image-20211224094738058](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211224094738058.png)
+
+
+
 4.可以通过this.$ref.student.off()来解绑自定义事件
 
 ```js
@@ -767,11 +773,165 @@ mounted() {
 
 
 
-Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚要退出。当使用transition过度效果实现动画时就要用到这四个属性。
+Vue的动画有6个状态, v-enter-from ,v-leave-to:刚进入, v-enter-to v-leave-from:刚要退出。当使用transition过度效果实现动画时就要用到这四个属性。
+
+1. `v-enter-from`：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
+2. `v-enter-active`：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
+3. `v-enter-to`：定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 `v-enter-from` 被移除)，在过渡/动画完成之后移除。
+4. `v-leave-from`：定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
+5. `v-leave-active`：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
+6. `v-leave-to`：离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 `v-leave-from` 被移除)，在过渡/动画完成之后移除。
+
+![image-20211224214336852](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211224214336852.png)
+
+### 1.过渡动画
+
+实现案例
+
+```vue
+<template>
+  <div>
+    <transition name='title2'>
+      <h2 v-show="isShow">nihao</h2>
+    </transition>
+    <button @click="btnClick">显示|消失</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  data(){
+    return {
+      isShow:true
+    }
+  },
+  components:{
+  },
+  methods:{
+    btnClick(){
+      this.isShow = !this.isShow
+    }
+  }
+}
+</script>
+
+<style>
+
+.title2-enter-from,.title2-leave-to {
+  transform: translateX(200px);
+  opacity: 0;
+}
+.title2-leave-from,.title2-enter-to {
+  transform: translateX(0px);
+  opacity: 1;
+}
+.title2-enter-active,.title2-leave-active {
+  transition: all  2s ease;
+}
+
+</style>
+```
+
+实现原理：
+
+当插入或删除包含在 transition 组件中的元素时，Vue会做以下处理：
+
+1.自动嗅探目标元素是否使用了css过渡或者动画，如果有，那么在恰当的时机添加，删除 css 类名。
+
+2.如果 transition 组件提供了 javaScript 钩子函数，这些钩子函数将在恰当的时机被调用。
+
+![GIF2](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF2.gif)
+
+
+
+![image-20211224221113919](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211224221113919.png)
+
+
+
+![image-20211224220934406](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211224220934406.png)
+
+
+
+### 2.关键帧动画 animation
 
 但是我们直接使用 anmation 去指定动画 ，只使用另外两个属性就可: v-enter-active ,v-leave-active.
 
-<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400208.png?token=AP3MTUZKMMY4KTSHGWERY63BU4H2I" alt="image-20211116145827128" style="zoom: 80%;" />
+![image-20211224214336852](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211224214336852.png)
+
+案例一
+
+```vue
+<template>
+  <div>
+    <!-- animation 动画 -->
+    <button @click="btnClick">显示|消失</button>
+    <transition name='title2'>
+      <h2 v-show="isShow">nihao</h2>
+    </transition>
+  </div>
+</template>
+
+<script>
+
+
+export default {
+  name: 'App',
+  data(){
+    return {
+      isShow:true
+    }
+  },
+  components:{
+  },
+  methods:{
+    btnClick(){
+      this.isShow = !this.isShow
+    }
+  }
+}
+</script>
+
+<style>
+
+
+.title2-enter-active {
+  animation: bounce 1s ease;
+}
+.title2-leave-active {
+  animation: bounce 1s ease reverse;
+}
+
+
+@keyframes bounce{
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+
+```
+
+![GIF3](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF3.gif)
+
+案例二
 
 ```js
 /* 可以设置不同的进入和离开动画 */
@@ -792,6 +952,98 @@ Vue的动画有6个状态, v-enter ,v-leave-to:刚进入, v-enter-to v-leave:刚
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400016.png?token=AP3MTU6QVS2PPJRCLYWAIPDBU4H2M" alt="image-20211116150200322" style="zoom:50%;" />
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400483.png?token=AP3MTU2JY7DCYCTK5V75WQDBU4H2Q" alt="image-20211116150149154" style="zoom:50%;" />
+
+### 3.transition标签额外属性
+
+#### 1.mode
+
+<transition>标签除了 name属性，比较常用的还有 mode属性。当标签内有两个以上的元素要切换时，一个会执行消失动画，一个会执行显示动画，默认情况下是两个元素同时执行的，如下面图一所示。然而如果把这些标签替换成组件的话，这样的显示就会看起来很乱。当我们使用动态组件，或者使用路由的时候，来回切换组件时，我们不希望切换的两个组件之间的消失和显示动画一起执行，而是先让当前组件先消失，切换到目标组件再出现。如下面的图二所示。
+
+![GIF - 副本](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF%20-%20%E5%89%AF%E6%9C%AC.gif)
+
+​								----------------------------------------------------------------分割线-----------------------------------------------------------
+
+![GIF4](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF4.gif)
+
+代码如下
+
+```vue
+<template>
+  <div>
+    <button @click="btnClick">显示|消失</button>
+    <transition name='title2' >
+      <h2 v-if="isShow">nihao2</h2>
+      <h2 v-else>hello1</h2>
+    </transition>
+  </div>
+</template>
+
+<script>
+
+
+export default {
+  name: 'App',
+  data(){
+    return {
+      isShow:true
+    }
+  },
+  components:{
+  },
+  methods:{
+    btnClick(){
+      this.isShow = !this.isShow
+    }
+  }
+}
+</script>
+
+<style>
+
+.title2-enter-from,.title2-leave-to {
+  transform: translateX(200px);
+  opacity: 0;
+}
+.title2-leave-from,.title2-enter-to {
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+.title2-enter-active,.title2-leave-active {
+  transition: all  2s ease;
+}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+
+```
+
+而 <transition>标签上的 mode属性可以指定 哪一个动画（显示或者消失）先执行。
+
+mode: out-in  先执行消失动画，再执行进入动画
+
+​			in-out  先执行进入动画，再执行消失动画
+
+这是 out-in 
+
+![GIF4](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF4.gif)
+
+这是 in-out
+
+![GIF5](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF5.gif)
+
+#### 2. appear
+
+当我们希望第一次加载页面时就能显示动画，就可以 加上 appear标签。
+
+![GIF6](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF6.gif)
 
 
 
@@ -1104,7 +1356,7 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
 **vue实例销毁后自定义事件会失效，但是原生dom事件依然有效。**
 
-**activated** keep-alive 专属，组件被激活时调用
+**activated** keep-alive 专属，组件被激活时调用。 因为使用 keep-alive 后的组件在切换的过程中不会触发其他生命周期钩子函数，但是我们确实希望监听到 进入组件和离开组件的时机。 所以有了这两个生命周期钩子函数。
 
 **deactivated** keep-alive 专属，组件被销毁时调用
 
