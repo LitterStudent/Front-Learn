@@ -2535,6 +2535,8 @@ new Profile().$mount('#mount-point')
 
 2.各属性混入时一般会同名属性合并成一个对象，如果属性data混入时发生冲突，以vue实例的属性为准。
 
+![image-20211225143501553](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225143501553.png)
+
 ```javascript
 //data 对象如此  同键名时以vue实例为准
 const mixin = {

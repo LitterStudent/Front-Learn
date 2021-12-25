@@ -2144,6 +2144,23 @@ console.log(target.foo); // bar
 
 
 
+proxy对象可以解构成普通对象
+
+```js
+const obj = {name:'xiaoming'};
+    let proxy = new Proxy(obj,{
+
+    })
+    console.log(proxy)
+    console.log({...proxy})
+```
+
+![image-20211226011416319](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226011416319.png)
+
+
+
+
+
 ## 26严格模式
 
 严格模式用于选择以更严格的条件检查JavaScript 代码错误，**可以应用到全局，也可以应用到函数内部。**严格模式的好处是可以提早发现错误。

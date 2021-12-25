@@ -16,9 +16,15 @@ vue3的setup用于代替methods和data.并且需要使用 ref来包装数据 为
 
 **ref()**可以包装 原始类型 和 引用类型 为一个 RefImpl 实例，需要通过.value 访问属性。原始类型仍然式通过 Object.definProperty的 get和 set实现的数据劫持（即响应式），而引用类型式通过 一个 新方法  reactive（）内部通过 proxy 代理实现响应式。**一般用于定义 原始类型数据**。
 
+但是，在模板中使用 ref对象的值时不需要添加.value,vue自动帮我们解析了，再setup中就需要了。
+
+![image-20211225202606566](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225202606566.png)
+
 **reactive()** 可以直接包装 引用类型 为 proxy 实现响应式。我们实现引用类型的响应式可以直接使用 reactive, 因为使用 ref 要多用.value去获取值。**一般用于定义对象或数组类型数据。**
 
 ![image-20211216155115605](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211216155115605.png)
+
+
 
 ### 2.两个注意点
 
@@ -26,23 +32,31 @@ vue3的setup用于代替methods和data.并且需要使用 ref来包装数据 为
 
 2.接收两个参数，props  和 context()
 
+两种写法： **setup(props,context)    解构写法：setup(props,{ attrs, slot, emit }) 或者 使用下划线进行占位 setup(_,context)** 
+
 context 如下，含有 attrs ,emit,slot 对应 vue2组件实例上的 $emit, $slot,$attrs
 
+atrrs:非props的attributes
+
+slot:父组件传递过来的插槽内容，渲染函数返回时有用。
+
+emit: 组件内部发出事件
+
 ![image-20211216222145802](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211216222145802.png)
-
-
-
-
 
 vue2中的 组件实例
 
 ![image-20211216212954005](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211216212954005.png)
 
+3.setup中的this为undefined
+
+![image-20211225194450776](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225194450776.png)
+
+4.setup 函数的返回值 类似 vue2中的 data,但是优先级比data高，当两者都存在时，data失效。
 
 
 
-
-## 2.vue3响应式原理
+## 2.vue3响应式原理 
 
 通过 Proxy： 拦截对象的任意属性的变化，包括值的读写，删除，添加
 
@@ -51,6 +65,8 @@ vue2中的 组件实例
 
 
 ## 3.计算属性
+
+computed 返回的是一个 ref对象。所以获取值时要加上 **.value**
 
 ```js
 import {computed} from 'vue'
@@ -118,6 +134,13 @@ export default {
             ......
         },{deep:true})
         
+        // 可以对proxy对象进行解构，从而监听变化后获取普通对象
+        watch(()=>{
+            return {...obj.job}
+        },(newValue,oldVaue)=>{
+            ...
+        })
+        
        return {
            sum,
            msg,
@@ -131,24 +154,64 @@ export default {
 
 ### 2.watchEffect
 
-一个新的api 
+一个新的api .可以监听函数内部有调用的值，该函数会被**立即调用**，因为要通过执行一次函数来收集对变量的依赖。只有收集的依赖发送变化时，watchEffect传入的函数才会执行。
 
-```js
-import {wathceEffect} from Vue
+```vue
+<template>
+  <div>
+    <h3>name:{{myname}}</h3>
+    <button @click="myname = myname+='--'">修改name</button>
+     <button @click="myobject.age++">修改obj</button>
 
-export default {
-    ...
+    <hr>
+    <h2 ref="nihao">nihao</h2>
+  </div>
+</template>
+
+<script>
+import { ref,watchEffect,reactive} from 'vue'
+  export default {
     setup(){
-    // 可以 获取 要监听的数据 ，然后在函数内统一进行逻辑处理
-        watchEffect(()=>{
-            const x1 = name;
-            const x2 = person;
-            console.log("书写监听到属性后的逻辑")
-        })
-	}
-    
-}
+      const myobject = reactive({age:12})
+      console.log(myobject)
+      const myname = ref('xiaoming')
+      const nihao = ref(null)
+      watchEffect(()=>{
+          // 注意 要调用值，调用引用的话监听后 一般不变的
+        const n = myobject.age
+        console.log(n)
+        console.log(nihao.value)
+          // flush 可以延迟回调函数的调用，从而正确获取 dom。而不用在第一次dom还未挂载时立即调用 
+      },{flush:'post'})
+      return {
+        nihao,
+        myname,
+        myobject
+      }
+    }
+  }
+</script>
 ```
+
+watchEffect 第二个参数：配置项。传入一个对象。
+
+该对象的值有： flush:  watchEffect 第一个参数（回调函数的调用时机）pre(默认)元素挂载前执行， post 元素挂载后执行。
+
+用例：在侦听函数的中需要用到dom中的内容，通过ref获取，需要配置 flush:post.
+
+![image-20211226002346086](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226002346086.png)
+
+
+
+watchEffect 默认返回一个关闭函数，调用后可以停止监听
+
+![image-20211225233211844](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225233211844.png)
+
+ watchEffect清除副作用
+
+![image-20211226001419722](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226001419722.png)
+
+
 
 
 
@@ -279,11 +342,35 @@ return {
 
 ## 8 其他 composition API
 
-### 1.shallowRef 和shallowReactive 
+### 1.shallowRef 和shallowReactive ，triggerRef
 
 shallowReactive: 只对对象的最外层属性做响应式。如果一个对象结构比较深，但是只有最外层的数据会改变就可以使用。
 
 shallowRef:只对 值类型数据 做响应式，引用类型不做响应式处理。如果有一个对象，后续操作不会修改对象内的某个属性，而是直接替换掉该对象，就可以使用。
+
+triggerRef:手动触发和 shallowRef 相关联的不修改的模板。
+
+```vue
+<template>
+<h2>{{ info }}</h2>
+<button @click="changeInfo">修改</button>
+</template>
+
+<script>
+ import { ref, shallowRef, triggerRef } from 'vue'
+const info = shallowRef({name: "why"})
+const changeInfo = ()=>{
+    info.value.name = "nihao";
+    triggerRef(info) // 通知dom更新
+}
+return {
+    info,
+    changeInfo
+}
+</script>
+```
+
+
 
 
 
@@ -291,9 +378,15 @@ shallowRef:只对 值类型数据 做响应式，引用类型不做响应式处�
 
 作用：都是让属性只可读，不可以修改。
 
+![image-20211225202951601](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225202951601.png)
+
 readinly: 可以接收 ref对象或者 reactive 对象，生成后的对象上的属性都不能更改，只可读。**(深只读)**
 
-shallowReadOnly: 可以接收 ref对象 或者 reactive 镀锡，生成的对象的属性上只有最外一层只可读，不可修改，深层的属性可以修改。**（浅只读）**
+作用：可以通过给readonly函数传入一个 reactive|| ref 对象生成一个只读的对象给子组件，这样子组件就不能修改父组件传递的数据，而父组件可以通过原理的 reactive|| ref 对象来修改数据。
+
+
+
+shallowReadOnly: 可以接收 ref对象 或者 reactive 对象，生成的对象的属性上只有最外一层只可读，不可修改，深层的属性可以修改。**（浅只读）**
 
 ```js
 let sum = ref(0);
@@ -312,6 +405,8 @@ person = readonly(person)
 // person = shallowReadonly(person)
 
 ```
+
+
 
 ### 3.toRaw 和 markRaw 
 
@@ -443,17 +538,17 @@ isProxy: 检查一个对象是否为 reactive或 readonly 创建的对象
 
 ## 9  composition API 的优势
 
-1.OptionsAPI中存在的问题
+### 1.OptionsAPI中存在的问题
 
-使用vue2的optionsApi中，新增或者修改一个需求，就需要分别在data ,methods，computed中修改。
+使用vue2的optionsApi中，新增或者修改一个功能，就需要分别在data ,methods，computed中修改。 同一个功能的逻辑被拆的太分散。
 
 
 
-2.组合式api的优势：
+### 2.组合式api的优势：
 
 可以将同一功能的 data,methdos，computed等属性写在一起，提取到单独的一个hook中，更优雅和有序地组织我们的代码和函数。
 
-
+Vue Composition API (**VCA)**
 
 ## 10新的组件
 
@@ -658,9 +753,9 @@ vue3官方推荐 **mitt 库**
 
 ![image-20211225143025846](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225143025846.png)
 
-### 1.vue3 的 全局混入。
+### 1.vue3 的 全局混入。 
 
-###  
+ **但是 vue3中 因为有了composition API， mixin用的比较少**
 
 ```js
 const app = Vue.createApp({
