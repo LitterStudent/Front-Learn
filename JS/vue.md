@@ -1047,6 +1047,231 @@ mode: out-in  先执行消失动画，再执行进入动画
 
 
 
+#### 3.动画attribute
+
+![image-20211225104901392](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225104901392.png)
+
+![image-20211225104831661](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225104831661.png)
+
+
+
+### 4.animate.css
+
+1.导入 nm install animate.css 
+
+2.在 main.js 导入 import './animate.css'
+
+3.在 enter-active 和 leave-active 类上分别添加相反的 animation 动画
+
+[animate.css官网](https://animate.style/) ，可以找到动画名称和效果
+
+```css
+.title2-enter-active {
+  animation: backInDown  0.5s ease;
+}
+.title2-leave-active{
+  animation: backInDown  0.5s ease reverse;
+}
+```
+
+4.当使用<transition>标签上的attribute指定动画时，需要添加 **animate__animated**，这时一个基础样式。
+
+![image-20211225104831661](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225104831661.png)
+
+查看源代码可以看到，animated实现了 animation 的 时间间隔等的设置。
+
+![image-20211225105813882](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225105813882.png)
+
+### 5.gsap
+
+某些情况下我们希望通过js来完成动画。可以使用 gsap 库。     
+
+#### 1.transition的js钩子
+
+![image-20211225112728935](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225112728935.png)
+
+
+
+2.安装 gasp. npm install gasp 
+
+3.在使用的 js 代码中 导入 import 'gsap'
+
+4.一般都是在 enter 和 after中使用 gsap
+
+![image-20211225112934901](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225112934901.png)
+
+
+
+5.案例
+
+![GIF7](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF7.gif)
+
+```vue
+<template>
+  <div>
+    <input type="number" step="100" v-model="counter">
+    <h2>当前的number为 {{ showNumber.toFixed(0) }}</h2>
+  </div>
+</template>
+
+<script>
+import gsap from 'gsap'
+
+export default {
+  name: 'App',
+  data(){
+    return {
+      isShow:true,
+      counter:0,
+      showNumber:0
+    }
+  },
+  components:{
+  },
+  watch:{
+    counter(newValue){
+      gsap.to(this,{ duration:1,showNumber: newValue});
+    }
+  },
+  methods:{
+    btnClick(){
+      console.log(this.isShow)
+      this.isShow = !this.isShow
+    }
+  }
+}
+</script>
+
+<style>
+
+.title2-enter-active {
+  animation: backInDown  0.5s ease;
+}
+.title2-leave-active{
+  animation: backInDown  0.5s ease reverse;
+}
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+
+```
+
+
+
+### 6.transition-group
+
+当要使用列表（即多个元素）动画时，就得使用 transition-group.可以通过 tag 来声明 将 <transition-group> 替换成某个元素。
+
+![image-20211225135936264](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225135936264.png)
+
+当元素为块级元素时，无法显示完整动画，要显示动画效果的话，要display:inline-block
+
+![GIF8](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF8.gif)
+
+```vue
+<template>
+  <div>
+      <div>
+      <button @click="addNum">添加数字</button>
+      <button @click="deleteNum">删除数字</button>
+      </div>
+      <transition-group name="dong" tag='p'>
+        <span v-for="(item,index) in arr" :key='index' style="margin:10px;display:inline-block">{{item}}</span>
+      </transition-group>
+  </div>
+</template>
+
+<script>
+import gsap from 'gsap'
+
+export default {
+  name: 'App',
+  data(){
+    return {
+      arr:[1,2,3,4,5],
+      nowCount:5
+    }
+  },
+  components:{
+  },
+  watch:{
+    counter(newValue){
+      gsap.to(this,{ duration:1,showNumber: newValue});
+    }
+  },
+  methods:{
+    addNum(){
+      const random = (Math.random()*this.arr.length).toFixed(0)
+      this.arr.splice(random,0,++this.nowCount)
+    },
+    deleteNum(){
+      this.arr.splice(this.arr.length-1,1)
+    }
+  }
+}
+
+</script>
+
+<style>
+
+.dong-enter-from,.dong-leave-to{
+  opacity: 0;
+  transform: translateY(20px);
+}
+.dong-enter-to,.dong-leave-from{
+  opacity: 1;
+}
+.dong-enter-active,.dong-leave-active {
+  transition: all 1s ease;
+}
+
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+
+```
+
+进一步完善案例一：案例一中只有 新加入的元素有动画。
+
+![image-20211225140423426](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225140423426.png)
+
+所以只要加上这一项就会有动画,vue内部会自动帮我们完成 transform 的动画
+
+```css
+.dong-move {
+  transition: transform 1s ease;
+}
+```
+
+但是只有在加入新元素时，其他元素才有动画效果，删除时还是很生硬地瞬间移动。这是因为在原有元素被删除的动画执行的过程中，元素仍然占有位置，所以其他元素无法执行动画。
+
+![GIF9](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF9.gif)
+
+
+
+我们可以将要离开的元素声明，相对定位让其占有的空间释放，这样其他元素就能执行动画了。
+
+```css
+.dong-leave-active {
+  position: absolute;
+}
+```
+
+![GIF10](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF10.gif)
+
 ## 7.常用请求库 
 
 [请求头content-type格式好文](https://blog.csdn.net/baichoufei90/article/details/84030479)

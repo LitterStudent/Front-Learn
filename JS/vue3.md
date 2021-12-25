@@ -654,7 +654,39 @@ vue3官方推荐 **mitt 库**
 
 
 
-## 15.动画
+## 15.Mixin
+
+![image-20211225143025846](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211225143025846.png)
+
+### 1.vue3 的 全局混入。
+
+###  
+
+```js
+const app = Vue.createApp({
+  myOption: 'hello!'
+})
+
+// 为自定义的选项 'myOption' 注入一个处理器。
+app.mixin({
+  created() {
+    const myOption = this.$options.myOption
+    if (myOption) {
+      console.log(myOption)
+    }
+  }
+})
+
+// 将myOption也添加到子组件
+app.component('test-component', {
+  myOption: 'hello from component!'
+})
+
+app.mount('#mixins-global')
+
+// => "hello!"
+// => "hello from component!"
+```
 
 
 
