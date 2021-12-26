@@ -4,6 +4,12 @@
 
 组合式API
 
+## 0.mount
+
+所提供 DOM 元素的 `innerHTML` 将被替换为应用根组件的模板渲染结果。
+
+
+
 ## 1.setup
 
 ### 1.基础
@@ -469,6 +475,10 @@ setup(){
 
 作用：实现跨级组件通信，隔一代或者多代。
 
+其中，当传入的时 reactive 或 ref 对象时，子组件获取后修改数据是会触发响应式更新的。但是基于单向数据流的标准，我们应该避免让子组件修改父组件传递过来的数据。所以可以传入 readonly 对像给 子组件， 而且子组件要修改数据的话应该触发相应的事件让父组件监听到事件后去更新数据。这样不会造成数据更改混乱，方便我们后期调式。
+
+ 
+
 1. 祖组件
 
    ```js
@@ -785,6 +795,126 @@ app.mount('#mixins-global')
 
 
 
+## 16 Render函数
+
+
+
+
+
+#### 1.认识 h 函数
+
+vue模板解析的过程
+
+![image-20211226150318942](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226150318942.png)
+
+render 函数 跟准确的来说就是 createVNode函数（生成虚拟节点的函数），我们可以编写render函数，内部通过 h()函数来实现。其实三者相似。
+
+![image-20211226151014782](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226151014782.png)
+
+当往子组件插槽插入元素时可以使用第三个参数，如果只有一个默认插槽 则用 使用对象，如果有多个插槽则使用数组。
+
+
+
+```js
+//父组件App
+  render(){
+    return h(HelloWorld,null,{
+      default: props => h('span',null,'app传入组件插槽的标签，后面是作用域插槽：',props.name)
+    })
+  }
+}
+
+
+// 子组件    HelloWorld
+render(){
+        return h('div',{},
+        this.$slots.default ? this.$slots.default({name :'dong'}) : "我是插槽的默认值" )
+    }
+```
+
+#### 2.使用 jsx 方式
+
+jsx书写的方式 更加方便阅读和编写，vue脚手架会自动调用bable 将 jsx 转成 h函数
+
+![image-20211226163850570](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226163850570.png)
+
+```vue
+// App 组件
+<script>
+import HelloWorld from './HelloWorld.vue'
+  export default {
+    data(){
+      return {
+        counter:0
+      }
+    },
+    render(){
+      const increment = () => this.counter++;
+      const decrement = () => this.counter--;
+      return (
+        <div>
+          <h2>nihao There is counter:{this.counter}</h2>
+          <button onClick={increment}>++</button>
+          <button onClick={decrement}>--</button>
+          <HelloWorld>
+          {{default: props => <h2>这是插入值 {props.name}</h2>}}
+          </HelloWorld>
+        </div>
+      )
+    }
+  }
+</script>
+
+// HelloWorld组件   
+<script>
+export default {
+ render(){
+     return (
+         <div>
+         <h2> This is Component</h2>
+         {this.$slots.default ? this.$slots.default({name:'xiaoming'}):<span>插槽默认值</span>}
+         </div>
+     )
+ }
+}
+</script>
+```
+
+## 17自定义指令
+
+当我们需要对dom元素进行底层操作时，就会用到自定义指令 。
+
+![image-20211226170931164](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226170931164.png)
+
+
+
+![image-20211226173614544](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226173614544.png)
+
+
+
+## 18插件
+
+![image-20211226224616486](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226224616486.png)
+
+1.在install 方法内，可以通过 app.config.globalProperties 添加全局属性。
+
+```js
+install(app){
+	app.config.globalProperties.$name = 'xiaoming' //注意，约定添加全局属性以 $ 开头
+}
+```
+
+```js
+// 在setup中获取 全局属性
+import { getCurrentInstance } from 'vue';
+setup(){
+    const instance = getCurrentInstance();
+    instance.appContext.config.globalProperties.$name //获取全局属性
+}
+```
+
+
+
 # 2.vite
 
 官方定位：下一代的前端开发与构建工具。
@@ -935,3 +1065,25 @@ vite是基于ESBuild的
 运行脚本
 
 ![image-20211223002204419](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211223002204419.png)
+
+# 3vue3源码
+
+## 1.vue 架构
+
+![image-20211227002116619](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227002116619.png)
+
+![image-20211227002335657](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227002335657.png)
+
+![image-20211227002030052](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227002030052.png)
+
+
+
+  ![image-20211227002742938](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227002742938.png)
+
+## 2.Mini-Vue
+
+![image-20211227003238513](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227003238513.png)
+
+
+
+3.

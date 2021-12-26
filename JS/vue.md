@@ -2529,6 +2529,10 @@ var Profile = Vue.extend({
 new Profile().$mount('#mount-point')
 ```
 
+其中，所有的挂载元素会被 Vue 生成的 DOM 替换。因此不推荐挂载 root 实例到 `<html>` 或者 `<body>` 上
+
+
+
 ### 2混入Mixin
 
 1.在new Vue实例时，可以在mixin属性内添加要混入的属性。
