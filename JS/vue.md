@@ -1912,7 +1912,9 @@ Virtual DOM 本质就是用一个原生的 JS 对象去描述一个 DOM 节点�
 
 DOM变为虚拟dom的过程即是模板编译。
 
- 
+ ![image-20211227000818847](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227000818847.png)
+
+![image-20211227001001232](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227001001232.png)
 
 
 

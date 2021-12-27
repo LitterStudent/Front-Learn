@@ -68,7 +68,7 @@ vue2中的 组件实例
 
 通过 Reflect ： 对被代理的对象进行操作 （Reflect 的好处操作后不会报错，不用写 try catch 去捕获错误 ，会返回一个布尔值代表操作成功还是失败）
 
-
+![image-20211227191451913](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227191451913.png)
 
 ## 3.计算属性
 

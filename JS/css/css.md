@@ -943,3 +943,12 @@ transform: rotate(0.5turn); //旋转
 
    
 
+## 29 innerHtml 和 textContent的区别
+
+1.innerHtml 包含 一个节点和其后代节点的标签和标签内的文本内容，textContent表示一个节点的文本内容和后代节点的文本内容。
+
+![image-20211227145813242](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227145813242.png)
+
+2.innerHtml设置节点时会被当作html插入，而textContent 只会被作为文本不会被解析成html。
+
+3.innerText 只展示可见元素内的文本内容。<script><style>标签内文本内容不可见
