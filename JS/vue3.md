@@ -683,7 +683,9 @@ export default{
 
 ## 11.组件
 
-1.事件
+### 1.有状态组件和无状态组件
+
+1.无状态是 函数定义的组件 有状态是指对象定义的组件
 
 
 
@@ -915,6 +917,8 @@ setup(){
 
 
 
+
+
 # 2.vite
 
 官方定位：下一代的前端开发与构建工具。
@@ -1086,4 +1090,44 @@ vite是基于ESBuild的
 
 
 
-3.
+## 3.源码阅读
+
+### 1.查看package.json
+
+
+
+![image-20211227225231166](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227225231166.png)
+
+运行 dev脚本,生成打包构建好的vue . 可以看到打包的入口文件 和输出文件.
+
+![image-20211227225327198](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227225327198.png)
+
+可以在输出文件的同级目录下新建一个文件夹引用并调式打包构建好的 vue.global.js
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211227225705727.png" alt="image-20211227225705727" style="zoom:50%;" />
+
+
+
+### 2.组件的vnode和组件的instance有什么不同?
+
+组件的vnode是vnode树的组成部分,参与构造vnode树,是对dom的一层抽象.
+
+组件的instance 用于保存组件的状态,如data,computed,watch等属性.
+
+### 3.render函数   
+
+vue3的 经过compiler函数 返回的 render的函数如下。
+
+1.含有 _hoisted前缀代表进行提升.
+
+为什么进行提升？因为该虚拟节点是静态的（内部的数据是不变），后续不会再有改变，所以先提升到外部进行缓存，后续组件更新是调用render函数不用对这些提升的虚拟节点重复调用 createVnode函数，直接使用之前的引用。
+
+2.含有 BlockTree
+
+_openBlock函数的作用是创建一个dynamicChildren的数组，并将会动态改变的vnode放入 数组内，后续 patch 函数执行时只会对数组内的节点进行比较
+
+<img src="C:\Users\15439\AppData\Roaming\Typora\typora-user-images\image-20211228164140275.png" alt="image-20211228164140275" style="zoom:150%;" />
+
+### 4.template中的数据优先级
+
+![image-20211228232137308](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211228232137308.png)
