@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <a href="#/home" >home</a>
+        <a href="#/about">about</a>
+        <div class="content"></div>
+    </div>
+    <script>
+        const contentEl = document.querySelector('.content');
+        window.addEventListener('hashchange',()=>{
+            // 当点击链接时会 触发hashchange事件 和 
+            // 往 history 栈 中 压入值
+            console.log("监听到了 hashchange 事件");
+            switch(location.hash){
+                case '#/home':
+                    contentEl.innerHTML = 'Home';
+                    break;
+                case '#/about':
+                    contentEl.innerHTML = 'About';
+                    break;
+                default:
+                    contentEl.innerHTML = 'Default'
+            }
+        })
+         //
+        window.addEventListener("popstate",()=>{console.log("pop");})
+</script>
+</body>
+</html>

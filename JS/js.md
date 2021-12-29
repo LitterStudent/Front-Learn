@@ -1848,9 +1848,15 @@ import(f())
 
 #### 4CommonJS和ES6module的区别
 
-**① CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。**（ES6 Module通过export {<变量>}输出的是一个变量的引用,变量如果改变的话,我查看的到变化,export default输出的是一个值）
+**① CommonJS 模块输出的是一个值的拷贝，一旦输出一个值，模块内部的变化就影响不到这个值。ES6 模块输出的是值的引用。**（ES6 Module通过export {<变量>}输出的是一个变量的引用,变量如果改变的话,我查看的到变化,export default输出的是一个值）
+
+ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令`import`，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的`import`有点像 Unix 系统的“符号连接”，原始值变了，`import`加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。
 
 **② CommonJS 模块是运行时加载，即代码执行到那一行才回去加载模块.ES6 模块是编译时输出接口**。
+
+因为common.js加载的是一个对象（即module.exporys属性），该对象只有在脚本运行完才会生成。
+
+而es6模块不是对象，它的对外接口只是一种静态定义，在代码静态解析节点就会生命。  
 
 **3.CommonJs在第一次加载的时候运行一次并且会生成一个缓存,之后加载返回的都是缓存中的内容**
 
@@ -2277,7 +2283,7 @@ console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fs
 
 ## 28DOM
 
-
+![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/-kIwpgj_QBCyWAGSgvb65g)
 
 ### 0.什么是 DOM
 
@@ -2377,7 +2383,22 @@ node.removeChild(node2)
 
 **brower object model**
 
-常用api  navigator screen location history 
+常用api  navigator screen location history  
+
+![image-20211229151125231](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211229151125231.png)
+
+`HTML5` 新增的 `history API` 。**具体如下表：**
+
+| API                                       | 定义                                                         |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| history.pushState(data, title [, url])    | pushState主要用于**往历史记录堆栈顶部添加一条记录**。各参数解析如下：**①data**会在onpopstate事件触发时作为参数传递过去；**②title**为页面标题，当前所有浏览器都会忽略此参数；③**url**为页面地址，必须与当前页面的URL同源，可选，缺少时表示为当前页地址 |
+| history.replaceState(data, title [, url]) | 更改当前的历史记录，参数同上； 上面的pushState是添加，这个更改 |
+| history.state                             | 用于存储以上方法的data数据，不同浏览器的读写权限不一样       |
+| window.onpopstate                         | 响应pushState或者replaceState的调用                          |
+
+**window.onpopstate**：调用`history.pushState()`或者`history.replaceState()`**不会**触发popstate事件. `popstate`事件只会在浏览器某些行为下触发, 比如点击后退、前进按钮(或者在JavaScript中调用`history.back()、history.forward()、history.go()`方法)，此外，a 标签的锚点也会触发该事件.
+
+**window.onhashchange**：当 一个窗口的 hash （URL 中 # 后面的部分）改变时就会触发 **hashchange** 事件。
 
 
 

@@ -1924,9 +1924,176 @@ DOM变为虚拟dom的过程即是模板编译。
 
 vue 中的route 就是  key 和 组件的映射
 
+### 0.history和hash
+
+本质上都是通过监听事件来根据不同的路径重新渲染组件且不让浏览器因为路径改变而重新发送请求。
+
+hash原理
+
+通过在#号后面拼接路径。当井号 `#` 后面的路径发生变化时，浏览器并不会因为路径的改变重新发起请求，而是会触发 `onhashchange` 事件。
+
+vue-router 通过监听 hashchange 事件来对 通过location.hash 获取路径值并重新渲染组件
+
+```html
+ <div id="app">
+        <a href="#/home">home</a>
+        <a href="#/about">about</a>
+        <div class="content"></div>
+    </div>
+    <script>
+        const contentEl = document.querySelector('.content');
+        window.addEventListener('hashchange',()=>{
+            switch(location.hash){
+                case '#/home':
+                    contentEl.innerHTML = 'Home';
+                    break;
+                case '#/about':
+                    contentEl.innerHTML = 'About';
+                    break;
+                default:
+                    contentEl.innerHTML = 'Default'
+            }
+        })
+    </script>
+```
+
+history原理
+
+通过使用H5的新特性 history API, 修改浏览器URL并且不发送请求。vue-router内部通过监听<router-link>的点击事件后通过 location.href 来获取 url然后重新渲染组件。
+
+```html
+<body>
+    <div id="app">
+        <a href="/home">home</a>
+        <a href="/about">about</a>
+        <div class="container">
+        </div>
+    </div>
+    <script>
+        const linkList = document.getElementsByTagName('a');
+        console.log(linkList);
+        const container = document.querySelector('.container')
+        const changeContent = ()=>{
+            switch(location.pathname){
+                    case '/home':
+                        container.innerHTML ="Home";
+                        break;
+                    case '/about':
+                        container.innerHTML = 'About';
+                        break;
+                    default:
+                        container.innerHTML = "Default"
+                        break;
+                }
+        }
+        for (const link of linkList) {
+            link.addEventListener("click",e=>{
+                console.log("object");
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                // 往 history 栈里 压入记录
+                history.pushState({},'',href)
+                changeContent();
+            })
+        }
+        // 监听popstate，如果不监听，用户点击记录后退时无效
+        window.addEventListener("popstate",changeContent)
+
+    </script>
+</body>
+```
+
+
+
+### 0.1 router插件
+
+#### 1.版本
+
+router 目前(2021/12/29)最新的版本是4, 在vue2中使用的大多是 3.
+
+​	使用 npm install vue-router 安装的路由默认也是 3.
+
+​	指定安装版本4: npm install vue-router@4
+
+#### 2.插件内的组件
+
+vue-router插件内包含的常用组件：<router-link>  <router-view>
+
+<router-link> 常用属性有 
+
+​		 **to**='/home',跳转地址，不赘述
+
+​		 **replace**属性（history栈内的栈顶记录被替换）,
+
+​		 **active-class**:指定当链接<a>激活时的样式属性名,m默认是router-link-active 。
+
+​		 				   假设当前路径是 /home/user 时， /home 映射的组件和/home/user映射的嵌套组件都有 router-link-active 属性。
+
+​							并且  /home 映射的组件没有 router-link-exact-active，/home/user映射的嵌套组件有 router-link-exact-active属性。
+
+​		 当链接激活时的默认的样式属性名如下图。
+
+![GIF11](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/GIF11.gif)
+
+```html
+// 指定active-class 效果如下图 
+<router-link to="/home"  active-class="dong-active">home |</router-link>
+  <router-link to="/about" active-class="dong-active"> about</router-link>
+```
+
+![image-20211229172948461](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211229172948461.png)
+
+​		**exact-active-class:**只有链接精准激活时，应用于<a>的class,默认是 router-link-exact-active。
+
+
+
+#### 3.vue-router 3和4
+
+**vue-router3** 中  <router-link> 可以通过 tag 属性来指定<router-link>转为哪一种标签。
+
+```html
+<router-link to='home' tag='button'/>
+```
+
+
+
+**vue-router4** 中 <router-link>  新增了插槽，删除了 tag. router-link 默认是一个<a>标签，<router-link>标签内的内容会被包裹在<a>标签内，但通过 cusom 可以删除该<a>标签，只显示插槽内的元素，但是需要给插槽内的元素添加跳转操作。可以通过作用域插槽的 navigate函数来进行跳转。
+
+可以直接通过插槽插入更多 自定义的元素。还可以通过**作用域插槽**获取数据。
+
+```html
+<!-- props: href 跳转的链接-->
+<!-- props: route对象-->
+<!-- props: navigate导航函数-->
+<!-- props: isActive 是否当前处于活跃状态-->
+<!-- props: isExactActive 是否当前处于精确的活跃状态-->
+<router-link to='/home' v-slot='props' custom>
+	<button @click="props.navigate">{{props.href}}</button>
+</router>
+```
+
+
+
+**vue-router4**中 <router-view>也新增了作用域插槽。可以获取映射到的组件。可以通过获取到组件后进行 动画 或者 缓存。
+
+还可以获取到 route，示例中未展示出来。
+
+```html
+<router-view v-slot='props'>
+	<transition name="why">
+    	<keep-alive>
+            <!-- .Component 可以获取到组件实例-->
+        	<component :is='props.Component'></component>
+        </keep-alive>
+    </transition>
+</router-view>
+```
+
+
+
 ### 1.Router和Route的区别
 
-**Router(路由器对象)**是VueRouter的一个对象。我们在new Vue()生成根实例时将Router实例注入进去。只要注入进去后，后续在使用都可以通过vue组件实例来获取Router对象：**this.$router**
+**Router(路由器对象)**是VueRouter的一个对象，一个单页面应用程序一般有一个router对象，里面包含了routes对象（组件和路径的映射关系）和其他的配置。我们在new Vue()生成根实例时将Router实例注入进去。只要注入进去后，后续在使用都可以通过vue组件实例来获取Router对象：**this.$router**
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400559.png?token=AP3MTU6VNMARBCEWY6VFRQDBU4H5A" alt="image-20211024215848663" style="zoom: 67%;" />
 
@@ -1935,6 +2102,55 @@ vue 中的route 就是  key 和 组件的映射
 **$router.replace({path:'home'})**;//替换路由，没有历史记录
 
 **Route(路由)是路由对象 ，是  路径和 组件的映射。**
+
+![image-20211229202156090](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211229202156090.png)
+
+#### 1.route对象的属性
+
+```js
+    {
+        path:'/home',
+        // component:Home
+        component:()=>{
+            return import(/*webpackChunkName: "home-chunk"*/'../components/Home')
+        },
+        name:'home',
+        meta{  // 路由源信息
+            time:30,
+            role:'admin'
+        }
+    },
+```
+
+#### 2.默认路由
+
+```js
+{
+        path:'/:pathMatch(.*)',
+        component: () => {
+            return import("../pages/Home")
+        }
+}
+```
+
+
+
+#### 3.vue3中获取 route 和 router对象
+
+```js
+import { useRoute, useRouter } from 'vue-router'
+
+export default {
+	setup(){
+		const route = useRoute() // 获取当前组件的 route 对象
+        const router = useRouter()
+	}	
+}
+```
+
+
+
+
 
 
 
@@ -2147,6 +2363,16 @@ vue 中的route 就是  key 和 组件的映射
    this.$router.go() //可前进也可后退
    ```
 
+3.其他API
+
+```js
+router.replace('/about')
+router.go(-1);
+router.go(1);
+```
+
+
+
 ### 9.缓存路由组件
 
 1. 作用：让不展示的路由组件保持挂载，不被销毁。
@@ -2168,7 +2394,7 @@ vue 中的route 就是  key 和 组件的映射
 
 
 
-### 4.动态路由是什么
+### 11.动态路由是什么
 
 把某种模式匹配到的所有路由，全都映射到同个组件。
 
@@ -2182,7 +2408,9 @@ vue 中的route 就是  key 和 组件的映射
  //  this.$route.query
 ```
 
-注意：当使用动态路由时，路径从 `/user/foo` 导航到 `/user/bar`，**原来的组件实例会被复用**。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。**不过，这也意味着组件的生命周期钩子不会再被调用**。
+![image-20211229202156090](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211229202156090.png)
+
+注意：当使用动态路由时，路径从 `/user/foo` 导航到 `/user/bar`，**原来的组件实例会被复用**。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。**不过，组件的beforeUpdate 和Updated 生命周期钩子函数会被调用**。
 
 复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) `$route` 对象：
 
@@ -2214,6 +2442,90 @@ const User = {
 
 
 
+
+### 12.路由懒加载
+
+使用 import() 语法。如下：
+
+```js
+  {
+        path:'/home',
+        // component:Home
+        component:()=>{
+            // 魔法注释
+            return import(/*webpackChunkName: "home-chunk"*/'../components/Home')
+        }
+    },
+    {
+        path:'/about',
+        // component:About
+        component:()=>{
+            // 魔法注释
+            return import(/*webpackChunkName: "about-chunk"*/'../components/About')
+        }
+    }
+```
+
+使用懒加载后 webpack 进行打包时会将要懒加载的组件单独打包成一个文件，单独文件的命名可以在 import() 内 通过注释来实现。
+
+上面代码打包后如下
+
+![image-20211229190210411](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211229190210411.png)
+
+
+
+### 13动态操作路由
+
+#### 1.动态添加路由
+
+通过 router.addRoute() 添加 **一条** 路由记录到现有的路由器内。
+
+addRoute({ ... } )默认将路由添加到顶层路由组中，也可以通过第一个参数指定父路由的名称添加到指定的路由的子路由中。
+
+addRoute(parent,{...})
+
+```js
+router.addRoute({
+	path:'/order',
+    component:() => import(...)
+})
+
+
+router.addRoute('orderFather',{
+	path:'/order',
+    component:() => import(...)
+})
+```
+
+#### 2.动态删除路由
+
+三种方式
+
+```js
+//1
+router.addRoute({
+    path:'/about', name:'about', component: About
+})
+router.addRoute({
+    path:'/about', name:'about', component: Home
+}) //直接覆盖
+//2
+router.addRoute({
+    path:'/about', name:'about', component: About
+})
+router.removeRoute('about')
+//3 通过回调函数删除路由
+const removeRoute = router.addRoute({
+    path:'/about', name:'about', component: About
+})
+removeRoute();
+```
+
+### 14路由导航守卫
+
+#### 1.导航守卫
+
+导航守卫就是路由跳转过程中的一些钩子函数，再直白点路由跳转是一个大的过程，这个大的过程分为跳转前中后等等细小的过程，在每一个过程中都有一函数，这个函数能让你操作一些其他的事儿的时机，这就是导航守卫
 
 ## 22Vuex
 

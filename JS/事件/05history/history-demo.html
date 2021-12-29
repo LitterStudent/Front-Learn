@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <a href="/home">home</a>
+        <a href="/about">about</a>
+        <div class="container">
+        </div>
+    </div>
+    <script>
+        const linkList = document.getElementsByTagName('a');
+        // console.log(linkList);
+        const container = document.querySelector('.container')
+        const changeContent = ()=>{
+            switch(location.pathname){
+                    case '/home':
+                        container.innerHTML ="Home";
+                        break;
+                    case '/about':
+                        container.innerHTML = 'About';
+                        break;
+                    default:
+                        container.innerHTML = "Default"
+                        break;
+                }
+        }
+        for (const link of linkList) {
+            // 当点击链接时会往 history 栈 中 压入值
+            link.addEventListener("click",e=>{
+                console.log("点击事件触发");
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                // 往 history 栈里 压入记录
+                history.pushState({},'',href)
+                changeContent();
+            })
+        }
+        // 监听popstate，如果不监听，用户点击记录后退时无效
+        window.addEventListener("popstate",()=>{
+            changeContent();
+            console.log("pop");
+        })
+
+    </script>
+</body>
+</html>
