@@ -2525,15 +2525,71 @@ removeRoute();
 
 #### 1.导航守卫
 
-导航守卫就是路由跳转过程中的一些钩子函数，再直白点路由跳转是一个大的过程，这个大的过程分为跳转前中后等等细小的过程，在每一个过程中都有一函数，这个函数能让你操作一些其他的事儿的时机，这就是导航守卫
+导航守卫可以通过跳转或者取消的方式的守卫导航，本质上就是路由跳转过程中的钩子函数，而且这些钩子函数还能改变跳转的结果，可以确认正确跳转，取消跳转，或者跳转到其他的路径。
+
+导航守卫有三种 :全局（前置|解析）守卫 :beforeEach(),beforeResolve(), 全局后置钩子(不算守卫，不会改变导航结果) afterEach
+
+​							 路由独享守卫 beforeEnter 守卫
+
+​							 组件内的守卫：beforeRouteEnter beforeRouteUpdate,beforeRouteLeave
+
+
+
+1. 导航被触发。
+
+2. 在失活的组件里调用 `beforeRouteLeave` 守卫。
+
+3. 调用全局的 `beforeEach` 守卫。
+
+4. 在重用的组件里调用 `beforeRouteUpdate` 守卫(2.2+)。
+
+5. 在路由配置里调用 `beforeEnter`。
+
+6. 解析异步路由组件。
+
+7. 在被激活的组件里调用 `beforeRouteEnter`。
+
+8. 调用全局的 `beforeResolve` 守卫(2.5+)。
+
+9. 导航被确认。
+
+10. 调用全局的 `afterEach` 钩子。
+
+11. 触发 DOM 更新。
+
+12. 调用 `beforeRouteEnter` 守卫中传给 `next` 的回调函数，创建好的组件实例会作为回调函数的参数传入。
+
+    
+
+#### 2.全局前置守卫
+
+```js
+router.beforeEach（(to,from)=>{
+// 可以返回4种值
+// fasle 取消导航
+// string 重定向路径
+// obj  携带query或parms的重定向路径
+// true 或 undefined 确认导航，调用下一个守卫
+}）
+```
+
+守卫传入的函数都是上面的形式，第一个参数是 目的路由（route）, 第二个是 起始路由（route), 第三个参数 next,现在不建议使用。vue2中通过 next 确认导航，但是经常被调用多次导致出错， vue3直接通过返回值来确认导航。
+
+守卫的返回值都可以是以上的4种值。
+
+
+
+
 
 ## 22Vuex
 
-Vuex是Vue中一个集中式状态管理的插件。
+Vuex是Vue中一个集中式状态管理的插件，将组件的内部状态抽离出来，以一个全局单例的方式管理。状态的修改可以被 devtools开发者插件观测到。这样数据的修改就可以被查看到。
 
 多个组件的共享状态进行集中式管理，也是通信的一种方式，适用于任何组件间的通信。
 
-### 1.什么时候使用Vuex?
+![image-20211230235538072](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211230235538072.png)
+
+### 1.什么时候使用Vuex? 
 
 多个组件共享同一状态，不同组件的行为需要改变同一状态。
 
@@ -2551,7 +2607,28 @@ Vuex是Vue中一个集中式状态管理的插件。
 
  简写方式：
 
+我们应该清晰地认识到，state 和 getters 是以**函数**的形式 映射到了 computed中，函数的返回值是state,而getter本身就是函数，所以应该是自身映射到了computed中。而mutation和action不是直接映射到methods中，如果mutation和action是直接映射到方法，那我们调用方法岂不是直接调用了 mutation 和 actions 函数，没有通过 $store.commit 和 $store.dispatch。 这是不对的，正确的想法应该是mutation和action是映射到方法中被包裹了一层函数，函数帮我们调用了 commit 和 dispatch.
+
 ![image-20211117174832400](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401056.png?token=AP3MTUZJGR3ZSI6V3JQCQ5DBU4H6W)
+
+```js
+// 还可以使用对象形式来更改名称
+import { mapState， mapGetters } from 'vuex';
+
+export default{
+    computed: {
+        ...mapState{
+        // 写成函数形式
+        	mySum: state => state.sum,
+        	mySchool: state=> state.school
+    	}，
+    	...mapGetters({
+    	// Getter 不用写成函数形式
+    		myPrice:'price'
+		})
+    }
+}
+```
 
 
 
@@ -2580,6 +2657,33 @@ Vuex是Vue中一个集中式状态管理的插件。
 
 
 
+
+### 5.vue3使用vuex
+
+安装最新版本 npm install vuex@next
+
+```js
+import { mapState, useStore} from "vuex";
+import { computed, useInstance } from 'vue'
+
+export default {
+    setup(){
+        const store = userStore() // 示范vue3中如何获取store示例
+        
+        const storeStateFunArr = mapState(['name','age','height']); // 返回一个对象 包含 key值 value:是函数
+        
+        const storeState = {}
+        Object.keys(storeStateFunArr).forEach(fnKey => {
+            const fn = storeStateFunArr[fnKey].bind({$store:store}); // 绑定this
+            storeStatte[fnKey] = computed(fn)
+        })
+        
+        return{
+         ...storeState   
+        }
+    }
+}
+```
 
 
 
