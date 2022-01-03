@@ -7,46 +7,7 @@
     <title>Document</title>
     <div class="dd"></div>
     <script>
- var isValidBST = function(root) {  //判断排序二叉树  
-    //  let validate = function(root,min,max){
-    //    if(root==null){
-    //        return true
-    //    }
-    //    if(root.val<=min||root.val>=max){
-    //        return false
-    //    }
-    //    return validate(root.left,min,root.val)&&validate(root.right,root.val,max)
-    //  }
-    //  return validate(root,Number.MIN_SAFE_INTEGER,Number.MAX_SAFE_INTEGER)
-    
-    let statck = []
-    let current = root
-    let pre = null
-    let a
-    while(statck.length>0||current){
-        if(current){
-            statck.push(current)
-            current = current.left     
-        }
-        current = statck.pop()
-        if(pre!=null&&current.val<=pre.val){
-            a = false
-        }
-        pre=current
-        current = current.right
-    }
-    if(a==false)return false
-    console.log(a)
-    return true
-};
-let tree = new TreeNode(1, new TreeNode(2, new TreeNode(4), new TreeNode(5)), new TreeNode(3, new TreeNode(6), new TreeNode(7)))
- let arr = []
-//  preorderTraversal(tree, arr)
-//  console.log(arr)
-//  let res = []
-//  res = preorderTraversal2(tree)
-//  console.log(res)
-console.log(isValidBST(tree))
+
 
     </script>
 </head>

@@ -2671,13 +2671,117 @@ export default{
 }
 ```
 
+### 2.5 action
+
+![image-20220103215944942](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220103215944942.png)
+
+
+
+context对象包含的参数
+
+![image-20220103221123334](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220103221123334.png)
+
+#### 1.返回值
+
+在组件中调用 action 操作后，如果想要 VueX 的action的异步请求完成时 通知回组件，我们可以这样操作：
+
+​     在action中返回一个promise, 在组件中调用action时，接收返回值promsie，通过promise的链式调用去处理异步请求结果。
+
+```js
+// store.js
+actions {
+    getSomethingAction(context){
+        return new Promise((reslove,reject) => {
+            axios({
+                ... //相应配置
+            }).then((res)=>{
+                // 提交相应的 commit 改变 state
+                context.commit(...)
+                resolve(value)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+}
+
+// component.js
+
+...
+methods:{
+    doAction(){
+        const promise = this.$store.dispatch('getSomethingAction');
+        promise.then(...) // 根据action返回的promise状态及value 进行操作
+    }
+}
+...
+
+```
+
 
 
 ### 3.module
 
-使用module时，引入的方式。state,mutation,action,getter的前缀不同。
+由于vuex使用单一状态树，所有的共享数据都放到了store中会显得非常臃肿，所以vuex允许使用模块来对sotre进行分割，每个模块都有各自的 state,gettters,mutations,actions,甚至是嵌套的子模块
+
+使用模块时，推荐加上命名空间。加上命名空间后，相当于在模块内定义的state,getters,mutations,actions，会被限制在模块的空间下，访问state,getters,mutations,actions时需要添加模块名前缀。如下图所示。其中前缀名等于 在 index.js 引入模块的名称。
+
+```js
+// /store/modules/home.js
+
+const homeModule = {
+ namespaced: true
+}
+
+// /store/index.js
+import home form './modules/home'
+const store = {
+    module: {
+        home:home // 后续的前缀名
+    }
+}
+```
+
+使用module时，引入的方式。state,mutation,action,getter的前缀不同。（personAbout即为模块）
 
 ![image-20211117211306238](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011401049.png?token=AP3MTU5L5RUCEEKCUXJGK2DBU4H62)
+
+模块下的 getters函数有 4个参数，比index.js的多出两个.当想获取根的 state或 getters时可以使用
+
+```js
+// /store/modules/home.js
+
+const homeModule = {
+    namespaced: true,
+    ...
+    getters: {
+        getFullName(state, getters, rootState, rootGetters){
+            ...
+        }
+    }
+    ...
+}
+```
+
+模块下的 actions函数
+
+```js
+actions {
+	doSomethinsAction(context){
+        // 使用本模块内的 mutations
+       context.commit('doSomething')
+        
+        // 使用根组件的 mutations
+       context.commit('doSometing',null,{root: true})
+    }
+}
+```
+
+1.使用module的辅助函数
+
+![image-20220103233824943](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220103233824943.png)
+
+![image-20220103233845957](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220103233845957.png)
 
 
 
@@ -2725,6 +2829,10 @@ export default {
     }
 }
 ```
+
+
+
+
 
 
 

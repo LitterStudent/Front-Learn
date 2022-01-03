@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script>
-        function TreeNode(val, left, right) {
+function TreeNode(val, left, right) {
     this.val = (val == undefined ? 0 : val)
     this.left = (left == undefined ? null : left)
     this.right = (right == undefined ? null : right)
@@ -180,9 +172,3 @@ while(queue.length>0){
 return res;
 };
 console.log(levelOrder(root));
-    </script>
-</head>
-<body>
-    
-</body>
-</html>
