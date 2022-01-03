@@ -1353,9 +1353,50 @@ export function loginAPI(paramsList) {
 
 
 
+### 3.`axios`取消原理
+
+```js
+ const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+axios.get('/get/server', {
+  cancelToken: source.token
+}).catch(function (err) {
+  if (axios.isCancel(err)) {
+    console.log('Request canceled', err.message);
+  } else {
+    // handle error
+  }
+});
+
+// cancel the request (the message parameter is optional)
+// 取消函数。
+source.cancel('哎呀，我被若川取消了');
 
 
-## 8 MVVM
+
+// source.cancel('哎呀，我被若川取消了');
+// 点击取消时才会 生成 cancelToken 实例对象。
+// 点击取消后，会生成原因，看懂了这段在看之后的源码，可能就好理解了。
+var config = {
+  name: '若川',
+  // 这里简化了
+  cancelToken: {
+        promise: new Promise(function(resolve){
+            resolve({ message: '哎呀，我被若川取消了'})
+        }),
+        reason: { message: '哎呀，我被若川取消了' }
+  },
+};
+```
+
+`axios`取消原理是：通过传递 `config` 配置 `cancelToken` 的形式，来取消的。判断有传`cancelToken`，在 `promise` 链式调用的 `dispatchRequest` 抛出错误，在 `adapter` 中 `request.abort()` 取消请求，使 `promise` 走向 `rejected`，被用户捕获取消信息。
+
+## 
+
+
+
+
 
 Model  View  ViewModel
 

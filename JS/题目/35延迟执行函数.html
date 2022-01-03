@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const randomInteger = (minimum, maximum) => Math.floor((Math.random() * (maximum - minimum + 1)) + minimum);
+
+const createAbortError = () => {
+	const error = new Error('Delay aborted');
+	error.name = 'AbortError';
+	return error;
+};
+
+// AbortController 可以实现取消功能。
+// https://developer.mozilla.org/zh-CN/docs/Web/API/AbortController
+const createDelay = ({willResolve}) => (ms, {value, signal} = {}) => {
+    if (signal && signal.aborted) {
+		return Promise.reject(createAbortError());
+	}
+
+    let timeoutId;
+    let settle;
+    let rejectFn;
+    const signalListener = () => {
+        clearTimeout(timeoutId);
+        rejectFn(createAbortError());
+    }
+    const cleanup = () => {
+		if (signal) {
+			signal.removeEventListener('abort', signalListener);
+		}
+	};
+    const delayPromise = new Promise((resolve, reject) => {
+        settle = () => {
+            // 操作完成前先清除监听器，资源回收
+			cleanup();
+			if (willResolve) {
+				resolve(value);
+			} else {
+				reject(value);
+			}
+		};
+
+        rejectFn = reject;
+        timeoutId = setTimeout(settle, ms);
+    });
+    
+    if (signal) {
+		signal.addEventListener('abort', signalListener, {once: true});
+	}
+
+    delayPromise.clear = () => {
+		clearTimeout(timeoutId);
+		timeoutId = null;
+		settle();
+	};
+
+    return delayPromise;
+}
+
+const createWithTimers = () => {
+    const delay = createDelay({willResolve: true});
+    delay.reject = createDelay({willResolve: false});
+    delay.range = (minimum, maximum, options) => delay(randomInteger(minimum, maximum), options);
+    return delay;
+}
+const delay6 = createWithTimers();
+
+
+
+(async () => {
+    const abortController = new AbortController();
+
+    setTimeout(() => {
+        abortController.abort();
+    }, 500);
+
+    try {
+        await delay6(1000, {signal: abortController.signal});
+    } catch (error) {
+        // 500 milliseconds later
+        console.log(error.name,'hhhhhhh')
+        //=> 'AbortError'
+    }
+})();
+
+    </script>
+</body>
+</html>
