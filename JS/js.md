@@ -2027,6 +2027,228 @@ for (let x of Array.from(arrayLike)) {
 
 2.for (key in obj ) 遍历对象原型链获取键名
 
+### 3.forEach
+
+这是 es5的新增的规范。
+
+以下的数据结构实现了forEach，按升序遍历。
+
+
+
+![image-20220105003952588](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105003952588.png)
+
+
+
+![image-20220105041615953](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105041615953.png)
+
+
+
+`forEach()` 遍历的范围在第一次调用 `callback` 前就会确定。调用 `forEach` 后添加到数组中的项不会被 `callback` 访问到。如果已经存在的值被改变，则传递给 `callback` 的值是 `forEach()` 遍历到他们那一刻的值。已删除的项不会被遍历到。如果已访问的元素在迭代时被删除了（例如使用 [`shift()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)），之后的元素将被跳过
+
+```js
+let arr = [1,2,3,4,5]
+
+
+arr.forEach((item,index,arrT)=>{
+    if(index == 1){
+        // 已存在的元素被修改，后续遍历到的是修改后的值
+        arrT[index+1] = 'change'
+        // 新增加的元素后续不会被遍历
+        arr.push('nihao')
+        // 被删除的元素后续也不会被遍历
+        delete arr[4] 
+    }
+    console.log(item);
+})
+
+```
+
+通过查看源码可知，forEach 遍历时没有拷贝副本，直接遍历的是原数组，遍历前已经确定了遍历的范围。
+
+![image-20220105043628704](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105043628704.png)
+
+
+
+下面的例子会输出 "one", "two", "four"。当到达包含值 "two" 的项时，整个数组的第一个项被移除了，这导致所有剩下的项上移一个位置。因为元素 "four" 正位于在数组更前的位置，所以 "three" 会被跳过。 `forEach()` 不会在迭代之前创建数组的副本。
+
+```js
+var words = ['one', 'two', 'three', 'four'];
+words.forEach(function(word) {
+  console.log(word);
+  if (word === 'two') {
+    words.shift();
+  }
+});
+// one
+// two
+// four
+```
+
+
+
+
+
+除了抛出异常以外，没有办法中止或跳出 `forEach()` 循环。如果你需要中止或跳出循环，`forEach()` 方法不是应当使用的工具。
+
+若你需要提前终止循环，你可以使用：
+
+- 一个简单的 [for](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for) 循环
+- [for...of](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for...of) / [for...in](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for...in) 循环
+
+这些数组方法则可以对数组元素判断，以便确定是否需要继续遍历：
+
+- [`every()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
+- [`some()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
+- [`find()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+- [`findIndex()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
+
+只要条件允许，也可以使用 [`filter()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) 提前过滤出需要遍历的部分，再用 `forEach()` 处理。
+
+
+
+如果使用 promise 或 async 函数作为 `forEach()` 等类似方法的 `callback` 参数，最好对造成的执行顺序影响多加考虑，否则容易出现错误。
+
+```js
+let ratings = [5, 4, 5];
+
+let sum = 0;
+
+let sumFunction = async function (a, b) {
+    return a + b;
+}
+
+ratings.forEach(async function(rating) {
+    sum = await sumFunction(sum, rating);
+})
+
+console.log(sum);
+// Expected output: 14
+// Actual output: 0
+```
+
+Array,Map,Set,NodeList 的forEach 应该都是一样的，不赘述。
+
+
+
+### 4.Array.prototype.map
+
+这是数组原型上的方法。
+
+```js
+ // 在字符串上使用
+ Array.prototype.map.call("Hello World", function(x) {
+  return x.charCodeAt(0);
+})
+```
+
+`map()` 方法创建一个新数组，其结果是该数组中的每个元素是调用一次提供的函数后的返回值。
+
+`map` 方法会给原数组中的每个元素都按顺序调用一次  `callback` 函数。`callback` 每次执行后的返回值（包括 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)）组合起来形成一个新数组。 `callback` 函数只会在有值的索引上被调用；那些从来没被赋过值或者使用 `delete` 删除的索引则不会被调用。
+
+![image-20220105044441973](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105044441973.png)
+
+`map` 方法处理数组元素的范围是在 `callback` 方法第一次调用之前就已经确定了。调用`map`方法之后追加的数组元素不会被`callback`访问。如果存在的数组元素改变了，那么传给`callback`的值是`map`访问该元素时的值。在`map`函数调用后但在访问该元素前，该元素被删除的话，则无法被访问到。这和forEach类似。
+
+```js
+// 求数组中每个元素的平方根
+var numbers = [1, 4, 9];
+var roots = numbers.map(Math.sqrt);
+// roots的值为[1, 2, 3], numbers的值仍为[1, 4, 9]
+
+
+
+
+
+// 使用 map 重新格式化数组中的对象
+var kvArray = [{key: 1, value: 10},
+               {key: 2, value: 20},
+               {key: 3, value: 30}];
+
+var reformattedArray = kvArray.map(function(obj) {
+   var rObj = {};
+   rObj[obj.key] = obj.value;
+   return rObj;
+});
+
+// reformattedArray 数组为： [{1: 10}, {2: 20}, {3: 30}],
+
+// kvArray 数组未被修改:
+// [{key: 1, value: 10},
+//  {key: 2, value: 20},
+//  {key: 3, value: 30}]
+```
+
+```js
+["1", "2", "3"].map(parseInt); //[1, NaN, NaN].
+// parseInt(string, radix) -> map(parseInt(value, index))
+/*  first iteration (index is 0): */ parseInt("1", 0); // 1
+/* second iteration (index is 1): */ parseInt("2", 1); // NaN
+/*  third iteration (index is 2): */ parseInt("3", 2); // NaN
+
+
+// 解决方案：
+function returnInt(element) {
+  return parseInt(element, 10);
+}
+
+['1', '2', '3'].map(returnInt); // [1, 2, 3]
+// Actual result is an array of numbers (as expected)
+
+// Same as above, but using the concise arrow function syntax
+['1', '2', '3'].map( str => parseInt(str) );
+
+// A simpler way to achieve the above, while avoiding the "gotcha":
+['1', '2', '3'].map(Number); // [1, 2, 3]
+
+// But unlike parseInt(), Number() will also return a float or (resolved) exponential notation:
+['1.1', '2.2e2', '3e300'].map(Number); // [1.1, 220, 3e+300]
+// For comparison, if we use parseInt() on the array above:
+['1.1', '2.2e2', '3e300'].map( str => parseInt(str) ); // [1, 2, 3]
+```
+
+```js
+//当返回undefined 或没有返回任何内容时:
+var numbers = [1, 2, 3, 4];
+var filteredNumbers = numbers.map(function(num, index) {
+  if(index < 3) {
+     return num;
+  }
+});
+// filteredNumbers is [1, 2, 3, undefined]
+```
+
+
+
+### 5.Array.prototyp.filter
+
+`filter` 为数组中的每个元素调用一次 `callback` 函数，并利用所有使得 `callback` 返回 true 或[等价于 true 的值](https://developer.mozilla.org/zh-CN/docs/Glossary/Truthy)的元素创建一个新数组。`callback` 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 `callback` 测试的元素会被跳过，不会被包含在新数组中。
+
+`filter` 遍历的元素范围在第一次调用 `callback` 之前就已经确定了。在调用 `filter` 之后被添加到数组中的元素不会被 `filter` 遍历到。如果已经存在的元素被改变了，则他们传入 `callback` 的值是 `filter` 遍历到它们那一刻的值。被删除或从来未被赋值的元素不会被遍历到。 这跟 forEach,map 一样。
+
+```js
+// 筛选排除所有较小的值
+function isBigEnough(element) {
+  return element >= 10;
+}
+var filtered = [12, 5, 8, 130, 44].filter(isBigEnough);
+
+const fruits = ['apple', 'banana', 'grapes', 'mango', 'orange'];
+
+
+//filter() 根据搜索条件来过滤数组内容。
+/**
+ * Array filters items based on search criteria (query)
+ */
+const filterItems = (query) => {
+  return fruits.filter((el) =>
+    el.toLowerCase().indexOf(query.toLowerCase()) > -1
+  );
+}
+
+console.log(filterItems('ap')); // ['apple', 'grapes']
+console.log(filterItems('an')); // ['banana', 'mango', 'orange']
+```
+
 
 
 ## 23 ES6新增语法
@@ -2045,63 +2267,7 @@ for (let x of Array.from(arrayLike)) {
 
 7.Object.assign
 
-
-
-
-
-## 24 Set  和Map
-
-Set 可以存储任何类型的唯一值，无论是原始值还是对象引用。
-
-常用API
-
-```javascript
-const set1 = new Set() //初始化
-const set2 = new Set(["a","b","c","d","d","e"]); //遍历数据元素初始化，set2.size 为 6
-
-set2.add("f");  //因为.add 会返回原set对象，所以可以链式添加
-set2.add("g").add("h").add("i").add("j").add("k").add("k");
-
-set2.has("a") // true
-
-set2.size // returns 10
-
-set2.clear(); //清空
-
-set2.delete('a') //删除特定值
-
-set2.keys()  //返回一个迭代器对象，可以用for of 遍历
-```
-
-**WeakSet**
-
-与 `Set` 类似，也是不重复的值的集合。但是 `WeakSet` 的成员只能是对象，而不能是其他类型的值。`WeakSet` 中的对象都是弱引用，即垃圾回收机制不考虑 `WeakSet`对该对象的引用。
-
-```javascript
-let map = new Map([[key1,value1],[key2,value2]]) //可以添加二维数组来初始化 map
-map.set(key,value)
-map.get(key)
-map.delete(key)
-map.has(key) 
-```
-
-弱引用：就是当该对象的引用只剩下这个弱引用时，该对象就会被下次垃圾回收给清理掉。
-
-
-
-**Map**
-
-Map和对象类似，也是键值对集合，但是Map可以的所有类型（包括对象）的键。
-
-
-
-WeakMap
-
-直接受 对象 作为键名，且是弱引用。
-
-
-
-## 25 Proxy 代理
+### 8.Proxy 代理
 
 代理就是捕获**对象**的一些操作，再加上自定的行为。捕获对象操作的方法叫捕获器。有13种捕获器。几乎涵盖了所有可以修改对象的情况。
 
@@ -2167,7 +2333,69 @@ const obj = {name:'xiaoming'};
 
 
 
-## 26严格模式
+
+
+### 9.Set  和Map
+
+ES6 提供了新的数据结构 Set 和 Map。
+
+Set 可以存储任何类型的唯一值，无论是原始值还是对象引用。
+
+常用API
+
+```javascript
+const set1 = new Set() //初始化
+const set2 = new Set(["a","b","c","d","d","e"]); //遍历数据元素初始化，set2.size 为 6
+
+set2.add("f");  //因为.add 会返回原set对象，所以可以链式添加
+set2.add("g").add("h").add("i").add("j").add("k").add("k");
+
+set2.has("a") // true
+
+set2.size // returns 10
+
+set2.clear(); //清空
+
+set2.delete('a') //删除特定值
+
+set2.keys()  //返回一个迭代器对象，可以用for of 遍历
+```
+
+**WeakSet**
+
+与 `Set` 类似，也是不重复的值的集合。但是 `WeakSet` 的成员只能是对象，而不能是其他类型的值。`WeakSet` 中的对象都是弱引用，即垃圾回收机制不考虑 `WeakSet`对该对象的引用。
+
+```javascript
+let map = new Map([[key1,value1],[key2,value2]]) //可以添加二维数组来初始化 map
+map.set(key,value)
+map.get(key)
+map.delete(key)
+map.has(key) 
+```
+
+弱引用：就是当该对象的引用只剩下这个弱引用时，该对象就会被下次垃圾回收给清理掉。
+
+
+
+**Map**
+
+Map和对象类似，也是键值对集合，但是Map可以的所有类型（包括对象）的键。
+
+
+
+WeakMap
+
+直接受 对象 作为键名，且是弱引用。
+
+
+
+
+
+
+
+
+
+## 24.严格模式
 
 严格模式用于选择以更严格的条件检查JavaScript 代码错误，**可以应用到全局，也可以应用到函数内部。**严格模式的好处是可以提早发现错误。
 
@@ -2220,7 +2448,7 @@ displayColor.call(null);
 
 
 
-## 27encodeURI 和 encodeURIComponent 的区别
+## 25.encodeURI 和 encodeURIComponent 的区别
 
 [好文](https://www.zhihu.com/question/21861899)
 
@@ -2281,7 +2509,7 @@ console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fs
 
 
 
-## 28DOM
+## 26.DOM
 
 ![img](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/-kIwpgj_QBCyWAGSgvb65g)
 
@@ -2379,7 +2607,7 @@ node.removeChild(node2)
 
 
 
-## 29 BOM
+## 27. BOM
 
 **brower object model**
 
@@ -2408,7 +2636,7 @@ screen.width screen.height
 
 
 
-## 30前端性能优化
+## 28.前端性能优化
 
 ### 1.让加载更快
 
@@ -2440,7 +2668,7 @@ screen.width screen.height
 
 
 
-## 31 如何防止表单重复提交？
+## 29. 如何防止表单重复提交？
 
 
 
@@ -2448,7 +2676,7 @@ screen.width screen.height
 
 
 
-## 32V8引擎
+## 30.V8引擎
 
 V8是谷歌使用C++开发的开源 javascript 虚拟机引擎，运用于Chrom浏览器和node上。
 
