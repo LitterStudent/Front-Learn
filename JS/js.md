@@ -2269,36 +2269,59 @@ console.log(filterItems('an')); // ['banana', 'mango', 'orange']
 
 ### 8.Proxy 代理
 
-代理就是捕获**对象**的一些操作，再加上自定的行为。捕获对象操作的方法叫捕获器。有13种捕获器。几乎涵盖了所有可以修改对象的情况。
+代理就是捕拦截**对象**的一些操作(查找、赋值、枚举、函数调用等)，并对外界对对象的操作进行过滤和改写等。捕获对象操作的方法叫捕获器。有13种捕获器。几乎涵盖了所有可以修改对象的情况。
 
-```javascript
+proxy的基本使用如下
+
+13种记不住的，记得 get set has delete getPrototype apply constructor 应该差不多了。
+
+![image-20220105142230672](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105142230672.png)
+
+```js
 let proxy = new Proxy(target,handler)  //traget 被代理的目标对象  handler 处理程序对象  内部可以设置要拦截目标对象的什么操作
+
+
+// handler 如果是空对象，相当于不对对象操作进行拦截
+var target = {};
+var handler = {};
+var proxy = new Proxy(target, handler);
+proxy.a = 'b';
+target.a // "b"
+
+// 同一个拦截器函数，可以设置拦截多个操作。
+// 拦截函数操作
+var handler = {
+    get: function(target, name) {
+      if (name === 'prototype') {
+        return Object.prototype;
+      }
+      return 'Hello, ' + name;
+    },
+  
+    apply: function(target, thisBinding, args) {
+      return args[0];
+    },
+  
+    construct: function(target, args) {
+      return {value: args[1]};
+    }
+  };
+  
+  var fproxy = new Proxy(function(x, y) {
+    return x + y;
+  }, handler);
+  
+  fproxy(1, 2) // 1
+  new fproxy(1, 2) // {value: 2}
+  fproxy.prototype === Object.prototype // true
+  fproxy.foo === "Hello, foo" // true
+
 
 ```
 
-1.get()
-
-2.set()
-
-3.has()
-
-4.defineProperty()
-
-5.getPrototypeOf()
-
-6.setPrototypeOf()
-
-7.apply()
-
-8.constructor()
 
 
-
-
-
-
-
-捕获器拦截到操作后进行一些列自己的操作，然后如果需要重调原始操作的话，可以通过反射Reflect。
+#### 1.get
 
 ```javascript
 const target = {
@@ -2312,11 +2335,226 @@ return Reflect.get(...arguments);
 const proxy = new Proxy(target, handler);
 console.log(proxy.foo); // bar
 console.log(target.foo); // bar
+
+
+// get方法的第三个参数的例子，它总是指向原始的读操作所在的那个对象，一般情况下就是 Proxy 实例。
+const proxy = new Proxy({}, {
+    get: function(target, key, receiver) {
+      return receiver;
+    }
+  });
+proxy.getReceiver === proxy // true
+```
+
+#### 2.set
+
+```js
+let validator = {
+    set: function(obj, prop, value) {
+      if (prop === 'age') {
+        if (!Number.isInteger(value)) {
+          throw new TypeError('The age is not an integer');
+        }
+        if (value > 200) {
+          throw new RangeError('The age seems invalid');
+        }
+      }
+  
+      // 对于满足条件的 age 属性以及其他属性，直接保存
+      obj[prop] = value;
+      return true;
+    }
+  };
+  
+  let person = new Proxy({}, validator);
+  
+  person.age = 100;
+  
+  person.age // 100
+  person.age = 'young' // 报错
+  person.age = 300 // 报错
+```
+
+```js
+// 只要读写的属性名的第一个字符是下划线，
+// 一律抛错，从而达到禁止读写内部属性的目的。
+const handler = {
+    get (target, key) {
+      invariant(key, 'get');
+      return target[key];
+    },
+    set (target, key, value) {
+      invariant(key, 'set');
+      target[key] = value;
+      return true;
+    }
+  };
+  function invariant (key, action) {
+    if (key[0] === '_') {
+      throw new Error(`Invalid attempt to ${action} private "${key}" property`);
+    }
+  }
+  const target = {};
+  const proxy = new Proxy(target, handler);
+  proxy._prop
+  // Error: Invalid attempt to get private "_prop" property
+  proxy._prop = 'c'
+  // Error: Invalid attempt to set private "_prop" property
+```
+
+```js
+// set方法的第四个参数receiver，指的是原始的操作行为所在的那个对象，
+//  一般情况下是proxy实例本身，请看下面的例子。
+const handler = {
+    set: function(obj, prop, value, receiver) {
+      obj[prop] = receiver;
+      return true;
+    }
+  };
+  const proxy = new Proxy({}, handler);
+  const myObj = {};
+  Object.setPrototypeOf(myObj, proxy);
+  
+  myObj.foo = 'bar';
+  myObj.foo === myObj // true
+```
+
+#### 3.apply()
+
+`apply`方法拦截函数的调用、`call`和`apply`操作。
+
+`apply`方法可以接受三个参数，分别是目标对象、目标对象的上下文对象（`this`）和目标对象的参数数组。
+
+```js
+var handler = {
+  apply (target, ctx, args) {
+    return Reflect.apply(...arguments);
+  }
+};
 ```
 
 
 
-proxy对象可以解构成普通对象
+
+
+#### 4.has()
+
+`has()`方法用来拦截`HasProperty`操作，即判断对象是否具有某个属性时，这个方法会生效。典型的操作就是`in`运算符。
+
+`has()`方法可以接受两个参数，分别是目标对象、需查询的属性名。
+
+```js
+var handler = {
+  has (target, key) {
+    if (key[0] === '_') {
+      return false;
+    }
+    return key in target;
+  }
+};
+var target = { _prop: 'foo', prop: 'foo' };
+var proxy = new Proxy(target, handler);
+'_prop' in proxy // false
+```
+
+```js
+// 虽然for...in循环也用到了in运算符，但是has()拦截对for...in循环不生效。
+// has()拦截只对in运算符生效，对for...in循环不生效
+let stu1 = {name: '张三', score: 59};
+let stu2 = {name: '李四', score: 99};
+
+let handler = {
+  has(target, prop) {
+    if (prop === 'score' && target[prop] < 60) {
+      console.log(`${target.name} 不及格`);
+      return false;
+    }
+    return prop in target;
+  }
+}
+
+let oproxy1 = new Proxy(stu1, handler);
+let oproxy2 = new Proxy(stu2, handler);
+
+'score' in oproxy1
+// 张三 不及格
+// false
+
+'score' in oproxy2
+// true
+
+for (let a in oproxy1) {
+  console.log(oproxy1[a]);
+}
+// 张三
+// 59
+
+for (let b in oproxy2) {
+  console.log(oproxy2[b]);
+}
+// 李四
+// 99
+```
+
+#### 5.constructor()
+
+`construct()`方法用于拦截`new`命令，下面是拦截对象的写法。
+
+`construct()`方法可以接受三个参数。
+
+- `target`：目标对象。
+- `args`：构造函数的参数数组。
+- `newTarget`：创造实例对象时，`new`命令作用的构造函数（下面例子的`p`）。
+
+```js
+const handler = {
+  construct (target, args, newTarget) {
+    return new target(...args);
+  }
+};
+```
+
+
+
+```js
+// 由于construct()拦截的是构造函数，所以它的目标对象必须是函数，否则就会报错。
+const p = new Proxy({}, {
+  construct: function(target, argumentsList) {
+    return {};
+  }
+});
+
+new p() // 报错
+// Uncaught TypeError: p is not a constructor
+```
+
+
+
+#### 6.getPrototypeOf()
+
+`getPrototypeOf()`方法主要用来拦截获取对象原型。具体来说，拦截下面这些操作。
+
+- `Object.prototype.__proto__`
+- `Object.prototype.isPrototypeOf()`
+- `Object.getPrototypeOf()`
+- `Reflect.getPrototypeOf()`
+- `instanceof`
+
+```js
+var proto = {};
+var p = new Proxy({}, {
+  getPrototypeOf(target) {
+    return proto;
+  }
+});
+Object.getPrototypeOf(p) === proto // true
+```
+
+
+
+
+
+#### .proxy对象可以解构成普通对象
 
 ```js
 const obj = {name:'xiaoming'};
@@ -2329,13 +2567,35 @@ const obj = {name:'xiaoming'};
 
 ![image-20211226011416319](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211226011416319.png)
 
+### 9.Reflect
+
+#### 1.前言
+
+在国内的技术文章中你去搜索"JS 反射"得到的大部分的内容都是在说“利用JS的for(…in…)语句实现反射机制”，但其实反射机制在如今的ES6中可以得到更大的延伸以及运用的，这个在后续会讲解。不过这些文章都用一句比较通俗的话来说什么叫**反射机制**:
+
+**反射机制指的是程序在运行时能够获取自身的信息**
 
 
 
+#### 2.如何使用
 
+**Reflect** 是一个内置的对象，它提供拦截 JavaScript 操作的方法。这些方法与[proxy handlers (en-US)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy)的方法相同。`Reflect`不是一个函数对象，因此它是不可构造的。
 
+与大多数全局对象不同`Reflect`并非一个构造函数，所以不能通过[new运算符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)对其进行调用，或者将`Reflect`对象作为一个函数来调用。`Reflect`的所有属性和方法都是静态的（就像[`Math`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math)对象）。
 
-### 9.Set  和Map
+#### 设计目的：
+
+1.将  Object 对象一些内部的方法（Object.defineProperty) 放到 Reflect对象上。
+
+2.修改某些Object方法的返回结果，使其变得更合理。比如 Object.defineProperty(obj,key,value)无法定义属性时会抛出一个错误，而Reflect.defineProperty()返回false。我们可以不用进行try catch 去捕获错误
+
+3.让`Object`操作都变成函数行为。某些`Object`操作是命令式，比如`name in obj`和`delete obj[name]`，而`Reflect.has(obj, name)`和`Reflect.deleteProperty(obj, name)`让它们变成了函数行为
+
+4.Reflect`对象的方法与`Proxy`对象的方法一一对应，只要是`Proxy`对象的方法，就能在`Reflect`对象上找到对应的方法。这就让`Proxy`对象可以方便地调用对应的`Reflect`方法，完成默认行为，作为修改行为的基础。也就是说，不管`Proxy`怎么修改默认行为，你总可以在`Reflect`上获取默认行为。
+
+![image-20220105201113051](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105201113051.png)
+
+### 10.Set  和Map
 
 ES6 提供了新的数据结构 Set 和 Map。
 
