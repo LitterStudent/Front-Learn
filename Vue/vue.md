@@ -705,6 +705,18 @@ command 就是 service 或者 build
 
 ![image-20211222004706763](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211222004706763.png)
 
+
+
+### 6.historyApiFallback
+
+vue_cli 已经为 history路由模式的映射配置 webapck 的 devServer。
+
+historyApiFallback:true
+
+当history 路由模式下刷新页面时 devServer 找不到页面会默认返回 index.html 就是首页的页面
+
+
+
 ## 5.Vue组件自定义事件
 
 
