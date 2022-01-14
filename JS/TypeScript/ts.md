@@ -172,7 +172,7 @@ function printId(id: number | string) {
 }
 ```
 
-解决方案是用代码收窄联合类型，就像你在 JavaScript 没有类型注解那样使用。当 TypeScript 可以根据代码的结构推断出一个更加具体的类型时，类型收窄就会出现。
+ts代码会收窄联合类型。。当 TypeScript 可以根据代码的结构推断出一个更加具体的类型时，类型收窄就会出现。
 
 ```tsx
 function printId(id: number | string) {
@@ -189,6 +189,10 @@ function printId(id: number | string) {
 
 
 ### 8.类型别名
+
+有的时候，一个类型会被使用多次，此时我们更希望通过一个单独的名字来引用它。
+
+一个可以指代任意类型的名字。类型别名的语法是：
 
 ```tsx
 type ID = number | string;
@@ -211,7 +215,7 @@ printCoord({ x: 100, y: 100 });
 
 ### 9.接口声明(interfaces)
 
-接口声明（interface declaration）是命名对象类型的另一种方式：
+接口声明（interface declaration）是命名对象类型的另一种方式：(只能声明对象)
 
 ```tsx
 interface Point {
@@ -227,7 +231,7 @@ function printCoord(pt: Point) {
 printCoord({ x: 100, y: 100 });
 ```
 
-类型别名和接口非常相似，大部分时候，你可以任意选择使用。接口的几乎所有特性都可以在 `type` 中使用，两者最关键的差别在于类型别名本身无法添加新的属性，而接口是可以扩展的。
+类型别名和接口声明非常相似，大部分时候，你可以任意选择使用。接口的几乎所有特性都可以在 `type` 中使用，两者最关键的差别在于类型别名本身无法添加新的属性，而接口是可以扩展的。
 
 ```tsx
 // Interface
@@ -826,6 +830,38 @@ function sum({ a, b, c }: ABC) {
 
 ## 5.对象类型
 
+ts中的对象可以是匿名的，类型别名，接口声明
+
+```typescript
+// 匿名
+function greet(person: { name: string; age: number }) {
+  return "Hello " + person.name;
+}
+
+//类型别名
+
+type Person = {
+  name: string;
+  age: number;
+};
+ 
+function greet(person: Person) {
+  return "Hello " + person.name;
+}
+
+// 接口声明
+interface Person {
+  name: string;
+  age: number;
+}
+ 
+function greet(person: Person) {
+  return "Hello " + person.name;
+}
+```
+
+
+
 
 
 ### 1.属性修饰符
@@ -902,4 +938,207 @@ function evict(home: Home) {
     age: 42,
   };
 }
+```
+
+
+
+### 3.属性继承
+
+```typescript
+interface Colorful {
+  color: string;
+}
+ 
+interface Circle {
+  radius: number;
+}
+ 
+interface ColorfulCircle extends Colorful, Circle {}
+ 
+const cc: ColorfulCircle = {
+  color: "red",
+  radius: 42,
+};
+```
+
+
+
+### 4.交叉类型
+
+使用 &
+
+
+
+```typescript
+interface Colorful {
+  color: string;
+}
+interface Circle {
+  radius: number;
+}
+ 
+type ColorfulCircle = Colorful & Circle;
+
+
+// 行参中使用
+function draw(circle: Colorful & Circle) {
+  console.log(`Color was ${circle.color}`);
+  console.log(`Radius was ${circle.radius}`);
+}
+ 
+// okay
+draw({ color: "blue", radius: 42 });
+ 
+// oops
+draw({ color: "red", raidus: 42 });
+// Argument of type '{ color: string; raidus: number; }' is not assignable to parameter of type 'Colorful & Circle'.
+// Object literal may only specify known properties, but 'raidus' does not exist in type 'Colorful & Circle'. Did you mean to write 'radius'?
+```
+
+
+
+使用继承的方式，如果重写类型会导致编译错误，但交叉类型不会：
+
+```typescript
+interface Colorful {
+  color: string;
+}
+
+interface ColorfulSub extends Colorful {
+  color: number
+}
+
+// Interface 'ColorfulSub' incorrectly extends interface 'Colorful'.
+// Types of property 'color' are incompatible.
+// Type 'number' is not assignable to type 'string'.
+```
+
+虽然不会报错，那 `color` 属性的类型是什么呢，答案是 `never`，取得是 `string` 和 `number` 的交集。
+
+```typescript
+interface Colorful {
+  color: string;
+}
+
+type ColorfulSub = Colorful & {
+  color: number
+}
+```
+
+
+
+### 5.泛型对象类型
+
+```typescript
+// 1
+interface Box<Type> {
+  contents: Type;
+}
+ 
+function setContents<Type>(box: Box<Type>, newContents: Type) {
+  box.contents = newContents;
+}
+```
+
+```typescript
+// 2
+type Box<Type> = {
+  contents: Type;
+};
+function setContents<Type>(box: Box<Type>, newContents: Type) {
+  box.contents = newContents;
+}
+```
+
+```typescript
+// 3
+type OrNull<Type> = Type | null;
+ 
+type OneOrMany<Type> = Type | Type[];
+ 
+type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
+           
+type OneOrManyOrNull<Type> = OneOrMany<Type> | null
+ 
+type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
+               
+type OneOrManyOrNullStrings = OneOrMany<string> | null
+```
+
+
+
+#### 1.Array类型
+
+数组类型本就是一种泛型对象类型
+
+当我们这样写类型 `number[]` 或者 `string[]` 的时候，其实它们只是 `Array<number>` 和 `Array<string>` 的简写形式而已。
+
+```typescript
+interface Array<Type> {
+  /**
+   * Gets or sets the length of the array.
+   */
+  length: number;
+ 
+  /**
+   * Removes the last element from an array and returns it.
+   */
+  pop(): Type | undefined;
+ 
+  /**
+   * Appends new elements to an array, and returns the new length of the array.
+   */
+  push(...items: Type[]): number;
+ 
+  // ...
+}
+```
+
+#### 2.ReadonlyArray 类型
+
+`ReadonlyArray` 是一个特殊类型，它可以描述数组不能被改变。
+
+```typescript
+function doStuff(values: ReadonlyArray<string>) {
+  // We can read from 'values'...
+  const copy = values.slice();
+  console.log(`The first value is ${values[0]}`);
+ 
+  // ...but we can't mutate 'values'.
+  values.push("hello!");
+  // Property 'push' does not exist on type 'readonly string[]'.
+}
+```
+
+当函数中传入一个 ReadonlyArray 类型，这是在告知我们 函数不会改变数组，可以放心传入。
+
+当函数返回一个 ReadonlyArray 类型，这是在告知我们不要去改变其中的内容。
+
+
+
+语法
+
+```typescript
+//  将普通数组赋值给它
+const roArray: ReadonlyArray<string> = ["red", "green", "blue"];
+
+// 函数行参简写
+function doStuff(values: readonly string[]) {
+    ...
+}
+```
+
+
+
+#### 3.元组类型
+
+元组类型是另外一种 `Array` 类型，当你明确知道数组包含多少个元素，并且每个位置元素的类型都明确知道的时候，就适合使用元组类型。
+
+
+
+```typescript
+// 定义元组内只能有两个元素，一个string类型,一个number类型
+type StringNumberPair = [string, number];
+
+function doSomething(pair: [string, number]) {}
 ```
