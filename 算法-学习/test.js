@@ -1,33 +1,18 @@
-var checkValid = function(matrix) {
-    const row = matrix.length;
-    const col = matrix[0].length;
-    const arr = new Array(row);
-for(let i=0;i<row;i++){
-    arr.fill(0)
-    for(let j=0;j<col;j++){
-        const index = matrix[i][j]
-        if(0<index&&index<=row&&arr[index]==0){
-            arr[index] = 1;
-        }
-        else {
-            return false
-        }
+var mostPoints = function(questions) {
+    let max = 0;
+for(let i=0;i<questions.length;i++){
+    let length = questions.length;
+    let index = i;
+    let sum = 0;
+    while(index<length){
+        sum += questions[index][0]
+        index += questions[index][1]+1
+    }
+    if(sum > max){
+        max = sum
     }
 }
-for(let i=0;i<col;i++){
-    arr.fill(0)
-    for(let j=0;j<row;j++){
-        const index = matrix[j][i]
-        if(0<index&&index<=row&&arr[index]==0){
-            arr[index] = 1;
-        }
-        else {
-            return false
-        }
-    }
-}
-    return true
+    return max
 };
-
-var arr = [[1,2,3],[3,1,2],[2,3,1]]
-checkValid(arr)
+let arr = [[21,5],[92,3],[74,2],[39,4],[58,2],[5,5],[49,4],[65,3]]
+mostPoints(arr)

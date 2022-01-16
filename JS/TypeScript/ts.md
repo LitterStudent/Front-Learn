@@ -1142,3 +1142,10 @@ type StringNumberPair = [string, number];
 
 function doSomething(pair: [string, number]) {}
 ```
+
+
+
+## 6.泛型
+
+
+
