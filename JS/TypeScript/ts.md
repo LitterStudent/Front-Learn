@@ -1234,3 +1234,95 @@ stringNumeric.add = function (x, y) {
  
 console.log(stringNumeric.add(stringNumeric.zeroValue, "test"));
 ```
+
+
+
+### 3.泛型约束
+
+```typescript
+interface Lengthwise {
+  length: number;
+}
+ 
+function loggingIdentity<Type extends Lengthwise>(arg: Type): Type {
+  console.log(arg.length); // Now we know it has a .length property, so no more error
+  return arg;
+}
+```
+
+现在这个泛型函数被约束了，它不再适用于所有类型：
+
+```typescript
+loggingIdentity(3);
+// Argument of type 'number' is not assignable to parameter of type 'Lengthwise'.
+```
+
+我们需要传入符合约束条件的值：
+
+```typescript
+loggingIdentity({ length: 10, value: 3 });
+```
+
+
+
+## 7.操作符
+
+### 1.keyof
+
+对一个对象类型使用 `keyof` 操作符，会返回该对象属性名组成的一个字符串或者数字字面量的联合。
+
+```typescript
+type Point = { x: number; y: number };
+type P = keyof Point; // "x" | "y"
+
+type Arrayish = { [n: number]: unknown };
+type A = keyof Arrayish;
+// type A = number
+
+type Mapish = { [k: string]: boolean };
+type M = keyof Mapish;
+// type M = string | number
+```
+
+
+
+### 2.typeof
+
+`typeof` 方法可以在类型上下文（type context）中使用，用于获取一个变量或者属性的类型。
+
+```typescript
+let s = "hello";
+let n: typeof s;
+// let n: string
+```
+
+```typescript
+function f() {
+  return { x: 10, y: 3 };
+}
+type P = ReturnType<typeof f>;
+                    
+// type P = {
+//    x: number;
+//    y: number;
+// }
+```
+
+```typescript
+const person = { name: "kevin", age: "18" }
+type Kevin = typeof person;
+
+// type Kevin = {
+// 		name: string;
+// 		age: string;
+// }
+```
+
+```typescript
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+
+type result = typeof identity;
+// type result = <Type>(arg: Type) => Type
+```
