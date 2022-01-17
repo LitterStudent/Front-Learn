@@ -645,6 +645,8 @@ const u = firstElement([]);
 
 #### 1.泛型约束
 
+使用 extends
+
 ```typescript
 function longest<Type extends { length: number }>(a: Type, b: Type) {
   if (a.length >= b.length) {
@@ -742,6 +744,26 @@ const d3 = makeDate(1, 3);
 然后，我们写了一个兼容签名的函数实现，我们称之为**实现签名** (implementation signature)。实现签名对外界是不可见的。不可以直接调用。
 
 
+
+实现签名必须和重载签名兼容
+
+```typescript
+function fn(x: boolean): void;
+// Argument type isn't right
+function fn(x: string): void;
+// This overload signature is not compatible with its implementation signature.
+function fn(x: boolean) {}
+```
+
+```typescript
+function fn(x: string): string;
+// Return type isn't right
+function fn(x: number): boolean;
+This overload signature is not compatible with its implementation signature.
+function fn(x: string | number) {
+  return "oops";
+}
+```
 
 #### 6.函数声明中的this
 
@@ -1147,5 +1169,68 @@ function doSomething(pair: [string, number]) {}
 
 ## 6.泛型
 
+```tsx
+function identity<Type>(arg: Type):Type{
+    return arg
+}
+
+let output = identity<string>("myString");
+let output = identity("myString")  //自动推断
+```
 
 
+
+### 1.泛型类型
+
+下面代码的
+
+```tsx
+ function identity<Type>(arg: Type): Type {
+     return arg;
+ }
+
+// 泛型接口方式一
+let myIdentity: <Type>(arg: Type) => Type = identity
+
+// 泛型接口方式二
+let myIdentity: { <Type>(arg: Type): Type } = identity;
+```
+
+```typescript
+// 泛型接口方式三，在对象字面量中的调用签名中声明。
+// 在泛型接口中定义整个接口的参数
+interface GenericIdentityFn<Type> {
+  (arg: Type): Type;
+}
+ 
+function identity<Type>(arg: Type): Type {
+  return arg;
+}
+ 
+let myIdentity: GenericIdentityFn<number> = identity;
+```
+
+
+
+### 2.泛型类
+
+```typescript
+class GenericNumber<NumType> {
+  zeroValue: NumType;
+  add: (x: NumType, y: NumType) => NumType;
+}
+ 
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function (x, y) {
+  return x + y;
+};
+
+let stringNumeric = new GenericNumber<string>();
+stringNumeric.zeroValue = "";
+stringNumeric.add = function (x, y) {
+  return x + y;
+};
+ 
+console.log(stringNumeric.add(stringNumeric.zeroValue, "test"));
+```
