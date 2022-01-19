@@ -1,18 +1,16 @@
-var mostPoints = function(questions) {
-    let max = 0;
-for(let i=0;i<questions.length;i++){
-    let length = questions.length;
-    let index = i;
-    let sum = 0;
-    while(index<length){
-        sum += questions[index][0]
-        index += questions[index][1]+1
+var findMinDifference = function(timePoints) {
+    timePoints.sort();
+    let resMin = Infinity;
+    for(let i=1;i<timePoints.length;i++){
+        const temp = getMinutes(timePoints[i])-getMinutes(timePoints[i-1]);
+        if(temp < resMin){
+            resMin = temp;
+        }
     }
-    if(sum > max){
-        max = sum
-    }
-}
-    return max
+    return Math.min(resMin,getMinutes(timePoints[0])+1440-getMinutes(timePoints[timePoints.length-1]))
 };
-let arr = [[21,5],[92,3],[74,2],[39,4],[58,2],[5,5],[49,4],[65,3]]
-mostPoints(arr)
+
+var getMinutes = (timePoint) => {
+   return ((timePoint[0]*10+timePoint[1]*1)*60+(timePoint[3]*10+timePoint[4]*1))
+}
+findMinDifference(["23:59","00:00"])

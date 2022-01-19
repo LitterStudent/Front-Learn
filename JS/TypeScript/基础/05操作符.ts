@@ -1,5 +1,6 @@
 type Point = {x:number, y:number}
 type p = keyof Point
+// type p = "x" | "y"：
 
 type Arrayish = { [n: number]: unknown };
 type A = keyof Arrayish;
