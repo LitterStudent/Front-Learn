@@ -10,3 +10,5 @@ type FeatureFlags = {
 };
 
 type FeatureOptions = OptionsFlags<FeatureFlags>
+
+let a:FeatureFlags

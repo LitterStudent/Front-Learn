@@ -1116,6 +1116,18 @@ interface Array<Type> {
 }
 ```
 
+
+
+##### 1.空数组
+
+```ts
+// 空数组的首项是undefined
+// type arr = []
+// type a = arr[0]
+```
+
+
+
 #### 2.ReadonlyArray 类型
 
 `ReadonlyArray` 是一个特殊类型，它可以描述数组不能被改变。
