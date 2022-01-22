@@ -1128,6 +1128,26 @@ interface Array<Type> {
 
 
 
+##### 2.遍历数组
+
+```tsx
+type arr = [string,number]
+type a = arr[number]
+// type a = string | number
+// union 类型
+// 如果是空数组，遍历得到 never
+```
+
+##### 3.获取length
+
+```tsx
+type arr = [string,number]
+type a = arr['length']
+// type a = 2
+```
+
+
+
 #### 2.ReadonlyArray 类型
 
 `ReadonlyArray` 是一个特殊类型，它可以描述数组不能被改变。
