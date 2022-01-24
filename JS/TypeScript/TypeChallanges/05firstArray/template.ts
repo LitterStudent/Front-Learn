@@ -11,3 +11,9 @@ type First<T extends any[]> = T extends [infer First, ...infer Rest]
 // 2.获取 tuple 的length 属性
 // 3.extends union 判断规则
 // 4.infer 推断
+
+type a = string | number
+
+type b = string | number | boolean
+
+type c = a extends b ? 1 : 2
