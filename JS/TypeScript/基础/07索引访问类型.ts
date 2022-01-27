@@ -13,8 +13,7 @@ const MyArray = [
     {name:'c',age:'3'}
 ]
 
-type Person2 = typeof MyArray[number] 
-
+type Person2 = typeof MyArray 
 type name = typeof MyArray[number]['age'];
 
 const App = ['Taobao','PingDuoDuo','JinDong'] as const
