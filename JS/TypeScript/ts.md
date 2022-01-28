@@ -1,8 +1,30 @@
-这是一个记录 ts 学习过程的文档
+  这是一个记录 ts 学习过程的文档
 
 
 
 # 1.基础
+
+## 0.使用建议
+
+1.易推断类型让系统去推断
+
+```tsx
+let a = 'hello';
+let b = 12;
+let bool:boolean; // 不初始化可以先设置类型
+
+const info =  {
+  name:'nihao',
+  age:12
+}
+// 推断为
+const info:{
+    name:string,
+    age:number
+}
+```
+
+
 
 ## 1.基础
 
@@ -90,11 +112,53 @@ strictNullChecks
 
 2.数组。 number[],string[]. 数字数字，字符串数组
 
-3.any.任意类型
+3.any.任意类型.引入第三方库时缺少类型注解时可以使用any 类型。
+
+unknown类型：unknown只可以赋值给 unknown 和 any 类型。而 any类型 可以赋值给任意类型。
+
+unknown类型是ts版本3之后出现的，在这之前的any类型的值可以赋值给任意类型的值，这样容易导错误。所以 unknown类型是在any类型之上再添加一定的约束。
+
+```tsx
+let flag:boolean = true;
+let reslut:any;
+if(flag){
+  reslut = 'nihao'
+}else{
+  reslut = 233333;
+}
+let msg:string = reslut;
+////////////////////////////////////////////
+let flag:boolean = true;
+let reslut:unknown;   // 最好不要使用 any
+if(flag){
+  reslut = 'nihao'
+}else{
+  reslut = 233333;
+}
+let msg:unknown = reslut;
+```
 
 
 
+never类型：永远不可能出现
 
+```typescript
+function fail(msg: string): never {
+  throw new Error(msg);
+}
+```
+
+```typescript
+function fn(x: string | number) {
+  if (typeof x === "string") {
+    // do something
+  } else if (typeof x === "number") {
+    // do something else
+  } else {
+    x; // has type 'never'!
+  }
+}
+```
 
 ### 4.变量上的类型注解
 
@@ -119,7 +183,7 @@ function greet(name: string) {
 }
 ```
 
-返回值类型注解
+返回值类型注解（开发中可以不写返回值类型，让系统自动推导，但是也可以写，写上去后方便别人理解返回的是什么类型的值）
 
 ```typescript
 function getFavoriteNumber(): number {
@@ -135,8 +199,8 @@ const names = ["Alice", "Bob", "Eve"];
  
 // Contextual typing for function
 names.forEach(function (s) {
+    // 这里可以推导出s是string类型
   console.log(s.toUppercase());
-  // Property 'toUppercase' does not exist on type 'string'. Did you mean 'toUpperCase'?
 });
  
 ```
@@ -573,6 +637,8 @@ function getArea(shape: Shape) {
 
 
 ## 4.函数
+
+在js和ts的函数中，即使不返回任意值，默认会返回undefined
 
 
 
@@ -1095,6 +1161,13 @@ type OneOrManyOrNullStrings = OneOrMany<string> | null
 
 当我们这样写类型 `number[]` 或者 `string[]` 的时候，其实它们只是 `Array<number>` 和 `Array<string>` 的简写形式而已。
 
+```tsx
+const names1:string[] = []   // 推荐
+const namse2:Array<string> = []  //不推荐
+```
+
+
+
 ```typescript
 interface Array<Type> {
   /**
@@ -1186,6 +1259,8 @@ function doStuff(values: readonly string[]) {
 
 #### 3.元组类型
 
+**Tuple**
+
 元组类型是另外一种 `Array` 类型，当你明确知道数组包含多少个元素，并且每个位置元素的类型都明确知道的时候，就适合使用元组类型。
 
 
@@ -1196,6 +1271,28 @@ type StringNumberPair = [string, number];
 
 function doSomething(pair: [string, number]) {}
 ```
+
+##### 使用场景
+
+一个工具函数调用后返回一个元组，我们可以很方便的知道元组上各个元素的类型并进行解构赋值
+
+```tsx
+function useState<T>(state:T){
+  let currentState = state;
+  const changeState = (newState:T)=>{
+    currentState = newState
+  }
+  const tuple:[T,(newState:T)=>void] = [currentState,changeState];
+  return tuple;
+}
+
+const [counter,setCounter] = useState(10);
+setCounter(1000)
+const [title, setTitle] = useState("nihao")
+const [Flag, setFlag] = useState(true)
+```
+
+
 
 
 

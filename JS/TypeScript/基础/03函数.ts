@@ -22,7 +22,7 @@ const f3: voidFunc = function () {
   return true;
 };
 
-const v1 = f1();
+const v1 = f1(); // v1依旧是 void 类型
  
 const v2 = f2();
  
