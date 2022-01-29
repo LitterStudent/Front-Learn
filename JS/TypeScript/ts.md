@@ -191,7 +191,7 @@ function getFavoriteNumber(): number {
 }
 ```
 
-匿名函数的**上下文推断**
+函数的**上下文推断**
 
 ```tsx
 // No type annotations here, but TypeScript can spot the bug
