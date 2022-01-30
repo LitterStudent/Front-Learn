@@ -40,3 +40,7 @@ const [counter,setCounter] = useState(10);
 setCounter(1000)
 const [title, setTitle] = useState("nihao")
 const [Flag, setFlag] = useState(true)
+
+// 类型断言
+const el = document.getElementById('id') as HTMLImageElement
+el.src = "url地址"

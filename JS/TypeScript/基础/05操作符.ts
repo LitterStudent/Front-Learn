@@ -36,3 +36,20 @@ let t:typeof tuple
 const req = { url: "https://example.com", method: "GET" } as const;
 
 let re:typeof req
+
+type person =  {
+  name:string,
+  friend?:{
+    name1:string,
+    age?:number
+  }
+}
+
+const info2:person = {
+  name:'ddd',
+  friend:{
+    name1:'hhhhh',
+    age:12
+  }
+}
+console.log(info2.friend?.age);

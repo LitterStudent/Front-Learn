@@ -1455,3 +1455,54 @@ function identity<Type>(arg: Type): Type {
 type result = typeof identity;
 // type result = <Type>(arg: Type) => Type
 ```
+
+
+
+### 3.可选属性 ？ 和 一定存在属性 ！
+
+**？ 和  !.  和 ?. **
+
+```tsx
+type person =  {
+  name:string,
+  friend?:{
+    name1:string,
+    age?:number
+  }
+}
+
+const info2:person = {
+  name:'ddd',
+  friend:{
+    name1:'hhhhh',
+    age:12
+  }
+}
+// 因为 friend 是可选的，可能不存在，我们要访问要默认其存在
+console.log(info2.friend!.age);
+```
+
+或者使用 **？.**  当其不存在时不进行后续的操作。
+
+这个叫可续链操作，es11新增加的特性。**js中也具有**。
+
+```tsx
+type person =  {
+  name:string,
+  friend?:{
+    name1:string,
+    age?:number
+  }
+}
+
+const info2:person = {
+  name:'ddd',
+  friend:{
+    name1:'hhhhh',
+    age:12
+  }
+}
+// 这里改成 ？ 当 friden 不存在时 就不访问 age
+console.log(info2.friend?.age);
+```
+
