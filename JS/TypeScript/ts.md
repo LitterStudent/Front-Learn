@@ -349,6 +349,8 @@ const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
 
 ### 10.字面量类型
 
+字面量类型必须结合联合类型才有意义。
+
 更为具体的数字和字符串
 
 ```tsx

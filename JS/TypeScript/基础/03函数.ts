@@ -29,3 +29,11 @@ const v2 = f2();
 const v3 = f3();
 
 console.log(v1,v2,v3);
+
+function sum(...num:number[]){
+  let res = 0;
+  num.forEach((value)=>{
+    res+= value
+  })
+  return res;
+}
