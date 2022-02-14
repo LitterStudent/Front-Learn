@@ -811,7 +811,7 @@ const d3 = makeDate(1, 3);
 
 然后，我们写了一个兼容签名的函数实现，我们称之为**实现签名** (implementation signature)。实现签名对外界是不可见的。不可以直接调用。
 
-
+**当能使用联合类型去实现函数时就不使用函数重载。**
 
 实现签名必须和重载签名兼容
 
@@ -1506,5 +1506,43 @@ const info2:person = {
 }
 // 这里改成 ？ 当 friden 不存在时 就不访问 age
 console.log(info2.friend?.age);
+```
+
+
+
+## 8.类
+
+类的三个特性：封装，继承，多态
+
+1.类的属性
+
+```tsx
+class Person{
+    ////////////////////////////////
+    name:string
+    age:number
+
+    constructor(name:string,age:number){
+        this.name = name;
+        this.age = age;
+    }
+    eating(){
+        console.log("person eating.....");
+    }
+}
+
+class Student extends Person{
+    total: number
+    constructor(name:string,age:number,total:number){
+        super(name,age);
+        this.total = total
+    }
+    // 多态：重写了继承自Person 的方法
+    eating(){
+        super.eating();
+        console.log("student eating....");
+    }
+
+}
 ```
 

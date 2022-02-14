@@ -22,7 +22,9 @@ Promise.myall = function(promiseArr){
                 result[index] = res;
                 count++;
                 if(count === promiseArr.length){
-                    resolve(result);
+                    re
+                    
+                    solve(result);
                 }
             })
             .catch(err=>{

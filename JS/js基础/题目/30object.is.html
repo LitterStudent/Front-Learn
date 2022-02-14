@@ -11,6 +11,9 @@
 </body>
 <script>
     // Object.is
+    // a === b 
+    // -0 != 0 -0 != +0 
+    // NaN == NaN
     Object.is = function(a,b){
         if(a === b){
             return a!==0 || 1/a === 1/b 

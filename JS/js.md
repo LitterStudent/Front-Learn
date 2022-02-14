@@ -30,11 +30,21 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 
 #### 3.类型转换
 
+强制类型转换即是 类型转换， 具体分为 显示类型转换 和 隐式类型转换。一般我们不能明显看出有类型转换的即为隐式类型转换。
+
 1.  1+字符串    会转换成字符串
-2.  ==   
+2.  == 
 3. if()
 
+**==在比   较时会进行强制类型转换，而=== 不允许**
 
+
+
+
+
+#### 4.常见的类数组
+
+argument,dom查询返回的dom元素列表
 
 
 
@@ -746,21 +756,60 @@ new Promse((resolve, reject)=>{ resolve(1);console.log(11)})         //会
 new Promse((resolve, reject)=>{ return resolve(1);console.log(11)})  //不会
 ```
 
-resolve()内传入的可以是普通的数据类型也可以是promise。当传入的是promise时，则new Promise返回的promise则为传入的promsie.
+resolve()内传入的可以是普通的数据类型也可以是promise。当传入的是promise时，则会直接返回该promise,该promise的状态可以是fulfill 完成，或者 reject 拒绝。
 
 ```javascript
 const p1 = new Promise(function (resolve, reject) {
-        resolve("dd")
-        setTimeout(() => reject(new Error('fail')), 3000)
-    })
+    reject("dd")
+})
 
-    const p2 = new Promise(function (resolve, reject) {
-        setTimeout(() => resolve(p1), 1000)
-    })
+const p2 = new Promise(function (resolve, reject) {
+    resolve(p1) // 传入拒绝状态的promise
+})
 
-    p2
-      .then(result => console.log(result))
-      .catch(error => console.log(error))
+p2
+  .then(result => console.log('res',result))
+  .catch(error => console.log('err',error)) // err dd
+///////////////////////////////////////////////////////////////////
+const p1 = new Promise(function (resolve, reject) {
+    resolve("dd")
+})
+
+const p2 = new Promise(function (resolve, reject) {
+    resolve(p1) //传入 完成状态的promise
+})
+
+p2
+  .then(result => console.log('res',result))  // res dd
+  .catch(error => console.log('err',error))
+```
+
+reject()内传入的为promise,则返回的promise会被包裹一层reject状态的promise。
+
+```js
+const p1 = new Promise(function (resolve, reject) {
+    resolve("dd")
+})
+
+const p2 = new Promise(function (resolve, reject) {
+    reject(p1)
+})
+
+p2
+  .then(result => console.log('res',result)) 
+  .catch(error => console.log('err',error))// err Promise {<fulfilled>: 'dd'}
+///////////////////////////////////////////////////////////////////
+const p1 = new Promise(function (resolve, reject) {
+    reject("dd")
+})
+
+const p2 = new Promise(function (resolve, reject) {
+    reject(p1)
+})
+
+p2
+  .then(result => console.log('res',result))  
+  .catch(error => console.log('err',error))     // err Promise {<rejected>: 'dd'}
 ```
 
 
@@ -2023,9 +2072,13 @@ for (let x of Array.from(arrayLike)) {
 
 ## 22 循环
 
-1.for (iterator of arr) 只能用于可迭代的对象，即实现了迭代接口的对象。放回value
+1.for (iterator of arr) ：ES6新增的语法，for..of 循环首先向遍历的对象请求一个迭代器对象，通过调用迭代器对象的next()方法来遍历所有返回值。只能用于可迭代的对象，即实现了迭代接口的对象。obj[Symbol.iterator]
 
-2.for (key in obj ) 遍历对象原型链获取键名
+2.for (key in obj ) 遍历对象及其原型链获取可枚举的属性，当对象的属性描述符 enumerable: false 时，该属性不可遍历。一般用该于遍历对象，不用于遍历数组，而且遍历出的顺序是不确定的。要相遍历出只在对象上的属性( 不遍历原型 )可以调用 **Object.prototype.hasOwnProperty.call(obj,key)**,或**Object.keys(obj)**:返回对象所以所有可枚举属性,
+
+**Object.getOwnPropertypeNames(obj)**:返回对象所有属性（可枚举 + 不可枚举）。
+
+
 
 ### 3.forEach
 
@@ -2147,7 +2200,7 @@ Array,Map,Set,NodeList 的forEach 应该都是一样的，不赘述。
 
 ![image-20220105044441973](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105044441973.png)
 
-`map` 方法处理数组元素的范围是在 `callback` 方法第一次调用之前就已经确定了。调用`map`方法之后追加的数组元素不会被`callback`访问。如果存在的数组元素改变了，那么传给`callback`的值是`map`访问该元素时的值。在`map`函数调用后但在访问该元素前，该元素被删除的话，则无法被访问到。这和forEach类似。
+`map` 方法处理数组元素的范围是在 `callback` 方法第一次调用之前就已经确定了。调用`map`方法之后追加的数组元素不会被`callback`访问。如果存在的数组元素改变了，那么传给`callback`的值是`map`访问该元素时的值。在`map`函数调用后但在访问该元素前，该元素被删除的话，则无法被访问到。**这和forEach类似。**
 
 ```js
 // 求数组中每个元素的平方根
