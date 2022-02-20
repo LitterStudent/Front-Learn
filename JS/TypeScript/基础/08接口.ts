@@ -75,3 +75,24 @@ interface NumberDictionary {
     name: string       // 错误，`name`的类型与索引类型返回值的类型不匹配
                       // 因为已经设置过了 string索引返回的是 number 类型
 }
+
+interface personInfo {
+    name:string,
+    age: number
+}
+
+const info = {
+    name:'xiaoming',
+    age:18,
+    height:1.88
+}
+function printInfo(info:personInfo){
+    console.log(info.name);
+    console.log(info.age);
+}
+printInfo(info) 
+printInfo({
+    name:'xiaoming',
+    age:18,
+    height:1.88 // 不能传入
+})

@@ -1,4 +1,4 @@
-  这是一个记录 ts 学习过程的文档
+    这是一个记录 ts 学习过程的文档
 
 
 
@@ -104,7 +104,17 @@ strictNullChecks
 
 必须明确处理 null 和 undefined
 
+### 4.类型查找
 
+![image-20220216155142303](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220216155142303.png)
+
+当我们引用第三方库时。有些库（如axios）已经写好了.d.ts文件，使用ts引用时不会报错，而没有写该文件的库（如lodash）就会报错。
+
+![](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220216155515251.png)
+
+
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220216155835476.png" alt="image-20220216155835476" style="zoom:50%;" />
 
 ## 2.常见类型
 
@@ -325,6 +335,49 @@ type Bear = Animal & {
 const bear = getBear();
 bear.name;
 bear.honey;
+```
+
+相同名称的接口在重复定义时，会合并定义。
+
+```tsx
+interface Dong {
+name: string
+}
+interface Dong {
+age: number
+}
+// 等于
+interface Dong{
+name: string,
+age:number
+}
+```
+
+**属性擦除freshness**
+
+```tsx
+nterface personInfo {
+    name:string,
+    age: number
+}
+
+const info = {
+    name:'xiaoming',
+    age:18,
+    height:1.88
+}
+function printInfo(info:personInfo){
+    console.log(info.name);
+    console.log(info.age);
+}
+// 属性擦除freshness
+printInfo(info) 
+printInfo({
+    name:'xiaoming',
+    age:18,
+    height:1.88 // 不能传入
+})
+
 ```
 
 
@@ -1296,9 +1349,15 @@ const [Flag, setFlag] = useState(true)
 
 
 
+### 6.枚举类型
 
+枚举类型就是一组常量值
+
+![image-20220216150641275](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220216150641275.png)
 
 ## 6.泛型
+
+将类型参数化，调用时再指定类型。
 
 ```tsx
 function identity<Type>(arg: Type):Type{
@@ -1514,7 +1573,7 @@ console.log(info2.friend?.age);
 
 类的三个特性：封装，继承，多态
 
-1.类的属性
+### 1.类的属性
 
 ```tsx
 class Person{
@@ -1537,7 +1596,7 @@ class Student extends Person{
         super(name,age);
         this.total = total
     }
-    // 多态：重写了继承自Person 的方法
+    // 多态：  重写了继承自Person 的方法
     eating(){
         super.eating();
         console.log("student eating....");
@@ -1546,3 +1605,22 @@ class Student extends Person{
 }
 ```
 
+### 2.修饰符
+
+![image-20220214153859454](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220214153859454.png)
+
+### 3.访问器
+
+为 private 属性添加访问器
+
+![image-20220214155640734](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220214155640734.png)
+
+### 4.抽象类
+
+![image-20220214161055135](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220214161055135.png)
+
+![image-20220214161144851](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220214161144851.png)
+
+### 5.类的类型
+
+即 类的字面量形式
