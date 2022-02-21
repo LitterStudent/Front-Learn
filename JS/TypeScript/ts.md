@@ -6,7 +6,7 @@
 
 ## 0.使用建议
 
-1.易推断类型让系统去推断
+### 1.易推断类型让系统去推断
 
 ```tsx
 let a = 'hello';
@@ -22,6 +22,14 @@ const info:{
     name:string,
     age:number
 }
+```
+
+### 2.使用 ts 的好处（实际应用中）
+
+ 1.在 vue 中的 通过 ref 获取元素时， 在定义 ref 时指定类型可以使得我们 获取到的元素类型更明确。
+
+```tsx
+const elFromRef = ref<InstanceType<typeof LoginAccount>>()
 ```
 
 
