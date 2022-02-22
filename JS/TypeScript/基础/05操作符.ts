@@ -17,10 +17,11 @@ let n: typeof s;
 function f() {
   return { x: 10, y: 3 };
 }
+
 type P = ReturnType<typeof f>;
 
 const person = {name:'xiaoming',age:18}
-
+console.log(typeof person);
 let  dong: typeof person;
 
 function identity<Type>(arg: Type): Type {
@@ -53,3 +54,4 @@ const info2:person = {
   }
 }
 console.log(info2.friend?.age);
+console.log(typeof {name: 'nihao'});
