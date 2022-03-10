@@ -70,6 +70,26 @@ webpack 根据引用关系，**构建**一个依赖关系图，然后利用这�
 
 
 
+最终`Webpack`打包出来的`bundle`文件是一个`IIFE`的执行函数。
+
+
+
+第二个版本
+
+合并`webpack.config.js`和命令行传递的参数，形成最终的配置
+
+解析配置，得到`entry`入口
+
+读取入口文件内容，通过`@babel/parse`将入口内容（code）转换成`ast`
+
+通过`@babel/traverse`遍历`ast`得到模块的各个依赖
+
+通过`@babel/core`（实际的转换工作是由`@babel/preset-env`来完成的）将`ast`转换成`es5 code`
+
+通过循环伪递归的方式拿到所有模块的所有依赖并都转换成`es5`
+
+
+
 ### 4sourcemap是什么？
 
 webpack中的devtool中配置。（最上一级）
@@ -80,15 +100,47 @@ sourcemap是将编译打包好的代码映射回源码的技术。如果构建�
 
 ### 5.Loader和Plugin的区别。
 
-Loader本质是一个函数，该函数通过接收内容并进行转换，输出转换后的结果。因为webpack本身只能识别js和json,所以Loader充当了翻译的角色，对其他类型进行转译处理。
+Loader本质是一个函数，该函数接收webpack不能识别的内容并转换为webpack能识别的内容。因为webpack本身只能识别js和json,所以Loader充当了翻译的角色，对其他类型进行转译处理。
+
+而 插件可以贯穿于 webpack打包的生命周期，执行不同的任务。
 
 Plugin是插件，基于事件流。插件可以扩展webpack的功能。在webpack运行的生命周期内会广播许多事件，插件可以通过监听事件，在合适的事件使用webpack提供的API改变输出结果。
+
+`Loader`负责文件转换，Plugin是负责功能扩展。
 
 
 
 ### 6热跟新原理。HMR
 
 HMR的核心就是客户端从服务端拉去更新后的文件，准确的说是 chunk diff (chunk 需要更新的部分)，实际上 WDS 与浏览器之间维护了一个 `Websocket`，当本地资源发生变化时，WDS 会向浏览器推送更新，并带上构建时的 hash，让客户端与上一次资源进行对比。客户端对比出差异后会向 WDS 发起 `Ajax` 请求来获取更改内容(文件列表、hash)，这样客户端就可以再借助这些信息继续向 WDS 发起 `jsonp` 请求获取该chunk的增量更新。
+
+### 7前端工程化
+
+前端工程化
+
+前端工程化是根据业务特点，将前端开发流程规范化，标准化，它包括了开发流程，技术选型，代码规范，构建发布等，用于提升前端工程师的开发效率和代码质量。
+
+
+
+### 8.import 最终被webpack 编译打包成了什么？
+
+import 经过 webpack打包后生成了一个 map对象，key值为 模板路径，value为模块的可执行函数。然后这个对象会被webpack自定义的 _webpack_require 函数读取并执行相应的函数。
+
+
+
+### 9.路由懒加载的原理是什么
+
+懒加载前提的实现：ES6的动态地加载模块——`import()`。引用的模块会被分单独分类出来，打包成一个单独的文件。然后将 import()语句封装到一个函数中，函数调用时才会加载相应的模块。
+
+
+
+### 10.babel的原理
+
+babel的转译分为三个阶段分别是 parsing, transforming,generating. 
+
+输入代码后，**1.**@babel/parser 会解析代码生成 抽象语法树 ast, **2**.然后使用 @babel-traverse 对AST进行遍历转译得到新的AST树
+
+​						**3.**最后bebel-generator 通过AST树生成向后兼容的代码。
 
 
 
@@ -455,7 +507,12 @@ resolve:{
 
 dev-server服务器运行代码的根目录，当dev-server访问资源时，如果在内存中找不到相应的资源，就回去contentBase目录中寻找。
 
+**为什么要配置 contentBase ？**
 
+因为 webpack 在进行打包的时候，对静态文件的处理，例如图片，都是直接 copy 到 dist 目录下面。但是对于本地开发来说，这个过程太费时，也没有必要，所以在设置 contentBase 之后，就直接到对应的静态目录下面去读取文件，而不需对文件做任何移动，节省了时间和性能开销。
+
+
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 **为什么要配置 contentBase ？**
 
@@ -997,7 +1054,9 @@ devtool: 'eval-source-map'
 
 ### 3.树摇。tree-shaking
 
-使用Es6Module化语法和开启production就会使用树摇，将没有使用的代码去除掉。
+使用Es6Module化语法和开启production就会使用树摇，将没有使用的代码去除掉。静态分析模块之间的导入和导出依赖，确定出哪些模块未被使用而删除掉。
+
+
 
 **test.js**
 
@@ -1032,6 +1091,50 @@ console.log(mul(2, 3));
 console.log(sum(1, 2, 3, 4));
 
 ```
+
+**理论基础**
+
+`ES6`的`import`语法可以完美使用`tree shaking`，因为可以在代码不运行的情况下就能分析出不需要的代码。
+
+在 CommonJs、AMD、CMD 等旧版本的 JavaScript 模块化方案中，导入导出行为是高度动态，难以预测的，例如：
+
+```go
+if(process.env.NODE_ENV === 'development'){
+
+
+
+  require('./bar');
+
+
+
+  exports.foo = 'foo';
+
+
+
+}
+```
+
+而 ESM 方案则从规范层面规避这一行为，它要求所有的导入导出语句只能出现在模块顶层，且导入导出的模块名必须为字符串常量，这意味着下述代码在 ESM 方案下是非法的：
+
+```go
+if(process.env.NODE_ENV === 'development'){
+
+
+
+  import bar from 'bar';
+
+
+
+  export const foo = 'foo';
+
+
+
+}
+```
+
+**ES6module 引入进行 静态分析，编译时就能正确判断加载了哪些模块，模块之间的依赖关系是高度确定的，这是实现 Tree Shaking技术的必要条件。**
+
+
 
 
 
@@ -1311,6 +1414,42 @@ new HtmlWebpackPlugin(
         }
       }
     )
+```
+
+
+
+###   4.压缩css代码
+
+OptimizeCssAssetsWebpackPlugin
+
+### 5.提取css成单独文件
+
+MiniCssExtractPlugin
+
+
+
+
+
+### 6.clean-webpack-plugin
+
+清空上次打包的文件
+
+```js
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+// 引入插件
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
+module.exports = {
+  // ...
+  plugins:[ // 配置插件
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new CleanWebpackPlugin() // 引入插件
+  ]
+}
+
 ```
 
 

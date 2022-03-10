@@ -14,7 +14,7 @@
     2. 生产环境和开发环境将ES6模块化编译成浏览器能识别的模块化~
     3. 生产环境比开发环境多一个压缩js代码。
 */
-// import './index.css';
+import './index.css';
 
 import data from './data.json';
 console.log(data);
