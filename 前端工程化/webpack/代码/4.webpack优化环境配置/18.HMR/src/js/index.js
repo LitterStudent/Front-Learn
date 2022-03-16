@@ -2,6 +2,7 @@
 import print from './print';
 import '../css/iconfont.css';
 import '../css/index.less';
+import './print2'
 
 console.log('index.js文件被加载了~');
 
@@ -12,7 +13,7 @@ function add(x, y) {
 }
 
 console.log(add(1, 3));
-
+console.log(22233444);
 if (module.hot) {
   // 一旦 module.hot 为true，说明开启了HMR功能。 --> 让HMR功能代码生效
   module.hot.accept('./print.js', function() {

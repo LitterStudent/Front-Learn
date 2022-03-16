@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="dd">
+    <script>
+        const input = document.querySelector('#dd')
+        // input.addEventListener('compositionstart', (e) => {
+        //     console.log('start',e.target.value);
+        // })
+        // input.addEventListener('compositionupdate', (e) => {
+        //     console.log('update',e.target.value);
+        // })
+        // input.addEventListener('compositionend', (e) => {
+        //     console.log('end',e.target.value);
+        // })
+        input.addEventListener('input', (e) => {
+            console.log('input',e.target.value);
+            // e.target.value = ''
+            console.log(input.select());
+            console.log(input.value);
+        })
+    </script>
+</body>
+</html>

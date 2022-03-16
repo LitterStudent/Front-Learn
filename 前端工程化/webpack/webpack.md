@@ -1134,7 +1134,36 @@ if(process.env.NODE_ENV === 'development'){
 
 **ES6module 引入进行 静态分析，编译时就能正确判断加载了哪些模块，模块之间的依赖关系是高度确定的，这是实现 Tree Shaking技术的必要条件。**
 
+但，当improt第三方插件时，实际并没有生效。比如lodash
 
+```js
+import debounce from 'lodash/debounce'; // 3.35kb
+import { debounce } from 'lodash'; // 72.48kb
+```
+
+但是我们可以借助babel-plugin-import
+
+```json
+// 在 .babelrc 或 babel-loader 中添加插件配置
+// 注意：webpack 1 无需设置 libraryDirectory
+{
+  "plugins": [
+    ["import", {
+      "libraryName": "vant",
+      "libraryDirectory": "es",
+      "style": true
+    }]
+  ]
+}
+
+```
+
+以 Vue-cli为例，在main.js 中 按需引入
+
+```javascript
+import { Button, Cell } from 'vant';
+Vue.use(Button);
+```
 
 
 
@@ -1272,6 +1301,8 @@ document.getElementById('btn').onclick = function() {
 
 ### 6.cdn引入第三库，打包时不打包这些通过cnd引入的库
 
+`externals` 配置选项提供了「从输出的 bundle 中排除依赖」的方法
+
 **index.js**
 
 ```js
@@ -1289,6 +1320,49 @@ externals: {
     // 拒绝jQuery被打包进来
     jquery: 'jQuery'
   }
+```
+
+
+
+element-ui 中的webpack配置文件时这样配置 externals的
+
+将一个父组件对子组件的引用去除，换成打包后的子组件的路径，这样就不会将子组件打包父组件内。如果将子组件和父组件一起打包的话，后续使用打包好的库时同时使用子组件和父组件的话，父组件内的代码已经打包入子组件的代码，并且还需要再引入单独的组件代码，这相当于引入了两份子组件代码。
+
+```js
+/**
+ * externals 解决组件依赖其它组件并按需引入时代码冗余的问题
+ *     比如 Table 组件依赖 Checkbox 组件，在项目中如果我同时引入 Table 和 Checkbox 时，会不会产生冗余代码
+ *     如果没有以下内容的的话，会，这时候你会看到有两份 Checkbox 组件代码。
+ *     包括 locale、utils、mixins、transitions 这些公共内容，也会出现冗余代码
+ *     但有了 externals 的设置，就会将告诉 webpack 不需要将这些 import 的包打包到 bundle 中，运行时再从外部去
+ *     获取这些扩展依赖。这样就可以在打包后 /lib/tables.js 中看到编译后的 table.js 对 Checkbox 组件的依赖引入：
+ *     module.exports = require("element-ui/lib/checkbox")
+ *     这么处理之后就不会出现冗余的 JS 代码，但是对于 CSS 部分，element-ui 并未处理冗余情况。
+ *     可以看到 /lib/theme-chalk/table.css 和 /lib/theme-chalk/checkbox.css 中都有 Checkbox 组件的样式
+ */
+var externals = {};
+
+Object.keys(Components).forEach(function(key) {
+  externals[`element-ui/packages/${key}`] = `element-ui/lib/${key}`;
+});
+
+externals['element-ui/src/locale'] = 'element-ui/lib/locale';
+utilsList.forEach(function(file) {
+  file = path.basename(file, '.js');
+  externals[`element-ui/src/utils/${file}`] = `element-ui/lib/utils/${file}`;
+});
+mixinsList.forEach(function(file) {
+  file = path.basename(file, '.js');
+  externals[`element-ui/src/mixins/${file}`] = `element-ui/lib/mixins/${file}`;
+});
+transitionList.forEach(function(file) {
+  file = path.basename(file, '.js');
+  externals[`element-ui/src/transitions/${file}`] = `element-ui/lib/transitions/${file}`;
+});
+
+externals = [Object.assign({
+  vue: 'vue'
+}, externals), nodeExternals()];
 ```
 
 

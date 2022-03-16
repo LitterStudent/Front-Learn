@@ -14,7 +14,7 @@ box-sizing : content-box   border-box
 
 IE盒子模型：border-box 设置的width为盒子的content+border+padding
 
-**offsetWidth**:不包括外边距
+**offsetWidth**:元素的内边距+ 边框  不包括外边距
 
 margin为负值时： margin-left margin-top 为负值时，元素会向上或者像左移动
 
@@ -82,15 +82,19 @@ span:nth-child(-n+3)
 
 ## 5 posintion
 
-`relative`（相对定位）： 生成相对定位的元素，定位原点是元素本身所在的位置；
-
-`absolute`（绝对定位）：生成绝对定位的元素，相对于不是static 定位的第一个父元素进行定位。使用absolute定位时，添加top,bottom,left,right都为0可以使得元素铺满父元素。
-
-`fixed` （老IE不支持）：生成绝对定位的元素，相对于浏览器窗口进行定位。
+absolute和relative 会脱离文档标准流。
 
 `static`：默认值。没有定位，元素出现在正常的流中（忽略 `top`, `bottom`, `left`, `right`、`z-index` 声明）。
 
+`relative`（相对定位）： 生成相对定位的元素，定位原点是元素本身所在的位置；
+
+`absolute`（绝对定位）：生成绝对定位的元素，相对于不是static 定位的第一个祖先元素进行定位。使用absolute定位时，添加top,bottom,left,right都为0可以使得元素铺满父元素。
+
+`fixed` （老IE不支持）：生成绝对定位的元素，相对于浏览器窗口进行定位。
+
 `inherit`：规定从父元素继承 `position` 属性的值。
+
+sticky: 相对于最近的祖先元素随着页面的滚动保持固定位置，超出祖先元素区域后随着祖先元素一起滚动。sticky生效的前提是 top,bottom,left,right同时使用，不省略。
 
 
 
@@ -393,7 +397,7 @@ BFC是一块独立渲染的区域，并且这个区域与外部互不影响。�
 
 BFC的渲染规则：
 
-1.内部的盒子会在垂直方向上，一个接一个地放置。
+1.内部的**块级盒子**会在垂直方向上，一个接一个地放置。
 
 2.各个盒子垂直方向的距离是有margin决定的，同一个BFC内的相邻两个盒子的margin会合并。
 
@@ -405,10 +409,12 @@ BFC的渲染规则：
 
 如何创建BFC:  
 
+0. 根元素会创建 BFC
+
 1. overflow: 不为visibale   可以为 hidden
 2. float : 不为 none  
 3. positon:为absolute或者fixed
-4. 定义成非block的块级元素：如  display:inline-block flex 等
+4. 定义成非block的块级元素：如  display:inline-block,tabel-cell flex 等
 
 
 

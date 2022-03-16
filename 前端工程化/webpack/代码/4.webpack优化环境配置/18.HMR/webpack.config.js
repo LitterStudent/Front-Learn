@@ -12,7 +12,7 @@
 
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const webpack = require('webpack');
 module.exports = {
   entry: './src/js/index.js',
   output: {
@@ -64,7 +64,8 @@ module.exports = {
     // plugins的配置
     new HtmlWebpackPlugin({
       template: './src/index.html'
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ],
   mode: 'development',
   devServer: {
