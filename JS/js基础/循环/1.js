@@ -1,14 +1,14 @@
 const arr = [1, 2, 3, 4]
 
-// arr.forEach(item => {
-//     console.log(item);
-//     arr.push(arr.length)
-// })
-
-arr.filter((item) => {
-    if( item == 4) return true;
-    else arr.push(arr.length + 1)
+arr.forEach(item => {
+    console.log(arr.pop());
+    arr.push(4)
 })
+
+// arr.filter((item) => {
+//     if( item == 4) return true;
+//     else arr.push(arr.length + 1)
+// })
 
 // for(const value of arr) {
 //     console.log(value);
@@ -20,4 +20,4 @@ arr.filter((item) => {
 //     if(arr.length < 100)
 //     arr.push(arr.length + 1)
 // }
-console.log(arr);
+// console.log(arr);

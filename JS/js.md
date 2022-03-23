@@ -36,17 +36,377 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 2.  == 
 3. if()
 
+
+
+
+
 **==在比   较时会进行强制类型转换，而=== 不允许**
 
+  ==  ！=
+
+全等和不全等操作符与相等和不相等操作符类似，只不过它们在比较相等时不转换操作数
+
+ 如果任一操作数是布尔值，则将其转换为数值再比较是否相等。false 转换为0，true 转换
+
+为1。
+
+ 如果一个操作数是字符串，另一个操作数是数值，则尝试将字符串转换为数值，再比较是否
+
+相等。
+
+ 如果一个操作数是对象，另一个操作数不是，则调用对象的valueOf()方法取得其原始值，再
+
+根据前面的规则进行比较。
+
+在进行比较时，这两个操作符会遵循如下规则。
+
+ null 和undefined 相等。
+
+ null 和undefined 不能转换为其他类型的值再进行比较。
+
+ 如果有任一操作数是NaN，则相等操作符返回false，不相等操作符返回true。记住：即使两
+
+个操作数都是NaN，相等操作符也返回false，因为按照规则，NaN 不等于NaN。
+
+ 如果两个操作数都是对象，则比较它们是不是同一个对象。如果两个操作数都指向同一个对象，则相等操作符返回true。否则，两者不相等
+
+
+
+#### 4.类数组
+
+类数组： 具有length属性，但是没有数组方法。 
+
+常见的类数组： argument,dom查询返回的dom元素列表
+
+类数组转换成数组 ： Array.prototype.slice.call(arguments)
+
+​									Array.form(arguments)
+
+
+
+#### 5. var let const 
+
+**使用 var声明的变量会提升到作用域的首部**。被提升的是变量声明部分。
+
+**而使用let和const声明的变量则不会被提升。所以let 和const 声明的变量不能提前使用，有暂时性死区的说法。**
+
+var在全局作用域中声明的变量会被挂载到全局对象window上(不论是否严格模式)，而let和const不会。
+
+var 在函数中使用会声明函数作用域变量, 而let和const还可以声明块级作用域变量。
+
+
+
+#### 6.函数提升和变量提升
+
+使用var声明的变量会被提升，但是被提升的只是变量声明的那部分。
+
+而**函数声明**也会提升，提升的是整个函数。所以可以在声明整个函数之前直接调用这个函数。
+
+
+
+#### 7.对象(Object)
+
+##### 1.常见api
+
+Object.keys(obj):返回对象的key的数组.对象**自身可枚举**的属性。不会攀升原型。下面两个都不会。
+
+Object.values(obj):返回对象的value的数组
+
+Object.entires(obj):返回二维的数组
+
+Object.assigin(traget,source1,source2):将source1和source2合并到target上
+
+ Object.defineProperty(obj,{value: })：修改属性的默认特性，使用的方法
+
+**Reflect.ownkys():**相当于Object.getOwnPropertyNames(target) concat(Object.getOwnPropertySymbols(target)
+
+Object.getOwnPropertyNames():返回一个由指定对象的所有自身属性的属性名（**包括不可枚举属性但不包括Symbol值作为名称的属性**）组成的数组。
+
+Object.getOwnPropertySymbols()方法返回一个给定对象自身的所有 Symbol 属性的数组。
 
 
 
 
-#### 4.常见的类数组
 
-argument,dom查询返回的dom元素列表
+##### 2.遍历对象
+
+for in + obj.hasOwnPrperty()
 
 
+
+##### 3判断一个对象是否为空
+
+使用 Object 的 getOwnPropertyNames 方法，获取所有属性名，这样就算是不可枚举属性依然能够获取到，算是比较 ok 的方法。
+
+```js
+const isEmptyObj = object => {
+    if (!!Object.getOwnPropertySymbols(object).length) {
+        return false
+    }
+    if (!!Object.getOwnPropertyNames(object).length) {
+        return false
+    }
+    return true
+}
+```
+
+
+
+#### 8.数组
+
+修改数组的length可以删除或添加元素
+
+```js
+let arr1 = [1, 2, 3]
+arr1.length =  2
+console.log(arr1[2]) // undefined
+
+let arr2 = [1, 2]
+arr.length = 4;
+console.log(arr2[3]) //undefined 因为该索引上的值就为undefined，
+```
+
+
+
+##### 1.创建数组
+
+```js
+let arr1 = Array(3)  //创建一个数组长度为3的数组
+let arr2 = Array('xiaoming', 'xiaohong', 'xiaoqing') //用这三个元素创建数组
+let arr3 = ['xiaoming', 'xiaohong', 'xiaoqing'] //字面量形式创建
+```
+
+##### 2.数组的api
+
+1. Array.from (ES6)
+
+   接收类数组参数或可迭代对象，返回一个**浅拷贝**实例。
+
+```js
+Array.from(arguments)
+
+Array.from(new Set([1,1,1,2,3,4,4,5,]) ) //数组去重
+
+Array.from(new Map([[1,1],[2,2],[3,3]]))  //二维数组
+
+```
+
+  2.keys(), values(), entires() , **ES6**
+
+   确认目标是否为数组
+
+3. Array.isArray(value)
+4. fill ( value): 用value填充数组, 
+5. indexOf(value) ：查找第一个value的 下标,  lastIndexOf(), includes()：返回 ture ,false
+6. find(函数)：方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 undefined。
+
+```
+const array1 = [5, 12, 8, 130, 44];
+
+const found = array1.find(element => element > 10);
+
+console.log(found);
+```
+
+7. findIndex(函数)：方法返回数组中满足提供的测试函数的第一个元素的**索引**。若没有找到对应元素则返回-1。
+8. **[ ].concat(arr1,arr2,...)**:用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。(浅拷贝)
+
+```js
+var num1 = [[1]];
+var num2 = [2, [3]];
+var nums = num1.concat(num2);  
+console.log(nums);
+// results is [[1], 2, [3]]
+
+```
+
+9. **slice**(a,b)：	开始索引和结束索引，截取片段不包括结束索引。原数组不变, **浅拷贝**。
+10. **splice**(a,b,c)： 第一个参数是截取的起始索引，第二个参数是截取的长度。splice(3,3)从array[3]开始截取三个
+
+11. push, pop, unshift, shift
+12. reverse()：数组逆序 , sort(函数)：排序, 
+13. reduce()方法从数组第一项开始遍历到最后一项。而reduceRight()从最后一项开始遍历至第一项。
+14. join(*separator*) ,  toString()  :返回一个包含数组所有元素的字符串，各元素之间用逗号分隔开，join可以指定间隔符。
+
+15.改变原数组的方法： sort, reverse, splice, push,pop,unshift,shift
+
+
+
+#### 9.Date
+
+let now = new Date();
+
+Date.parse()方法接收一个表示日期的字符串参数，尝试将这个字符串转换为表示该日期的毫秒
+
+Date.now 方法返回方法执行事件的时间戳
+
+
+
+```js
+const dt = new Date()
+console.log(Date.now());  // 获取当前毫秒数var dt = new Date();  // 获取当前时间console.log(dt.getTime());  // 当前时间的毫秒数console.log(dt.getFullYear());  //  年console.log(dt.getMonth()+1); // 月（0-11）console.log(dt.getDate());  // 日（0-31）console.log(dt.getHours()); // 时（0-23）console.log(dt.getMinutes()); // 分（0-59）console.log(dt.getSeconds()); // 秒（0-59）
+```
+
+#### 10.RegExp
+
+
+
+#### 11.String
+
+1.常用方法：
+
+split（""）：将字符串分割为数组
+
+slice(start,end) 提取某个字符串的一部分，并返回一个新的字符串，且不会改动原字符串.
+
+indexOf(str,findIndex):方法返回调用它的 String对象中第一次出现的指定值的索引，从 
+
+fromIndex 处进行搜索。如果未找到该值，则返回 -1。
+
+lastIndexOf(str,fromIndex):方法返回指定元素（也即有效的 JavaScript 值或变量）在数组中的最后一个的索引，如果不存在则返回 -1。从数组的后面向前查找，从 fromIndex 处开始。
+
+
+
+startsWith(),endsWith().你懂的。
+
+
+
+includes(str):包含str就返回true.
+
+
+
+trim():创建字符串的一个副本，删除前、后所有空格符，再返回结果.不改变原字符串。
+
+toLocaleLowerCase()：小写
+
+toLocaleUpperCase()：大写。
+
+
+
+**toString():** number，boolean,string,Object.都有该方法。 null和undefined没有。
+
+可以使用 **String(any)** 将任意值转化为为相应类型的字符串。其规则是
+
+. 如果值有toString()方法，则调用该方法（不传参数）并返回结果。
+
+. 如果值是null，返回"null"
+
+. 如果值是undefined，返回"undefined"。
+
+
+
+```
+let value1 = 10;
+let value2 = true;
+let value3 = null;
+let value4;
+console.log(String(value1)); // "10"
+console.log(String(value2)); // "true"
+console.log(String(value3)); // "null"
+console.log(String(value4)); // "undefined"
+```
+
+
+
+#### 12.Number
+
+使用IEEE 754 格式表示整数和浮点值
+
+**Number.MIN_VALUE:获取最小值**
+
+**Number.MAX_VALUE：获取最大值**
+
+**Infinity**(无穷大)  **isFinite**（）判断数是否无穷
+
+NaN: 任何涉及NaN 的操作始终返回NaN，NaN 不等于包括NaN 在内的任何值。
+
+**isNaN** ：判断是不是非数字类型。
+
+
+
+Number()
+
+数值，boolean,你懂的。
+
+Number(null) -> 0
+
+undefined  -> NaN
+
+string 字符串： 有数字转数字，无则NaN.
+
+Object:先调用 valueOf()，如果为NaN，则使用toString(),在按照字符串规则转换。
+
+
+
+parseInt(number,多少进制)：可以转换整数。在整除中可以用
+
+parseFlot():
+
+**toFixed()** 方法可把 Number 四舍五入为指定小数位数的数字。
+
+Math.round() 方法可把一个数字舍入为最接近的整数。
+
+toPrecision() 方法可在对象的值超出指定位数时将其转换为指数计数法
+
+
+
+#### 13.Symbol
+
+字符类型。为了给对象属性添加唯一的标识符。符号是原始值，且唯一不可变。不会发生属性冲突。凡是可以使用字符串和数值定义属性的地方都可用符号代替。
+
+```js
+let s1 = Symbol('foo'),
+    s2 = Symbol('bar');
+let Obj = {
+         [s1]: 'foo val',
+         [s2]: 'bar val',
+          baz: 'baz val',
+          qux: 'qux val'
+};
+Object.getOwnPropertyNames(Obj)    //获取Obj的普通属性名
+// ["baz", "qux"]
+Object.getOwnPropertySymbols(Obj)  //获取Obj的符号属性名
+// [Symbol(foo), Symbol(bar)]
+Object.getOwnPropertyDescriptors(Obj)  //会返回同时包含常规和符号属性描述符的对象
+// {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
+
+```
+
+
+
+14. weakSet 和 weakMap
+
+WeakSet 中的对象都是弱引用，即垃圾回收机制不考虑 WeakSet 对该对象的引用.
+
+另外，由于 WeakSet 内部有多少个成员，取决于垃圾回收机制有没有运行，运行前后很可能成员个数是不一样的，而垃圾回收机制何时运行是不可预测的，因此 ES6 规定 WeakSet 不可遍历。
+
+
+
+
+
+
+
+`WeakMap`的键名所指向的对象，不计入垃圾回收机制。
+
+`WeakMap`的设计目的在于，有时我们想在某个对象上面存放一些数据，但是这会形成对于这个对象的引用。请看下面的例子。
+
+WeakMap 应用的典型场合就是 DOM 节点作为键名。下面是一个例子。
+
+```javascript
+let myWeakmap = new WeakMap();
+
+myWeakmap.set(
+  document.getElementById('logo'),
+  {timesClicked: 0})
+;
+
+document.getElementById('logo').addEventListener('click', function() {
+  let logoData = myWeakmap.get(document.getElementById('logo'));
+  logoData.timesClicked++;
+}, false);
+```
+
+上面代码中，`document.getElementById('logo')`是一个 DOM 节点，每当发生`click`事件，就更新一下状态。我们将这个状态作为键值放在 WeakMap 里，对应的键名就是这个节点对象。一旦这个 DOM 节点删除，该状态就会自动消失，不存在内存泄漏风险。
 
 ## 0.2浏览器
 
@@ -94,7 +454,7 @@ argument,dom查询返回的dom元素列表
 
 **5.插件进程**
 
-
+![image-20220316152800676](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220316152800676.png)
 
 总结来说，打开一个新页面采用的渲染进程策略就是：
 
@@ -735,15 +1095,15 @@ js的主要用途是用户交互和处理dom.这决定了它只能是单线程�
 
 ### 3.promise的特点
 
-js解决异步任务的一种方案。将执行异步任务的代码和处理结果的代码清晰的分离了。可以将要异步操作的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步操作结果的代码放在promise.then内。
+js异步编程的一种解决方案。~~将执行异步任务的代码和处理结果的代码清晰的分离了。可以将要异步操作的执行代码放在 new promise((resolve,rejected)=>{ })构造函数内，将处理异步操作结果的代码放在promise.then内。~~
 
-将异步回调的控制权转移到了promise的手中而不是像封装完ajax第三方库的手中。
+1.promise可以处理将以往的因为回调嵌套导致的回调地狱转换成了可以通过.then来链式执行的代码。可维护性以及可阅读性都得到了增强。
 
-promise可以处理将以往的异步执行的回调地狱转换成了可以通过.then来链式执行的代码。可维护性以及可阅读性都得到了增强。
+2.将异步回调的控制权转移到了promise的手中而不是像封装完ajax第三方库的手中。
+
+3.一个promise的状态已经确定下来后，就不可改变。
 
 
-
-一个promise的状态已经确定下来后，该promise的后续的then的调用都会在下一个的异步时间点上执行。
 
 
 
@@ -1035,6 +1395,171 @@ return new Promise(()=>{});
 
 
 
+### 7.Promise的原理
+
+Promise本身是一个类，内部维护了一个status变量保存当前promise实例的状态，promise刚初始化时为pending, 通过类内部的方法 resolve 和 reject, 可以将状态修改为 fullfilled 和 rejected. 该类的内部还维护了两个数组用于保存.then中的回调，因为promise.then是微任务，会js执行栈为空时才执行，所以.then内的回调需要先保存到这两个回调数组当中。
+
+```js
+// MyPromise.js
+
+// 先定义三个常量表示状态
+const PENDING = 'pending';
+const FULFILLED = 'fulfilled';
+const REJECTED = 'rejected';
+
+// 新建 MyPromise 类
+class MyPromise {
+  constructor(executor){
+    // executor 是一个执行器，进入会立即执行
+    // 并传入resolve和reject方法
+    try {
+      executor(this.resolve, this.reject)
+    } catch (error) {
+      this.reject(error)
+    }
+  }
+
+  // 储存状态的变量，初始值是 pending
+  status = PENDING;
+  // 成功之后的值
+  value = null;
+  // 失败之后的原因
+  reason = null;
+
+  // 存储成功回调函数
+  onFulfilledCallbacks = [];
+  // 存储失败回调函数
+  onRejectedCallbacks = [];
+
+  // 更改成功后的状态
+  resolve = (value) => {
+    // 只有状态是等待，才执行状态修改
+    if (this.status === PENDING) {
+      // 状态修改为成功
+      this.status = FULFILLED;
+      // 保存成功之后的值
+      this.value = value;
+      // resolve里面将所有成功的回调拿出来执行
+      while (this.onFulfilledCallbacks.length) {
+        // Array.shift() 取出数组第一个元素，然后（）调用，shift不是纯函数，取出后，数组将失去该元素，直到数组为空
+        this.onFulfilledCallbacks.shift()(value)
+      }
+    }
+  }
+
+  // 更改失败后的状态
+  reject = (reason) => {
+    // 只有状态是等待，才执行状态修改
+    if (this.status === PENDING) {
+      // 状态成功为失败
+      this.status = REJECTED;
+      // 保存失败后的原因
+      this.reason = reason;
+      // resolve里面将所有失败的回调拿出来执行
+      while (this.onRejectedCallbacks.length) {
+        this.onRejectedCallbacks.shift()(reason)
+      }
+    }
+  }
+
+  then(onFulfilled, onRejected) {
+    const realOnFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
+    const realOnRejected = typeof onRejected === 'function' ? onRejected : reason => {throw reason};
+
+    // 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去
+    const promise2 = new MyPromise((resolve, reject) => {
+      const fulfilledMicrotask = () =>  {
+        // 创建一个微任务等待 promise2 完成初始化
+        queueMicrotask(() => {
+          try {
+            // 获取成功回调函数的执行结果
+            const x = realOnFulfilled(this.value);
+            // 传入 resolvePromise 集中处理
+            resolvePromise(promise2, x, resolve, reject);
+          } catch (error) {
+            reject(error)
+          } 
+        })  
+      }
+
+      const rejectedMicrotask = () => { 
+        // 创建一个微任务等待 promise2 完成初始化
+        queueMicrotask(() => {
+          try {
+            // 调用失败回调，并且把原因返回
+            const x = realOnRejected(this.reason);
+            // 传入 resolvePromise 集中处理
+            resolvePromise(promise2, x, resolve, reject);
+          } catch (error) {
+            reject(error)
+          } 
+        }) 
+      }
+      // 判断状态
+      if (this.status === FULFILLED) {
+        fulfilledMicrotask() 
+      } else if (this.status === REJECTED) { 
+        rejectedMicrotask()
+      } else if (this.status === PENDING) {
+        // 等待
+        // 因为不知道后面状态的变化情况，所以将成功回调和失败回调存储起来
+        // 等到执行成功失败函数的时候再传递
+        this.onFulfilledCallbacks.push(fulfilledMicrotask);
+        this.onRejectedCallbacks.push(rejectedMicrotask);
+      }
+    }) 
+    
+    return promise2;
+  }
+
+  // resolve 静态方法
+  static resolve (parameter) {
+    // 如果传入 MyPromise 就直接返回
+    if (parameter instanceof MyPromise) {
+      return parameter;
+    }
+
+    // 转成常规方式
+    return new MyPromise(resolve =>  {
+      resolve(parameter);
+    });
+  }
+
+  // reject 静态方法
+  static reject (reason) {
+    return new MyPromise((resolve, reject) => {
+      reject(reason);
+    });
+  }
+}
+
+function resolvePromise(promise2, x, resolve, reject) {
+  // 如果相等了，说明return的是自己，抛出类型错误并返回
+  if (promise2 === x) {
+    return reject(new TypeError('Chaining cycle detected for promise #<Promise>'))
+  }
+  // 判断x是不是 MyPromise 实例对象
+  if(x instanceof MyPromise) {
+    // 执行 x，调用 then 方法，目的是将其状态变为 fulfilled 或者 rejected
+    // x.then(value => resolve(value), reason => reject(reason))
+    // 简化之后
+    x.then(resolve, reject)
+  } else{
+    // 普通值
+    resolve(x)
+  }
+}
+
+module.exports = MyPromise;
+
+```
+
+
+
+
+
+
+
 ## 2 async 和 await
 
 async 和 await 能进一步改善promise的链式调用，**使得异步代码看起来更像是同步代码，用同步的语法实现异步代码**。
@@ -1080,6 +1605,29 @@ f().then(v => console.log(v))
 1. async 函数中，将await语句放入到 try catch 中。如果await的promise变为 rejected时，可以在catch中捕获到。
 2. 多个await命令后面的异步操作如果没有关联关系。就可以抽离出来，使用promise.all让它们同时触发，节省时间。  
 
+3.可以通过使用一个辅助函数来包裹 await 后面跟着的函数，在辅助函数内使用try catch从而更优雅地捕获错误。
+
+```js
+async function errorCaptured(asyncFunc) {
+    try{
+        let res = await asyncFunc()
+        return [null, res]
+    } catch(e) {
+        return [e, null]
+    }
+}
+
+
+async function func() {
+    let [err, res] = await errorCaptured(asyncFunc)
+    if (err) {
+        //... 错误捕获
+    }
+    //...
+}
+
+```
+
 
 
 #### 2async，await是如何实现的？
@@ -1087,6 +1635,43 @@ f().then(v => console.log(v))
 [好文](https://juejin.cn/post/7007031572238958629#heading-6)
 
 async/await 其实就是 generator函数的语法糖。generator函数内部通过 yield字段(一耳)来暂停执行，一般yield字段后面跟通过在new Promise(）函数内部添加异步操作，next()方法执行到yield暂停处即返回的未确定状态promise处，为未确定状态的promsie添加.then来添加完成异步操作后的回调。
+
+async 函数的实现原理，就是将 Generator 函数和自动执行器，包装在一个函数里。
+
+```js
+function generatorToAsync(generatorFn) {
+return function() {
+    const gen = generatorFn.apply(this, arguments) // gen有可能传参
+
+    // 返回一个Promise
+    return new Promise((resolve, reject) => {
+
+    function go(key, arg) {
+        let res
+        try {
+        res = gen[key](arg) // 这里有可能会执行返回reject状态的Promise
+        } catch (error) {
+        return reject(error) // 报错的话会走catch，直接reject
+        }
+
+        // 解构获得value和done
+        const { value, done } = res
+        if (done) {
+        // 如果done为true，说明走完了，进行resolve(value)
+        return resolve(value)
+        } else {
+        // 如果done为false，说明没走完，还得继续走
+
+        // value有可能是：常量，Promise，Promise有可能是成功或者失败
+        return Promise.resolve(value).then(val => go('next', val), err => go('throw', err))
+        }
+    }
+
+    go("next") // 第一次执行
+    })
+}
+}
+```
 
 
 
@@ -1109,25 +1694,15 @@ for of 中 使用也有效
 
 
 
-## 3 var let const 
-
-使用 var声明的变量会提升到作用域的首部。被提升的是变量声明部分。
-
-而使用let和const声明的变量则不会被提升。所以let 和const 声明的变量不能提前使用，有暂时性死区的说法。
-
-var在全局作用域中声明的变量会被挂载到全局对象window上(不论是否严格模式)，而let和const不会。
-
-var 在函数中使用会声明函数作用域变量，函数外访问不到。而let和const还可以声明块级作用域变量。块级外访问不到。
 
 
 
 
+## 4已经删除
 
-## 4函数提升和变量提升
 
-使用var声明的变量会被提升，但是被提升的只是变量声明的那部分。
 
-而函数声明也会提升，提升的是整个函数。所以可以在声明整个函数之前直接调用这个函数。
+## 3.已删除
 
 
 
@@ -1387,53 +1962,7 @@ console.log(a);
 
 
 
-## 11对象(Object)
-
-### 1.常见api
-
-Object.keys(obj):返回对象的key的数组.对象**自身可枚举**的属性。不会攀升原型。下面两个都不会。
-
-Object.values(obj):返回对象的value的数组
-
-Object.entires(obj):返回二维的数组
-
-Object.assigin(traget,source1,source2):将source1和source2合并到target上
-
- Object.defineProperty(obj,{value: })：修改属性的默认特性，使用的方法
-
-**Reflect.ownkys():**相当于Object.getOwnPropertyNames(target) concat(Object.getOwnPropertySymbols(target)
-
-Object.getOwnPropertyNames():返回一个由指定对象的所有自身属性的属性名（**包括不可枚举属性但不包括Symbol值作为名称的属性**）组成的数组。
-
-Object.getOwnPropertySymbols()方法返回一个给定对象自身的所有 Symbol 属性的数组。
-
-
-
-
-
-### 2.遍历对象
-
-for in + obj.hasOwnPrperty()
-
-
-
-### 3判断一个对象是否为空
-
-使用 Object 的 getOwnPropertyNames 方法，获取所有属性名，这样就算是不可枚举属性依然能够获取到，算是比较 ok 的方法。
-
-```js
-const isEmptyObj = object => {
-    if (!!Object.getOwnPropertySymbols(object).length) {
-        return false
-    }
-    if (!!Object.getOwnPropertyNames(object).length) {
-        return false
-    }
-    return true
-}
-```
-
-
+## 11 已删除
 
 
 ## 12window
@@ -1727,19 +2256,25 @@ console.log(formatDate);
 
 ```javascript
 // example.js  导出
-var x = 1;
-var addx = function(value){
-  return value+x;  
-};
-module.exports.name = x;
-module.exports.addx = addx
+const A = ['cat']
+const ShowA = () => {
+    console.log(A)
+}
+
+module.exports = {
+    A, ShowA
+}
 ```
 
 ```javascript
 //导入
-var example = require('./example.js');
-console.log(example.name);
-console.log(example.addx);
+const M1 = require('./example.js')
+const M2 = require('./example.js')
+console.log(M1.A) // [ 'cat' ]
+M1.A.push('AA')
+M1.ShowA() // [ 'cat', 'AA' ]  因为 A是引用类型， 输出的拷贝值引用的堆地址相同
+M2.A.push('DD')
+M2.ShowA() // [ 'cat', 'AA', 'DD' ] // M1 和 M2 共享一份拷贝实例 esmodule也如此
 ```
 
 
@@ -1861,6 +2396,38 @@ import(f())
 
 [好文](https://zhuanlan.zhihu.com/p/33843378)
 
+`export`通过接口，输出的是同一个值。不同的脚本加载这个接口，得到的都是同样的实例。
+
+```javascript
+// mod.js
+function C() {
+  this.sum = 0;
+  this.add = function () {
+    this.sum += 1;
+  };
+  this.show = function () {
+    console.log(this.sum);
+  };
+}
+
+export let c = new C();
+```
+
+```javascript
+// x.js
+import {c} from './mod';
+c.add();
+
+// y.js
+import {c} from './mod';
+c.show();
+
+// main.js
+import './x';
+import './y';
+// 输出结果为1
+```
+
 
 
 #### 3.浏览器加载(ES6)
@@ -1903,7 +2470,7 @@ import(f())
 
 ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令`import`，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的`import`有点像 Unix 系统的“符号连接”，原始值变了，`import`加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。
 
-**② CommonJS 模块是运行时加载，即代码执行到那一行才回去加载模块.ES6 模块是编译时输出接口**。
+**② CommonJS 模块是运行时同步加载，.ES6 模块通过静态分析是编译时输出接口**。
 
 因为common.js加载的是一个对象（即module.exporys属性），该对象只有在脚本运行完才会生成。
 
@@ -1911,166 +2478,89 @@ ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析
 
 **3.CommonJs在第一次加载的时候运行一次并且会生成一个缓存,之后加载返回的都是缓存中的内容**
 
+CommonJS 的一个模块，就是一个脚本文件。`require`命令第一次加载该脚本，就会执行整个脚本，然后在内存生成一个对象。
+
+```javascript
+{
+  id: '...',
+  exports: { ... },
+  loaded: true,
+  ...
+}
+```
+
+上面代码就是 Node 内部加载模块后生成的一个对象。该对象的`id`属性是模块名，`exports`属性是模块输出的各个接口，`loaded`属性是一个布尔值，表示该模块的脚本是否执行完毕。其他还有很多属性，这里都省略了。
+
+以后需要用到这个模块的时候，就会到`exports`属性上面取值。即使再次执行`require`命令，也不会再次执行该模块，而是到缓存之中取值。也就是说，CommonJS 模块无论加载多少次，都只会在第一次加载时运行一次，以后再加载，就返回第一次运行的结果，除非手动清除系统缓存。
+
+
+
 4.CommonJs的require()是同步加载模块，ES6的import是异步加载模块，有一个独立解析的过程。
 
 
 
-## 21可迭代对象
+#### 5.node中加载模块的方式
 
-[迭代器好文](https://juejin.cn/post/6844903775329583112#heading-7)
+通过type来设置，不设置时默认时 commonJS. 然后如果部分文件要使用 ESmodule的话，可以将文件名改为 .mjs，node.js在加载该文件时就会默认时 ES6模块，默认采用严格模式。
 
-**实现了[Symbol.iterator]接口的数据结构称为可迭代对象。**
-
-一个**数据结构**只要具有[Symbol.iterator]属性，就称为可迭代的。Symbol.iterator属性本身是一个函数，**是迭代器生成函数**。调用后返回迭代器。迭代器内有一个可调用的方法 next(). 调用后返回一个当前成员信息的对象 {value:  xxx, done:boolean}。至于属性名Symbol.iterator本身Symbol对象的一个属性值，预先定义好的。
-
-
-
-具备 iterator接口的数据结构：
-
-Array
-
-Map
-
-Set
-
-String
-
-arguments
-
-NodeList对象
-
-
-
-#### 1.自定义可迭代对象的数据结构
-
-可以通过对数据结构定义Symbol.iterator来实现迭代器的定义。
+当将type设置为module,node.js默认加载js文件用 ESmodule的形式，使用commonjs 要额外的将文件命名为.cjs
 
 ```javascript
-//实现指针结构
-
-function Obj(value) {
-        this.value = value
-        this.next = null;
-    }
-
-    Obj.prototype[Symbol.iterator] = function () {
-        let current = this;
-        return {
-            next: function () {
-                if (current === null) {
-                    return { done: true }
-                }
-                else {
-                    let res = { value: current.value, done: false };
-                    current = current.next;
-                    return res;
-                }
-
-            }
-        }
-    }
-
-    var one = new Obj(1);
-    var two = new Obj(2);
-    var three = new Obj(3);
-
-    one.next = two;
-    two.next = three;
-
-    for (var i of one) {
-        console.log(i); // 1, 2, 3
-    }
-```
-
-
-
-#### 2.调用Symbol.iterator接口的场合
-
-1.解构赋值和扩展运算符
-
-```javascript
-let set = new Set().add('a').add('b').add('c');
-
-let [x,y] = set;
-// x='a'; y='b'
-
-let [first, ...rest] = set;
-// first='a'; rest=['b','c'];
-
-// 例一
-var str = 'hello';
-[...str] //  ['h','e','l','l','o']
-
-// 例二
-let arr = ['b', 'c'];
-['a', ...arr, 'd']
-// ['a', 'b', 'c', 'd']
-```
-
-2.for .. of   内部调用 Symbol.iterator 接口
-
-```javascript
-const arr = ['red', 'green', 'blue'];
-
-for(let v of arr) {
-  console.log(v); // red green blue
-}
-
-const obj = {};
-obj[Symbol.iterator] = arr[Symbol.iterator].bind(arr);
-
-for(let v of obj) {
-  console.log(v); // red green blue
-}
-```
-
-3.Array.from()
-
-4.Map(),Set(),WeakMap(),WeakSet()
-
-5.Promise.all()  
-
-6.Promise.race() 
-
-以上这些函数都允许传入 可迭代器对象。
-
-
-
-ES6 的数组、Set、Map 都部署了以下三个方法，调用后都返回遍历器对象。
-
-- `entries()` 返回一个遍历器对象，用来遍历`[键名, 键值]`组成的数组。对于数组，键名就是索引值；对于 Set，键名与键值相同。Map 结构的 Iterator 接口，默认就是调用`entries`方法。
-- `keys()` 返回一个遍历器对象，用来遍历所有的键名。
-- `values()` 返回一个遍历器对象，用来遍历所有的键值。
-
-而**Object.keys()，Object.entries,Object.values()返回的是数组**
-
-```javascript
-let arr = ['a', 'b', 'c'];
-for (let pair of arr.entries()) {
-  console.log(pair);
-}
-// [0, 'a']
-// [1, 'b']
-// [2, 'c']
-```
-
-并不是所有类似数组的对象都具有 Iterator 接口，一个简便的解决方法，就是使用`Array.from`方法将其转为数组。
-
-```javascript
-let arrayLike = { length: 2, 0: 'a', 1: 'b' };
-
-// 报错
-for (let x of arrayLike) {
-  console.log(x);
-}
-
-// 正确
-for (let x of Array.from(arrayLike)) {
-  console.log(x);
+{
+   "type": "module"
 }
 ```
 
 
+
+**package.json的main和 export字段**
+
+main:模块的入口文件
+
+```javascript
+// ./node_modules/es-module-package/package.json
+{
+  "type": "module",
+  "main": "./src/index.js"
+}
+```
+
+```javascript
+// ./my-app.mjs
+
+import { something } from 'es-module-package';
+// 实际加载的是 ./node_modules/es-module-package/src/index.js
+```
+
+export：子目录的别名和main的别名（优先级比main高）
+
+```javascript
+// 别名
+// ./node_modules/es-module-package/package.json
+{
+  "exports": {
+    "./submodule": "./src/submodule.js"
+  }
+}
+import submodule from 'es-module-package/submodule';
+// 加载 ./node_modules/es-module-package/src/submodule.js
+```
+
+
+
+`exports`字段的别名如果是`.`，就代表模块的主入口，优先级高于`main`字段
+
+```javascript
+{
+  "exports": {
+    ".": "./main.js"
+  }
+}
+```
+
+
+
+## 21已经删除
 
 ## 22 循环
 
@@ -2308,19 +2798,104 @@ console.log(filterItems('an')); // ['banana', 'mango', 'orange']
 
 ## 23 ES6新增语法
 
-1.promise
 
-2.module   exports {}  import {} fromxxx
 
-3.扩展运算符
+### 1.let 和 const
 
-4.箭头函数
+let和const的块级作用域 和 暂时性死区
 
-5.let const
 
-6.迭代器
 
-7.Object.assign
+### 2.字符串
+
+的 实现了迭代器接口，可以通过 for of 来遍历，
+
+```javascript
+for (let codePoint of 'foo') {
+  console.log(codePoint)
+}
+// "f"
+// "o"
+// "o"
+```
+
+模板字符串语法：在字符串中嵌入变量
+
+字符串的新增方法：
+
+includes():返回布尔值,表示是否找到了参数字符串。 
+
+startsWith():返回布尔值,表示参数字符串是否在原字符串的头部。
+
+endsWith():返回布尔值,表示参数字符串是否在原字符串的尾部。
+
+repeat(): 将原字符串重复 n 次
+
+replaceAll()
+
+```javascript
+'aabbcc'.replaceAll('b', '_')
+// 'aa__cc'
+```
+
+at(): 
+
+```javascript
+const str = 'hello';
+str.at(1) // "e"
+str.at(-1) // 
+```
+
+
+
+### 3.函数
+
+函数参数可以传入默认值，并解构赋值
+
+```javascript
+function fetch(url, { body = '', method = 'GET', headers = {} } = {}) {
+  console.log(method);
+}
+
+fetch('http://example.com')
+// "GET"
+```
+
+rest参数，用于获取函数的多余参数
+
+```js
+function push(array, ...items) {
+  items.forEach(function(item) {
+    array.push(item);
+    console.log(item);
+  });
+}
+
+var a = [];
+push(a, 1, 2, 3)
+```
+
+箭头函数的特点：
+
+（1）箭头函数没有自己的`this`对象。
+
+（2）不可以当作构造函数，也就是说，不可以对箭头函数使用`new`命令，否则会抛出一个错误。
+
+（3）不可以使用`arguments`对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。
+
+
+
+### 4.promise
+
+### 5.module   
+
+exports {}  import {} fromxxx
+
+
+
+
+
+6.Object.assign
 
 ### 8.Proxy 代理
 
@@ -2704,7 +3279,166 @@ WeakMap
 
 
 
+### 10.对象
 
+
+
+
+
+### 12可迭代对象
+
+[迭代器好文](https://juejin.cn/post/6844903775329583112#heading-7)
+
+**实现了[Symbol.iterator]接口的数据结构称为可迭代对象。**
+
+一个**数据结构**只要具有[Symbol.iterator]属性，就称为可迭代的。Symbol.iterator属性本身是一个函数，**是迭代器生成函数**。调用后返回迭代器。迭代器内有一个可调用的方法 next(). 调用后返回一个当前成员信息的对象 {value:  xxx, done:boolean}。至于属性名Symbol.iterator本身Symbol对象的一个属性值，预先定义好的。
+
+
+
+具备 iterator接口的数据结构：
+
+Array
+
+Map
+
+Set
+
+String
+
+arguments
+
+NodeList对象
+
+
+
+#### 1.自定义可迭代对象的数据结构
+
+可以通过对数据结构定义Symbol.iterator来实现迭代器的定义。
+
+```javascript
+//实现指针结构
+
+function Obj(value) {
+        this.value = value
+        this.next = null;
+    }
+
+    Obj.prototype[Symbol.iterator] = function () {
+        let current = this;
+        return {
+            next: function () {
+                if (current === null) {
+                    return { done: true }
+                }
+                else {
+                    let res = { value: current.value, done: false };
+                    current = current.next;
+                    return res;
+                }
+
+            }
+        }
+    }
+
+    var one = new Obj(1);
+    var two = new Obj(2);
+    var three = new Obj(3);
+
+    one.next = two;
+    two.next = three;
+
+    for (var i of one) {
+        console.log(i); // 1, 2, 3
+    }
+```
+
+
+
+#### 2.调用Symbol.iterator接口的场合
+
+1.解构赋值和扩展运算符
+
+```javascript
+let set = new Set().add('a').add('b').add('c');
+
+let [x,y] = set;
+// x='a'; y='b'
+
+let [first, ...rest] = set;
+// first='a'; rest=['b','c'];
+
+// 例一
+var str = 'hello';
+[...str] //  ['h','e','l','l','o']
+
+// 例二
+let arr = ['b', 'c'];
+['a', ...arr, 'd']
+// ['a', 'b', 'c', 'd']
+```
+
+2.for .. of   内部调用 Symbol.iterator 接口
+
+```javascript
+const arr = ['red', 'green', 'blue'];
+
+for(let v of arr) {
+  console.log(v); // red green blue
+}
+
+const obj = {};
+obj[Symbol.iterator] = arr[Symbol.iterator].bind(arr);
+
+for(let v of obj) {
+  console.log(v); // red green blue
+}
+```
+
+3.Array.from()
+
+4.Map(),Set(),WeakMap(),WeakSet()
+
+5.Promise.all()  
+
+6.Promise.race() 
+
+以上这些函数都允许传入 可迭代器对象。
+
+
+
+ES6 的Array、Set、Map 都部署了以下三个方法，调用后都返回遍历器对象。
+
+- `entries()` 返回一个遍历器对象，用来遍历`[键名, 键值]`组成的数组。对于数组，键名就是索引值；对于 Set，键名与键值相同。Map 结构的 Iterator 接口，默认就是调用`entries`方法。
+- `keys()` 返回一个遍历器对象，用来遍历所有的键名。
+- `values()` 返回一个遍历器对象，用来遍历所有的键值。
+
+而**Object.keys()，Object.entries,Object.values()返回的是数组**
+
+```javascript
+let arr = ['a', 'b', 'c'];
+for (let pair of arr.entries()) {
+  console.log(pair);
+}
+// [0, 'a']
+// [1, 'b']
+// [2, 'c']
+```
+
+并不是所有类似数组的对象都具有 Iterator 接口，一个简便的解决方法，就是使用`Array.from`方法将其转为数组。
+
+```javascript
+let arrayLike = { length: 2, 0: 'a', 1: 'b' };
+
+// 报错
+for (let x of arrayLike) {
+  console.log(x);
+}
+
+// 正确
+for (let x of Array.from(arrayLike)) {
+  console.log(x);
+}
+```
 
 
 
@@ -2782,6 +3516,8 @@ encodeURIComponent方法***不会***对下列字符编码 **ASCII字母  数字 
 所以encodeURIComponent比encodeURI编码的范围更大。
 
 实际例子来说，encodeURIComponent会把 http://  编码成  http%3A%2F%2F 而encodeURI却不会。
+
+URL对非安全字符进行的编码叫百分号编码，百分号后面跟上2个16位进制数表示，这两个16位进制数使用UTF-8编码。
 
 
 

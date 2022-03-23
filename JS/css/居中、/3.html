@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<!--[if lt IE 7 ]><html class="ie6"><![endif]-->
+<!--[if IE 7 ]><html class="ie7"><![endif]-->
+<!--[if IE 8 ]><html class="ie8"><![endif]-->
+<!--[if IE 9 ]><html class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html>
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>定宽高定位</title>
+    <meta content="" name="Description" />
+    <meta content="" name="Keywords" />
+    <link rel="stylesheet" type="text/css" href="" />
+    <script type="text/javascript"></script>
+    <style>
+        .wp {
+            border: 1px solid red;
+            width: 300px;
+            height: 300px;
+            position: relative;
+        }
+        
+        .box.size {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .box {
+            background: green;
+            /*2、定宽高定位：absolute + margin:auto */
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wp">
+        <div class="box size">
+            子元素定宽高
+        </div>
+    </div>
+</body>
+
+</html>

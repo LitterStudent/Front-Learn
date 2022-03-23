@@ -14,13 +14,15 @@ box-sizing : content-box   border-box
 
 IE盒子模型：border-box 设置的width为盒子的content+border+padding
 
-**offsetWidth**:元素的内边距+ 边框  不包括外边距
+clientWidth: 元素的宽度+ 元素的内边距
+
+**offsetWidth**:元素的宽度+元素的内边距+ 边框  （不包括外边距）
 
 margin为负值时： margin-left margin-top 为负值时，元素会向上或者像左移动
 
 ​                                 margin-right margin-bottom 为负值时，元素自身不变，其右边的元素向左移动，下面的元素会向上移动。
 
-
+![image-20220323115426435](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220323115426435.png)
 
 ## 3CSS的选择器有哪些，哪些属性可以继承？
 
@@ -168,7 +170,7 @@ display:block;
 
 
 
-伪类一个分号： 
+伪类一个冒号： 
 
 伪类是选择器的一种，用于选择特定状态的元素。
 

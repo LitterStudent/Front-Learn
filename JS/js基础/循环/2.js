@@ -9,3 +9,13 @@ for(const [key, value] of map) {
 map.forEach((value,key) => {
     console.log(key, value);
 })
+
+
+var words = new Set(['one', 'two', 'three', 'four']);
+words.forEach(function(word) {
+  console.log(word);
+  if (word === 'two') {
+    return; //无法终止
+    // throw new Error('111');
+  }
+});
