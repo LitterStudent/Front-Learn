@@ -42,6 +42,9 @@ let ul = document.createElement('ul')
       Promise.resolve().then(()=>{
           console.log("object");
       })
+      setTimeout(() => {
+        console.log('-------------');
+      })
     let h3 = document.createElement('h3')
     h3.innerHTML = 1
     ul.appendChild(h3)

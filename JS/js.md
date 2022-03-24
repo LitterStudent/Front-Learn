@@ -114,8 +114,6 @@ Object.values(obj):返回对象的value的数组
 
 Object.entires(obj):返回二维的数组
 
-Object.assigin(traget,source1,source2):将source1和source2合并到target上
-
  Object.defineProperty(obj,{value: })：修改属性的默认特性，使用的方法
 
 **Reflect.ownkys():**相当于Object.getOwnPropertyNames(target) concat(Object.getOwnPropertySymbols(target)
@@ -124,7 +122,65 @@ Object.getOwnPropertyNames():返回一个由指定对象的所有自身属性的
 
 Object.getOwnPropertySymbols()方法返回一个给定对象自身的所有 Symbol 属性的数组。
 
+Object.is(a, b): 判断两个值是否相等，与 严格相等运算符 === 唯一的不同就是+0 不等于 -0和 NaN等于自身。
 
+```js
+Objectis(a, b){
+	if(a === b) {
+	//针对 -0 === +0
+	 return a!==0 || 1/a === 1/b
+	}
+    // 针对于 NaN != NaN
+	return a!== a && b !== b
+}
+```
+
+Object.assigin(traget,source1,source2):将source1和source2合并到target上
+
+用途： 1.克隆对象，浅拷贝
+
+```javascript
+function clone(origin) {
+  return Object.assign({}, origin);
+}
+```
+
+2.合并多个对象
+
+```js
+const merage = (target, ...res) => {
+    Object.assign(target, ...res)
+}
+// 或者返回一个新对象
+const merage = (..res) => {
+    Object.assign({}, ...res)
+}
+```
+
+3.为对象添加属性
+
+```javascript
+class Point {
+  constructor(x, y) {
+    Object.assign(this, {x, y});
+  }
+}
+```
+
+4.为对象元素指定默认值
+
+```javascript
+const DEFAULTS = {
+  logLevel: 0,
+  outputFormat: 'html'
+};
+
+function processContent(options) {
+  options = Object.assign({}, DEFAULTS, options);
+  console.log(options);
+  // ...
+}
+```
 
 
 
@@ -353,6 +409,8 @@ toPrecision() 方法可在对象的值超出指定位数时将其转换为指数
 #### 13.Symbol
 
 字符类型。为了给对象属性添加唯一的标识符。符号是原始值，且唯一不可变。不会发生属性冲突。凡是可以使用字符串和数值定义属性的地方都可用符号代替。
+
+**注意在对象内添加 []来使用symbol**
 
 ```js
 let s1 = Symbol('foo'),
@@ -1242,6 +1300,8 @@ Promise.all()
 
 Promise.race()
 
+一旦数组中任意一个promise变为 fulfilled或 rejected，就会返回该promise
+
 ```javascript
 let p = Promise.race([
 fetch(url),
@@ -1566,7 +1626,9 @@ async 和 await 能进一步改善promise的链式调用，**使得异步代码�
 
 **async函数的返回值为 promise.**一个函数如果加上async ,那么该函数就会返回一个状态为fulfilled的promise，**除非async函数内抛出的错误或者await后面的promsie状态变为rejected.** 
 
-当函数体执行时，一旦遇到await就会先返回，让出线程，跳出函数体。 等到触发的异步操作完成时，才有机会执行函数体后面的语句。await 后面一般跟着一个promise。await下一行的语句就和.then里的语句一样，`（会在promise状态确定下来后加入到微任务队列当中）`，得等await 等待的Promise状态确定后才会继续执行下去。
+当函数体执行时，一旦遇到await就会先返回，让出线程，跳出函数体。 等到触发的异步操作完成时，才有机会执行函数体后面的语句。await 后面一般跟着一个promise。await下一行的语句就和.then里的语句一样，`（会在promise状态确定下来后加入到微任务队列当中）`，得等await 等待的Promise状态变为fullfilled时，await的下一行语句才会被添加到微任务队列当中，如果await等待的promise状态变为rejected，则 后面的语句会停止执行，可以使用 try catch 捕获rejected的promise来使得后面的代码继续执行，没有关联关系的异步操作可以直接放入Promise.all内来同时执行，提高效率。
+
+
 
 
 
@@ -1698,24 +1760,20 @@ for of 中 使用也有效
 
 
 
-## 4已经删除
-
-
-
-## 3.已删除
 
 
 
 
 
-## 5继承
+
+## 3继承
 
 ES5的继承有很多种
 
 1. 原型链继承。通过将父类的实例赋予子类构造函数的原型。缺点：子类实例都共享同一父类实例。
 2. 道用构造函数继承。通过在子类的构造函数中调用父类的构造函数来实现对父类实例属性的继承。缺点：无法获取父类的原型。
 3. 组合继承，即在子类中调用父类的构造函数也将子类的构造函数的原型指向父类实例。缺点：子类实例的属性会和子类的原型上的属性有重合。
-4. 寄生组合继承。通过在子类的构造函数中调用父类的构造函数，同时也将子类的原型的原型指向父类，实现对父类原型的继承。
+4. 寄生组合继承。**通过在子类的构造函数中调用父类的构造函数，同时也将子类的原型的原型指向父类**，实现对父类原型的继承。
 
 ```js
 function inheritPrototype(subType, superType) {
@@ -1728,7 +1786,7 @@ function inheritPrototype(subType, superType) {
 
 ![](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225325661.png)
 
-ES6的继承是通过 Class  Extends 语法糖实现的，本质上还是原型链实现的继承。（大概吧）
+~~ES6的继承是通过 Class  Extends 语法糖实现的，本质上还是原型链实现的继承。（大概吧）~~
 
 类可以包含构造函数方法、实例方法、获取函数、设置函数和静态类方法，但这些都不是必需的。
 
@@ -1738,13 +1796,13 @@ class 中的 constructor（类构造函数） 就是ES5中的构造函数。虽�
 
 使用static作为前缀的声明的方法会被当做静态方法。
 
-ES6通过 extends字段 声明继承父类 和在类构造函数 constructor中使用 super调用父类的构造函数，完成对this的塑型从而实现继承。内部实现原理还是 es5的寄生组合继承。
+ES6通过 extends字段 声明继承父类 和在类构造函数 constructor中使用 super调用父类的构造函数，完成对this的塑型从而实现继承。内部实现原理还是 es5的**寄生组合继承。**
 
 
 
 
 
-## 6 new 构造函数 的过程
+## 4 new 构造函数 的过程
 
 生成一个空对象，空对象的隐式指针指向构造函数的原型。执行构造函数并且将构造函数的this指向 新生成的空对象。执行完构造函数，函数内的属性添加到了空对象上。最后 如果构造函数的执行结果没有返回一个对象，那就直接返回之前生成的对象。否则就返回构造函数返回的对象。
 
@@ -1754,7 +1812,7 @@ ES6通过 extends字段 声明继承父类 和在类构造函数 constructor中�
 
 
 
-## 7事件循环
+## 5事件循环
 
 DOM事件：用户在界面上进行一些操作触发的响应。
 
@@ -1841,7 +1899,7 @@ MutationObserver 将响应函数改成异步调用，可以不用在每次 DOM �
 
 
 
-## 8  this的指向
+## 6  this的指向
 
 this 就是当可执行代码的调用者。
 
@@ -1919,9 +1977,9 @@ console.log(window.name)
 
 
 
-## 9箭头函数
+## 7箭头函数
 
-1.在箭头函数中，没有this. 它的this通过外层上下文获取到的。箭头函数的this取决包裹箭头函数的第一个普通函数的this.
+1.在箭头函数中，没有this. 它的this通过**外层上下文**获取到的。箭头函数的this取决包裹箭头函数的**第一个普通函数**的this.
 
 2.箭头函数没有自己的 arguments
 
@@ -1933,7 +1991,7 @@ console.log(window.name)
 
 6.箭头函数可以使用apply,call,bind. 但是传入的this会被忽略，只有传入的参数有用。
 
-## 10 函数
+## 8 函数
 
 1. 普通函数（非箭头函数）都有 prototype（原型）,length(形参个数)
 2. 在严格模式下，直接调用函数，函数内的this不会指向windows。二是undeined.
@@ -1962,10 +2020,10 @@ console.log(a);
 
 
 
-## 11 已删除
 
 
-## 12window
+
+## 9window
 
 ### 1.sessionStorage,localStorage.
 
@@ -1991,7 +2049,7 @@ cookie一般由服务器生成，可以设置过期时间。大小为4k.每次�
 
 
 
-## 13闭包
+## 10闭包
 
 [阮一峰的闭包说明](http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html)
 
@@ -2067,7 +2125,7 @@ js  加或减 比较时 如果是不同类型就会进行隐式转换
 
 ## 15事件的传播机制。
 
-从根元素到目标节点，期间流经过的各个DOM节点都会被触发捕获事件。事件到达目标节点后**先执行捕获后执行冒泡**。然后事件向上冒泡，**其他元素冒泡阶段事件** 。
+从根元素到目标节点，期间流经过的各个DOM节点都会被触发捕获阶段事件。事件到达目标节点后**先执行捕获后执行冒泡**。然后事件向上冒泡，**其他元素触发冒泡阶段事件** 。
 
 Onclick 和 addEventListener() 默认都是冒泡阶段执行事件，但是addEventListener()第三个参数设置为ture时则是捕获阶段执行事件。
 
