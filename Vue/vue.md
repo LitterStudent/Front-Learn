@@ -1410,6 +1410,16 @@ var config = {
 
 
 
+
+
+## 9.响应式原理（数据绑定实现原理）
+
+### 0.数据的双向绑定
+
+vue中数据的双向绑定指的是 视图变化触发数据更新，数据更新触发视图变化。其中视图变化触发数据更新依靠的是事件监听，而数据更新触发视图变化依靠的是响应式数据。vue内部通过数据劫持和发布订阅模式来实习响应式数据，具体如下。。。。
+
+**MVVM**
+
 Model  View  ViewModel
 
 `Model-View-ViewModel` ，` Model` 表示数据模型层。` view` 表示视图层，` ViewModel` 是` View` 和` Model` 层的桥梁。视图变化触发模型修改，用到的时**事件监听**。模型变化触发视图变化，用到的是**数据绑定**。
@@ -1465,8 +1475,6 @@ var app = new Vue({
 
 
 
-## 9.响应式原理（数据绑定实现原理）
-
 [好文](https://juejin.cn/post/6844903903822086151#heading-1)
 
 **数据劫持+观察者模式**
@@ -1477,7 +1485,7 @@ var app = new Vue({
 
 
 
-第三种说法：每当new一个vue实例时，内部通过initData初始化数据，然后调用Observer对数据进行观察。如果数据是对象类型，就会通过遍历对象属性分别调用defineReactive方法。在defineReactive先生成一个dep订阅器实例，然后调用Object.defineProperty()来拦截数据,添加set和get分别对获取数据设置数据进行拦截。在获取数据时，初始化相应的订阅者实例watcher添加到dep订阅器实例中，当设置数据时，依赖收集器通知相应的订阅者对象实例watcher去进行相应的更新操作等（重新渲染dom等）。
+第三种说法：每当new一个vue实例时，内部通过initData初始化数据，然后调用Observer对数据进行观察。如果数据是对象类型，就会通过遍历对象属性分别调用defineReactive方法。在defineReactive先生成一个dep订阅器实例，然后调用Object.defineProperty()来拦截数据,添加set和get分别对获取数据设置数据进行拦截。当vue内部解析模板数据时，会初始化相应的订阅者实例watcher，订阅者实例watcher有相应的更新视图的函数，watcher会访问相应的数据触发get拦截，在get拦截内watcher被添加到dep订阅器实例中。当设置数据时，触发相应的set拦截，依赖收集器通知相应的订阅者对象实例watcher去进行相应的更新操作等（重新渲染dom等）。
 
 Observer（观察者）：Observer观查传入的data对象。遍历data对象并通过defineProperty(obj,key,{get，set})去拦截每个数据的获取与设置
 
@@ -1648,6 +1656,12 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
 - 能更快获取到服务端数据，减少页面  loading 时间；
 - ssr  不支持 beforeMount 、mounted 钩子函数，所以放在 created 中有助于一致性；
+
+
+
+- 请问`methods`内的方法可以使用箭头函数么，会造成什么样的结果？
+
+是不可以使用箭头函数的，因为箭头函数的`this`是定义时就绑定的。在`vue`的内部，`methods`内每个方法的上下文是当前的`vm`组件实例，`methods[key].bind(vm)`，而如果使用使用箭头函数，函数的上下文就变成了父级的上下文，也就是`undefined`了，结果就是通过`undefined`访问任何变量都会报错。
 
 
 
@@ -1860,6 +1874,12 @@ v-for 和 v-if 不要在同一个标签中使用,因为解析时先解析 v-for 
 
 
 ## 18. computed 和 watch 
+
+1.原理：使用了发布订阅者模式。 computed内部初始化时会每个computed属性初始化一个 computed watcher,computed watcher内有一个dep发布者实例。当render函数执行时调用了computed属性的get,就会将此时的渲染watcher添加到dep发布者 实例中，即渲染watcher订阅了computed watcher的变化，当computed wather 更新时就会通过dep发布者实例去通知渲染wathcer去跟新。
+
+watch原理：也是使用发布订阅模式。watch内部会为每个watch属性初始化一个 user Watcher,将相应的handler函数传入watcher的回调函数中。当数据变化时，dep就会触发watcher去重新执行回调函数。
+
+
 
 computed是计算属性，依赖于**其他值**计算得到结果。并且会对结果进行缓存。只有当依赖的数据变化时才会重新计算更新缓存。如果一个数据依赖于其他数据就可以使用computed。
 

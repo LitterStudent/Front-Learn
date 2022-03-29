@@ -8,7 +8,6 @@ function MVVM (options) {
     Object.keys(this.data).forEach(function(key) {
         self.proxyKeys(key);
     });
-
     observe(this.data);
     new Compile(options.el, this);
 }

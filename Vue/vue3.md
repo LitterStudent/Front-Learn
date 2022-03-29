@@ -330,6 +330,14 @@ toRefs类似
 ```js
 const person = reactive(person);
 const person = toRefs(person);
+/*
+stateAsRefs 的类型:
+
+{
+  foo: Ref<number>,
+  bar: Ref<number>
+}
+*/
 return {
  person,
  ...person
@@ -917,7 +925,19 @@ setup(){
 
 
 
+## 19.vue3的优点
 
+1.更好的支持tree-shaking.例如在vue3中，全局api经过了重构，支持es模块的具名导出，未使用的全局api都不会被打包。例如Vue.nextTick,Vue.observable(用 Vue.reactive替换)
+
+2.所有会全局修改Vue行为的api 被迁移到了实例 app上。例如Vue.config,Vue.component,Vue.use,Vue.directive,Vue.mixins。所有其他不修改Vue行为的api都是具名导出，支持tree-shaking.看1.
+
+![image-20220329013328296](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220329013328296.png)
+
+3.新增了composition APi, 之前的options APi, 编写同一功能的代码会分散到 data,methods,computed等属性中，当一个组件实现的功能多时，代码会变得难阅读和维护，通过compositon将同一功能的代码编写到一起，利于阅读和维护，还能抽取出单独的hook,抽象化代码。
+
+4.使用proxy代替object.defineProperty()重构了响应式系统，可以拦截对象的更多操作，可以监听到数组的下标变化和对象的新增属性。
+
+5.对ts的支持更加友好。
 
 # 2.vite
 

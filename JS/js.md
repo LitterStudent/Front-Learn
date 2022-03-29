@@ -1869,7 +1869,11 @@ console.log('done')
 
  先执行script脚本，执行过程中遇到微任务加入微任务队列，遇到宏任务加入宏任务队列。当script脚本执行完也就是js执行栈为空的时候，就会去清空微任务队列。当微任务队列执行，再取出宏任务队列的第一个任务执行。直至两个队列的所有任务都执行完。
 
-宏任务：<script> setTimeout setInerval  requestAnimationFrame，,Ajax,**dom事件** 
+宏任务：<script> setTimeout setInerval, window.postMessage()  requestAnimationFrame，,Ajax,**dom事件**
+
+
+
+ 
 
 requestAnimationFrame：希望在下一次浏览器重绘之前执行动。浏览器重绘是在微任务结束之后，所以 requestAnimationFrame 会在微任务结束之后，宏任务开始之前执行。
 
@@ -1882,6 +1886,20 @@ requestAnimationFrame：希望在下一次浏览器重绘之前执行动。浏�
 
 
 
+
+window.postMessage的使用
+
+```js
+//A标签页： 通过window.open获取新打开标签引用，利用引用发送信息，
+let url = 'http://www.szfrich.com/item/gujianV1_972_0604?frm=r24&keyword=%E8%A5%BF%E5%AE%89%E5%8F%A4%E5%BB%BA&e_creative=54138046317&e_keywordid=335817185338&e_keywordid2=335817185338&bd_vid=10669063227872383295'
+var b = window.open(url)
+b.postMessage('nihao',url)
+
+// 新打开的标签页，监听信息。
+window.add('message', (e) => { console.log(e)} )
+```
+
+使用场景： 父窗体创建跨域iframe并发送信息
 
 
 
@@ -2039,11 +2057,19 @@ localStorage会被长久存储只要不手动删除。而sessIonStorage在页面
 
 ### 2 cookie
 
+**cookie用于保存浏览器在http通信过程中的会话状态，常用于会话管理，用户个性化，记录和追踪用户的行为。**
+
 cookie不是在window下，但也一起讲讲。
 
 cookie一般由服务器生成，可以设置过期时间。大小为4k.每次都会http请求都会携带在 header 中，对于请求性能影响。
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011451294.png?token=AP3MTU7UG5VM4OZBUPL7I5TBU4N36" alt="image-20211017001919692" style="zoom: 67%;" />
+
+### 3.Session
+
+session是保存在服务端的，当用户请求时服务端就会生成session并返回session_id 给到浏览器设置到cookie中。session保存在服务端，更安全，但是分布式部署需要session共享的机制。
+
+
 
 
 
@@ -2961,7 +2987,9 @@ exports {}  import {} fromxxx
 
 proxy的基本使用如下
 
-13种记不住的，记得 get set has delete getPrototype apply constructor 应该差不多了。
+13种记不住的，记得 get set has（拦截in） delete(拦截 delete) getPrototype apply constructor (拦截 new )应该差不多了。
+
+receiver是proxy代理对象本身
 
 ![image-20220105142230672](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220105142230672.png)
 

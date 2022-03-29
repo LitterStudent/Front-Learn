@@ -20,30 +20,27 @@
                 else{
                     return _curry.call(this,fn,len,..._args)
                 }
-
-                
             }
         }
         let _fn = curry(function(a,b,c,d,e){
                     console.log(a,b,c,d,e)
                 })
-                _fn(1,2,3)(4)(5)
+                // _fn(1,2,3)(4)(5)
         
     //实现add(1)(2)(3)(4)=10; 、 add(1)(1,2,3)(2)=9;
        function add(){
            const _args = [...arguments]
            function fn(){
-               _args.push(arguments)
+               _args.push(...arguments)
                return fn
             }
           fn.toString = function(){
-              return _args.reduce((sum,cur)=>{sum = sum+cur},0)
+              return _args.reduce((sum,cur)=>sum = sum+cur,0)
           }
           return fn
        }
        
-    //    console.log(add(1)(2).toString)
-
+       console.log(add(1)(2)(3).toString());
 
 //  
        function curry2 (fn,arr=[]){
@@ -58,11 +55,11 @@
            }
        }
 
-       function add(a,b,c,d,e){
-           return a+b+c+d+e;
-       }
-       console.log(curry2(add,[1])([2])([3,4,5]));
-       console.log(curry3(add,1,2,3)(4)(5));
+    //    function add(a,b,c,d,e){
+    //        return a+b+c+d+e;
+    //    }
+    //    console.log(curry2(add,[1])([2])([3,4,5]));
+    //    console.log(curry3(add,1,2,3)(4)(5));
     </script>
 </head>
 <body>

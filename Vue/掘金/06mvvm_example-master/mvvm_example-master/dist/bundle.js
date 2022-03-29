@@ -1,1 +1,378 @@
-!function(t){var e={};function n(o){if(e[o])return e[o].exports;var i=e[o]={i:o,l:!1,exports:{}};return t[o].call(i.exports,i,i.exports,n),i.l=!0,i.exports}n.m=t,n.c=e,n.d=function(t,e,o){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:o})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var o=Object.create(null);if(n.r(o),Object.defineProperty(o,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var i in t)n.d(o,i,function(e){return t[e]}.bind(null,i));return o},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=1)}([function(t,e){function n(t){this.data=t,this.walk(t)}function o(t,e){if(t&&"object"==typeof t)return new n(t)}function i(){this.watchers=[]}n.prototype={walk:function(t){var e=this;Object.keys(t).forEach(function(n){e.defineReactive(t,n,t[n])}),console.log("data...:",t)},defineReactive:function(t,e,n){var r=new i;o(n);Object.defineProperty(t,e,{enumerable:!0,configurable:!0,get:function(){return console.log("get...:",e),console.log("globalWatcher...:",i.globalWatcher),i.globalWatcher&&r.addWatcher(i.globalWatcher),n},set:function(t){t!==n&&(n=t,console.log("dep.notify...:",r.watchers.length),r.notify())}})}},i.prototype={addWatcher:function(t){this.watchers.push(t)},notify:function(){this.watchers.forEach(function(t){t.update()})}},i.globalWatcher=null,e.observe=o,e.Dep=i},function(t,e,n){window.MVVM=n(2)},function(t,e,n){var o=n(3),{observe:i}=n(0);function r(t){var e=this;this.data=t.data,this.methods=t.methods,Object.keys(this.data).forEach(function(t){e.proxyKeys(t)}),i(this.data),new o(t.el,this)}r.prototype={proxyKeys:function(t){var e=this;Object.defineProperty(this,t,{enumerable:!1,configurable:!0,get:function(){return e.data[t]},set:function(n){e.data[t]=n}})}},t.exports=r},function(t,e,n){var o=n(4);function i(t,e){this.vm=e,this.el=document.querySelector(t),this.fragment=null,this.init()}i.prototype={init:function(){this.el?(this.fragment=this.nodeToFragment(this.el),this.compileElement(this.fragment),this.el.appendChild(this.fragment)):console.log("Dom元素不存在")},nodeToFragment:function(t){for(var e=document.createDocumentFragment(),n=t.firstChild;n;)e.appendChild(n),n=t.firstChild;return e},compileElement:function(t){var e=t.childNodes,n=this;[].slice.call(e).forEach(function(t){var e=/\{\{(.*)\}\}/,o=t.textContent;n.isElementNode(t)?n.compile(t):n.isTextNode(t)&&e.test(o)&&n.compileText(t,e.exec(o)[1]),t.childNodes&&t.childNodes.length&&n.compileElement(t)})},compile:function(t){var e=t.attributes,n=this;Array.prototype.forEach.call(e,function(e){var o=e.name;if(n.isDirective(o)){var i=e.value,r=o.substring(2);n.isEventDirective(r)?n.compileEvent(t,n.vm,i,r):n.compileModel(t,n.vm,i,r),t.removeAttribute(o)}})},compileText:function(t,e){var n=this,i=this.vm[e];this.updateText(t,i),console.log("exp...:",e),new o(this.vm,e,function(e){n.updateText(t,e)})},compileEvent:function(t,e,n,o){var i=o.split(":")[1],r=e.methods&&e.methods[n];i&&r&&t.addEventListener(i,r.bind(e),!1)},compileModel:function(t,e,n,i){var r=this,c=this.vm[n];this.modelUpdater(t,c),new o(this.vm,n,function(e){r.modelUpdater(t,e)}),t.addEventListener("input",function(t){var e=t.target.value;c!==e&&(r.vm[n]=e,c=e)})},updateText:function(t,e){t.textContent=void 0===e?"":e},modelUpdater:function(t,e,n){t.value=void 0===e?"":e},isDirective:function(t){return 0==t.indexOf("v-")},isEventDirective:function(t){return 0===t.indexOf("on:")},isElementNode:function(t){return 1==t.nodeType},isTextNode:function(t){return 3==t.nodeType}},t.exports=i},function(t,e,n){var{Dep:o}=n(0);function i(t,e,n){this.vm=t,this.exp=e,this.cb=n,this.value=this.get()}i.prototype={update:function(){this.run()},run:function(){var t=this.vm.data[this.exp],e=this.value;t!==e&&(this.value=t,this.cb.call(this.vm,t,e))},get:function(){console.log("Watcher...:",this.exp),o.globalWatcher=this;var t=this.vm.data[this.exp];return o.globalWatcher=null,t}},t.exports=i}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/compile.js":
+/*!************************!*\
+  !*** ./src/compile.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Watcher = __webpack_require__(/*! ./watcher */ "./src/watcher.js")
+function Compile(el, vm) {
+    this.vm = vm;
+    this.el = document.querySelector(el);
+    this.fragment = null;
+    this.init();
+}
+
+Compile.prototype = {
+    init: function () {
+        if (this.el) {
+            this.fragment = this.nodeToFragment(this.el);
+            this.compileElement(this.fragment);
+            this.el.appendChild(this.fragment);
+        } else {
+            console.log('Dom元素不存在');
+        }
+    },
+    nodeToFragment: function (el) {
+        var fragment = document.createDocumentFragment();
+        var child = el.firstChild;
+        while (child) {
+            // 将Dom元素移入fragment中
+            fragment.appendChild(child);
+            child = el.firstChild
+        }
+        return fragment;
+    },
+    compileElement: function (el) {
+        var childNodes = el.childNodes;
+        var self = this;
+        [].slice.call(childNodes).forEach(function(node) {
+            var reg = /\{\{(.*)\}\}/;
+            var text = node.textContent;
+
+            if (self.isElementNode(node)) {
+                // 如果是普通节点  
+                self.compile(node);
+            } else if (self.isTextNode(node) && reg.test(text)) {
+                // 如果是文本节点且有插值语法
+                self.compileText(node, reg.exec(text)[1]);
+            }
+
+            if (node.childNodes && node.childNodes.length) {
+                self.compileElement(node);
+            }
+        });
+    },
+    compile: function(node) {
+        var nodeAttrs = node.attributes;
+        var self = this;
+        Array.prototype.forEach.call(nodeAttrs, function(attr) {
+            var attrName = attr.name; // v-on:click v-model
+            if (self.isDirective(attrName)) {
+                var exp = attr.value;  // clickBtn title
+                var dir = attrName.substring(2); // on:click model
+                if (self.isEventDirective(dir)) {  // 事件指令
+                    self.compileEvent(node, self.vm, exp, dir);
+                } else {  // v-model 指令
+                    self.compileModel(node, self.vm, exp, dir);
+                }
+                node.removeAttribute(attrName);
+            }
+        });
+    },
+    compileText: function(node, exp) {
+        var self = this;
+        var initText = this.vm[exp];
+        this.updateText(node, initText);
+        new Watcher(this.vm, exp, function (value) {
+            self.updateText(node, value);
+        });
+    },
+    compileEvent: function (node, vm, exp, dir) { // exp  v-on:click
+        var eventType = dir.split(':')[1]; // click
+        var cb = vm.methods && vm.methods[exp]; 
+
+        if (eventType && cb) {
+            node.addEventListener(eventType, cb.bind(vm), false);
+        }
+    },
+    compileModel: function (node, vm, exp, dir) {//exp: title , dir: model
+        var self = this;
+        var val = this.vm[exp];
+        this.modelUpdater(node, val);
+        // 依赖
+        new Watcher(this.vm, exp, function (value) {
+            self.modelUpdater(node, value);
+        });
+
+        node.addEventListener('input', function(e) {
+            var newValue = e.target.value;
+            if (val === newValue) {
+                return;
+            }
+            self.vm[exp] = newValue;
+            val = newValue;
+        });
+    },
+    updateText: function (node, value) {
+        node.textContent = typeof value == 'undefined' ? '' : value;
+    },
+    modelUpdater: function(node, value, oldValue) {
+        node.value = typeof value == 'undefined' ? '' : value;
+    },
+    isDirective: function(attr) {
+        return attr.indexOf('v-') == 0;
+    },
+    isEventDirective: function(dir) {
+        return dir.indexOf('on:') === 0;
+    },
+    isElementNode: function (node) {
+        return node.nodeType == 1;
+    },
+    isTextNode: function(node) {
+        return node.nodeType == 3;
+    }
+}
+module.exports = Compile;
+
+/***/ }),
+
+/***/ "./src/index.js":
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+window.MVVM = __webpack_require__(/*! ./mvvm */ "./src/mvvm.js")
+
+/***/ }),
+
+/***/ "./src/mvvm.js":
+/*!*********************!*\
+  !*** ./src/mvvm.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Compile = __webpack_require__(/*! ./compile */ "./src/compile.js")
+var {observe} = __webpack_require__(/*! ./observer */ "./src/observer.js")
+function MVVM (options) {
+    var self = this;
+    this.data = options.data;
+    this.methods = options.methods;
+
+    Object.keys(this.data).forEach(function(key) {
+        self.proxyKeys(key);
+    });
+
+    observe(this.data);
+    new Compile(options.el, this);
+}
+
+MVVM.prototype = {
+    proxyKeys: function (key) {
+        var self = this;
+        Object.defineProperty(this, key, {
+            enumerable: false,
+            configurable: true,
+            get: function getter () {
+                return self.data[key];
+            },
+            set: function setter (newVal) {
+                self.data[key] = newVal;
+            }
+        });
+    }
+}
+module.exports = MVVM;
+
+/***/ }),
+
+/***/ "./src/observer.js":
+/*!*************************!*\
+  !*** ./src/observer.js ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function Observer(data) {
+    this.data = data;
+    this.walk(data);
+}
+
+Observer.prototype = {
+    walk: function(data) {
+        var self = this;
+        Object.keys(data).forEach(function(key) {
+            self.defineReactive(data, key, data[key]);
+        });
+    },
+    defineReactive: function(data, key, val) {
+        var dep = new Dep();
+        var childObj = observe(val);
+        Object.defineProperty(data, key, {
+            enumerable: true,
+            configurable: true,
+            get: function getter () {
+                if (Dep.target) {
+                    dep.addSub(Dep.target);
+                }
+                return val;
+            },
+            set: function setter (newVal) {
+                if (newVal === val) {
+                    return;
+                }
+                val = newVal;
+                dep.notify();
+            }
+        });
+    }
+};
+
+function observe(value, vm) {
+    if (!value || typeof value !== 'object') {
+        return;
+    }
+    return new Observer(value);
+};
+
+function Dep () {
+    this.subs = [];
+}
+Dep.prototype = {
+    addSub: function(sub) {
+        this.subs.push(sub);
+    },
+    notify: function() {
+        this.subs.forEach(function(sub) {
+            sub.update();
+        });
+    }
+};
+Dep.target = null;
+
+exports.observe = observe;
+exports.Dep = Dep;
+
+/***/ }),
+
+/***/ "./src/watcher.js":
+/*!************************!*\
+  !*** ./src/watcher.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var {Dep} = __webpack_require__(/*! ./observer */ "./src/observer.js")
+function Watcher(vm, exp, cb) {
+    this.vm = vm;
+    this.exp = exp;
+    this.cb = cb;
+    this.value = this.get();  // 将自己添加到订阅器的操作
+}
+
+Watcher.prototype = {
+    update: function() {
+        this.run();
+    },
+    run: function() {
+        var value = this.vm.data[this.exp];
+        var oldVal = this.value;
+        if (value !== oldVal) {
+            this.value = value;
+            this.cb.call(this.vm, value, oldVal);
+        }
+    },
+    get: function() {
+        Dep.target = this;  // 缓存自己
+        var value = this.vm.data[this.exp]  // 强制执行监听器里的get函数
+        Dep.target = null;  // 释放自己
+        return value;
+    }
+};
+module.exports = Watcher;
+
+/***/ })
+
+/******/ });
+//# sourceMappingURL=bundle.js.map

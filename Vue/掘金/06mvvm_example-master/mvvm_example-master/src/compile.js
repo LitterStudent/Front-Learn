@@ -87,7 +87,8 @@ Compile.prototype = {
         new Watcher(this.vm, exp, function (value) {
             self.modelUpdater(node, value);
         });
-
+    
+        // 视图改变数据 通过事件监听
         node.addEventListener('input', function(e) {
             var newValue = e.target.value;
             if (val === newValue) {
