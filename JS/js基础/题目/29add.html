@@ -110,6 +110,7 @@
     <li></li>
 </body>
 <script>
+//  函数柯里化其实就是分次接收参数，分次生成执行函数
 // add(1)(2)(3)....
 
 function add(...args){
@@ -123,7 +124,6 @@ function add(...args){
         // 通过作用域链攀升获得变量 allArgs
         return allArgs.reduce((sum,value)=>{return sum+value},0)
     }
-    fn.dd = 'dd'
     return fn;
 }
 let a = add(1)(2)(3)

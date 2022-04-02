@@ -3659,6 +3659,8 @@ console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fs
 
 ### 1.property和attributes的区别 
 
+attributes的作用是设置与之对应的 property的初始值。
+
 [haowen](https://www.jb51.net/article/50686.htm)
 
  attributes是dom元素节点上的一个属性，是一个类数组容器，存放了html的中标签的属性。 

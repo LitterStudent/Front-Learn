@@ -1,6 +1,6 @@
 ## 	1.常见的块级元素，行内元素。
 
-1. 块级元素：div   ul  ol li  p form  table  header  aside footer  audio video 独占一行，可以设置宽高，内外边距
+1.  块级元素：div   ul  ol li  p form  table  header  aside footer  audio video 独占一行，可以设置宽高，内外边距
 2. 行内元素：span  a  strong  em 粗体 i big samll 
 3. 行内块元素：可以设置宽高，但是不会换行。 input  img button textarea label 
 
@@ -224,6 +224,8 @@ hover理论上任何元素都可以使用的，focus多是针对表单的，如i
 
 
 ## 11Flex布局。
+
+弹性布局，可以更加简便，灵活的实现各种页面布局。
 
 ### 1.父容器属性
 
