@@ -12,7 +12,9 @@ JS严格意义上分为：语言标准（ESMAScript）+宿主环境
 
 ### 1.值类型和引用类型
 
-值类型存储在栈中，引用类型存储在堆中。这样设计是因为引用类型所占空间大，存储在堆中能提高性能。
+存储方式不同，值类型存储在栈中，占据空间的大小固定，栈是存储基本数据类型和执行代码的空间。
+
+引用类型存储在堆中。这样设计是因为引用类型所占空间大，存储在堆中能提高性能。引用数据类型在栈中存放了堆中数据实体的起始地址。
 
 常见的值类型： Number,String,Boolean,Undefined,Null,Symbol,BigInt
 
@@ -22,9 +24,13 @@ undefined表示未初始化，变量通过 var声明后不赋值默认就未unde
 
 #### 2.类型的判断
 
-typeof可以判断出所有的值类型。Number,Undefined,String,Symbol,BigInt,Boolean.除了Null. 能判断出函数。
+1.typeof可以判断出所有的值类型。Number,Undefined,String,Symbol,BigInt,Boolean.除了Null. 能判断出函数。
 
-instanceof 可以判断出引用类型。 [] instanceOf Array
+2.instanceof 可以判断出引用类型。 [] instanceOf Array 
+
+原理： 通过左值攀升其原型链直到获取的值等于右值的prototype.
+
+3.Object.prototype.toString.call():  该方法适用于所有类型的判断。该方法表示返回一个对象类型的字符串，通过call改变this指针指向不同的数据类型上，返回不同的结果。	
 
 
 
@@ -60,7 +66,7 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 
 在进行比较时，这两个操作符会遵循如下规则。
 
- null 和undefined 相等。
+ **null 和undefined 相等。**
 
  null 和undefined 不能转换为其他类型的值再进行比较。
 
@@ -76,7 +82,7 @@ instanceof 可以判断出引用类型。 [] instanceOf Array
 
 类数组： 具有length属性，但是没有数组方法。 
 
-常见的类数组： argument,dom查询返回的dom元素列表
+常见的类数组： argument,dom查询返回的dom元素列表 nodeList, HtmlCollection
 
 类数组转换成数组 ： Array.prototype.slice.call(arguments)
 
@@ -333,7 +339,7 @@ includes(str):包含str就返回true.
 
 trim():创建字符串的一个副本，删除前、后所有空格符，再返回结果.不改变原字符串。
 
-toLocaleLowerCase()：小写
+toLocaleLowerCase()：小写	
 
 toLocaleUpperCase()：大写。
 
@@ -384,9 +390,9 @@ Number()
 
 数值，boolean,你懂的。
 
-Number(null) -> 0
+**Number(null) -> 0**
 
-undefined  -> NaN
+**undefined  -> NaN**
 
 string 字符串： 有数字转数字，无则NaN.
 
@@ -400,7 +406,7 @@ parseFlot():
 
 **toFixed()** 方法可把 Number 四舍五入为指定小数位数的数字。
 
-Math.round() 方法可把一个数字舍入为最接近的整数。
+Math.round() 方法可把一个数字舍入为最接近的整数。四舍五入。
 
 toPrecision() 方法可在对象的值超出指定位数时将其转换为指数计数法
 
@@ -432,7 +438,7 @@ Object.getOwnPropertyDescriptors(Obj)  //会返回同时包含常规和符号属
 
 
 
-14. weakSet 和 weakMap
+#### 14.weakSet 和 weakMap
 
 WeakSet 中的对象都是弱引用，即垃圾回收机制不考虑 WeakSet 对该对象的引用.
 
@@ -469,6 +475,8 @@ document.getElementById('logo').addEventListener('click', function() {
 ## 0.2浏览器
 
 ### 1.名词解释？
+
+​	启动一个程序时，操作系统会为该程序分配内存，用于存放代码、运行中的数据和一个执行任务的主线程，我们把这样的一个运行环境称为进程。而线程是依附于进程的，进程可以采用多线程来提高运算效率。进程和线程之间的关系有1.进程中任一一个线程出错都会导致进程崩溃。 2.线程之间共享数据 3.不同进程之间的内容相互隔离。
 
 进程：**进程是cpu分配资源的最小单位。一个运行的程序对应一个进程，不同进程间的内容相互隔离。**一个进程包括运行中的程序和程序使用到的内存和系统资源。
 
@@ -640,7 +648,7 @@ dom从页面的角度看是生成页面的基础数据结构。
 
 如果在解析dom树时发现了js脚本，就会停止dom树的解析，转而先加载并执行js脚本,因为js脚本可能修改dom树的结构。但是Chrome做了优化，会做预解析操作，渲染引擎收到字节流后，会开启一个预解析线程，解析html中需要加载的js,css资源，然后提前加载。而js引擎在解析js之前是不知道js是否操作了cssom的，所以渲染引擎会先加载解析css，再执行js脚本。
 
-所以综上所述，js脚本会阻塞html的解析，而样式文件会阻塞js脚本的执行。
+所以综上所述，**js脚本会阻塞html的解析，而样式文件会阻塞js脚本的执行。**
 
 
 
@@ -1160,6 +1168,14 @@ js异步编程的一种解决方案。~~将执行异步任务的代码和处理�
 2.将异步回调的控制权转移到了promise的手中而不是像封装完ajax第三方库的手中。
 
 3.一个promise的状态已经确定下来后，就不可改变。
+
+4.promise.then内的回调函数会被添加微任务队列当中，catch,finally同理
+
+
+
+缺点： 1.不设置回调函数的话，错误不会被外界捕获
+
+​			2.promise无法取消，一旦创建就会立即执行，无法中途取消。
 
 
 
@@ -1967,20 +1983,16 @@ document.querySelector('input').addEventListener('input',function(e){
 所以一般都这样解决，或者通过箭头函数来获取父级上下文的this
 
 ```js
-var myObj = {
-  name : " 极客时间 ", 
-  showThis: function(){
-    console.log(this)
-    var self = this
-    function bar(){
-      self.name = " 极客邦 "
-    }
-    bar()
-  }
-}
-myObj.showThis()
-console.log(myObj.name)
-console.log(window.name)
+        let obj = {
+            getThis: function () {
+                return () => {
+                    console.log(this);
+                }
+            }
+        }
+        obj.getThis()(); //obj
+        let o = obj.getThis() 
+        o()// obj
 ```
 
 
@@ -1988,6 +2000,8 @@ console.log(window.name)
 在标准函数和箭头函数中有不同的指向。
 
 在标准函数中，this 引用的是把函数当成方法调用的上下文对象
+
+
 
 
 
@@ -2012,7 +2026,7 @@ console.log(window.name)
 ## 8 函数
 
 1. 普通函数（非箭头函数）都有 prototype（原型）,length(形参个数)
-2. 在严格模式下，直接调用函数，函数内的this不会指向windows。二是undeined.
+2. 在严格模式下，直接调用函数，函数内的this不会指向windows。而是undeined.
 
 函数也是对象，也可以拥有属性和方法。
 
@@ -2055,7 +2069,7 @@ localStorage会被长久存储只要不手动删除。而sessIonStorage在页面
 
 一个源对应一个sessionStorage,localStorage.
 
-### 2 cookie
+### 2 cookie	
 
 **cookie用于保存浏览器在http通信过程中的会话状态，常用于会话管理，用户个性化，记录和追踪用户的行为。**
 
@@ -2064,6 +2078,18 @@ cookie不是在window下，但也一起讲讲。
 cookie一般由服务器生成，可以设置过期时间。大小为4k.每次都会http请求都会携带在 header 中，对于请求性能影响。
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011451294.png?token=AP3MTU7UG5VM4OZBUPL7I5TBU4N36" alt="image-20211017001919692" style="zoom: 67%;" />
+
+cookie和sessionStorage和localStorage的区别？
+
+都是浏览器存储，大小不同，cookie是约为4k，sessionStorage和locccalStorage空间较大些，约为5M.
+
+cookie是由服务器写入，而sessionStorage和localStorage一般由前端写入。
+
+生命周期不同，cookie生命周期由服务器写入，sessionStorage随着页面的关闭而清除，localStorage则需要手动清除，
+
+前端给后端发送请求时自动携带cookie，而S和L则不会
+
+cookie一般用于存储用户登录验证信息和token等，L用户存储一些不易变的信息，减轻服务器压力，S可以用来检测用户是否刷新页面，如回复音乐播放器进度条
 
 ### 3.Session
 
@@ -2133,6 +2159,20 @@ console.log(bar.getName())
 
 ![image-20211213225403642](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211213225403642.png)
 
+常见导致内存泄露的因素：
+
+1.意外的全局变量
+
+2.闭包
+
+3.dom引用
+
+4.未清空的定时器
+
+5.未销毁的事件监听
+
+
+
 ## 14 隐式转换和显示转换
 
 一般非基础类型，进行转换时都会调用 valueOf,如果valueOf无法返回基础类型则调用toString
@@ -2159,15 +2199,9 @@ Onclick 和 addEventListener() 默认都是冒泡阶段执行事件，但是addE
 
 DOM事件对象
 
-event. target
+event. target: 返回触发事件的元素
 
-返回触发事件的元素
-
-
-
-event. currentTarget
-
-返回绑定事件的元素
+event. currentTarget: 返回绑定事件的元素
 
 在DOM合规的浏览器中，event 对象是传给事件处理程序的唯一参数。不管以哪种方式（DOM0或DOM2）指定事件处理程序，都会传入这个event 对象。
 
@@ -2238,8 +2272,6 @@ console.log("Body clicked");
 
 
 
-
-
 执行事件回调的对象是 相应的元素节点。
 
 ```javascript
@@ -2280,7 +2312,13 @@ document.querySelector('input').addEventListener('input',(e)=>{
 
 
 
-## 17如果一个构造函数，bind了一个对象，用这个构造函数创建出的实例会继承这个对象的属性吗？为什么？
+## 17. bind,call,apply
+
+1.bind（this,arg1,arg2,arg3...）: 返回一个未执行的函数
+
+2.call(this,arg1,arg2,arg3...)apply(this,argArray):返回一个已经执行的函数结果
+
+如果一个构造函数，bind了一个对象，用这个构造函数创建出的实例会继承这个对象的属性吗？为什么？
 
 不会继承，因为根据 this 绑定四大规则，new 绑定的优先级高于 bind 显示绑定，通过 new 进行构造函数调用时，会创建一个新对象，这个新对象会代替 bind 的对象绑定，作为此函数的 this，并且在此函数没有返回对象的情况下，返回这个新建的对象
 
@@ -2364,6 +2402,25 @@ M2.ShowA() // [ 'cat', 'AA', 'DD' ] // M1 和 M2 共享一份拷贝实例 esmodu
 
 
 common.js的加载机制：**CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值**
+
+```js
+// lib.js
+var counter = 3;
+function incCounter() {
+  counter++;
+}
+module.exports = {
+  counter: counter,
+  incCounter: incCounter,
+};
+
+// main.js
+var mod = require('./lib');
+
+console.log(mod.counter);  // 3
+mod.incCounter();
+console.log(mod.counter); // 3
+```
 
 
 
@@ -2554,6 +2611,74 @@ import './y';
 
 ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令`import`，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的`import`有点像 Unix 系统的“符号连接”，原始值变了，`import`加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。
 
+
+
+```js
+// commonJS 1 直接输出值，会被缓存
+// lib.js
+var counter = 3;
+function incCounter() {
+  counter++;
+}
+module.exports = {
+  counter: counter,
+  incCounter: incCounter,
+};
+
+// main.js
+var mod = require('./lib');
+
+console.log(mod.counter);  // 3
+mod.incCounter();
+console.log(mod.counter); // 3
+```
+
+```js
+// commonJS 2以函数的形式返回，可以看到修改后的值
+// lib.js
+var counter = 3;
+function incCounter() {
+  counter++;
+}
+module.exports = {
+  get counter() {
+    return counter
+  },
+  incCounter: incCounter,
+};
+
+//$ node main.js
+//3
+//4
+```
+
+```javascript
+// lib.js 可以直接看到修改后值
+export let counter = 3;
+export function incCounter() {
+  counter++;
+}
+
+// main.js
+import { counter, incCounter } from './lib';
+console.log(counter); // 3
+incCounter();
+console.log(counter); // 4  es6Module不会缓存结果，而是动态地去加载值
+```
+
+```js
+// lib.js
+export let obj = {};
+
+// main.js
+import { obj } from './lib';
+
+obj.prop = 123; // OK
+obj = {}; // TypeError 修改后报错
+```
+
+
+
 **② CommonJS 模块是运行时同步加载，.ES6 模块通过静态分析是编译时输出接口**。
 
 因为common.js加载的是一个对象（即module.exporys属性），该对象只有在脚本运行完才会生成。
@@ -2648,7 +2773,7 @@ import submodule from 'es-module-package/submodule';
 
 ## 22 循环
 
-1.for (iterator of arr) ：ES6新增的语法，for..of 循环首先向遍历的对象请求一个迭代器对象，通过调用迭代器对象的next()方法来遍历所有返回值。只能用于可迭代的对象，即实现了迭代接口的对象。obj[Symbol.iterator]
+1.for (iterator of arr) ：ES6新增的语法，for..of 循环首先向遍历的对象请求一个迭代器对象，通过调用迭代器对象的next()方法来遍历所有返回值。只能用于可迭代的对象，即实现了迭代接口的对象。obj[Symbol.iterator]。如，Array, Map, Set, String, Arguments
 
 2.for (key in obj ) 遍历对象及其原型链获取可枚举的属性，当对象的属性描述符 enumerable: false 时，该属性不可遍历。一般用该于遍历对象，不用于遍历数组，而且遍历出的顺序是不确定的。要相遍历出只在对象上的属性( 不遍历原型 )可以调用 **Object.prototype.hasOwnProperty.call(obj,key)**,或**Object.keys(obj)**:返回对象所以所有可枚举属性,
 
@@ -3657,6 +3782,10 @@ console.log(url) //"http://www.cnblogs.com?next=http%3A%2F%2Fwww.cnblogs.com%2Fs
 
 
 
+
+
+
+
 ### 1.property和attributes的区别 
 
 attributes的作用是设置与之对应的 property的初始值。
@@ -3709,14 +3838,150 @@ console.log(in1)
 
 
 
+监听滚动事件
+
+```
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  #dd {
+    height: 500px;
+    overflow: scroll;
+  }
+</style>
+
+<body>
+  <ul id="dd">
+    <li>1i</li>
+    <li>2i</li>
+    <li>3i</li>
+    <li>4i</li>
+    <li>5i</li>
+    <li>6i</li>
+    <li>7i</li>
+    <li>8i</li>
+    <li>9i</li>
+    <li>10i</li>
+    <li>11i</li>
+    <li>12i</li>
+    <li>13i</li>
+    <li>14i</li>
+    <li>15i</li>
+    <li>16i</li>
+    <li>17i</li>
+    <li>18i</li>
+    <li>19i</li>
+    <li>20i</li>
+    <li>21i</li>
+    <li>22i</li>
+    <li>23i</li>
+    <li>24i</li>
+    <li>25i</li>
+    <li>26i</li>
+    <li>27i</li>
+    <li>28i</li>
+    <li>29i</li>
+    <li>30i</li>
+    <li>31i</li>
+    <li>32i</li>
+    <li>33i</li>
+    <li>34i</li>
+    <li>35i</li>
+    <li>36i</li>
+    <li>37i</li>
+    <li>38i</li>
+    <li>39i</li>
+    <li>40i</li>
+    <li>41i</li>
+    <li>42i</li>
+    <li>43i</li>
+    <li>44i</li>
+    <li>45i</li>
+    <li>46i</li>
+    <li>47i</li>
+    <li>48i</li>
+    <li>49i</li>
+    <li>50i</li>
+    <li>51i</li>
+    <li>52i</li>
+    <li>53i</li>
+    <li>54i</li>
+    <li>55i</li>
+    <li>56i</li>
+    <li>57i</li>
+    <li>58i</li>
+    <li>59i</li>
+    <li>60i</li>
+    <li>61i</li>
+    <li>62i</li>
+    <li>63i</li>
+    <li>64i</li>
+    <li>65i</li>
+    <li>66i</li>
+    <li>67i</li>
+    <li>68i</li>
+    <li>69i</li>
+    <li>70i</li>
+    <li>71i</li>
+    <li>72i</li>
+    <li>73i</li>
+    <li>74i</li>
+    <li>75i</li>
+    <li>76i</li>
+    <li>77i</li>
+    <li>78i</li>
+    <li>79i</li>
+    <li>80i</li>
+    <li>81i</li>
+    <li>82i</li>
+    <li>83i</li>
+    <li>84i</li>
+    <li>85i</li>
+    <li>86i</li>
+    <li>87i</li>
+    <li>88i</li>
+    <li>89i</li>
+    <li>90i</li>
+    <li>91i</li>
+    <li>92i</li>
+    <li>93i</li>
+    <li>94i</li>
+    <li>95i</li>
+    <li>96i</li>
+    <li>97i</li>
+    <li>98i</li>
+    <li>99i</li>
+    <li>100i</li>
+  </ul>
+  <script>
+    let ul = document.querySelector('#dd')
+    ul.addEventListener('scroll', (e) => {
+      console.log(e.target.scrollTop);
+    })
+  </script>
+</body>
+
+</html>
+```
+
+
+
 ### 2.常见dom的方法
 
 ```js
 //获取节点
 document.getElementById('id')
-document.getElementsByClassName
-document.getElementsByTagName
-document.querySelector
+document.getElementsByClassName // 返回 Htmlcollection 类数组
+document.getElementsByTagName// 返回 Htmlcollection 类数组
+document.querySelector       // 只返回第一个符合条件的元素
+document.querySelectorAll() // 返回 nodeList 类数组
 
 //获取父，子节点。
 node.childNodes
@@ -3726,6 +3991,67 @@ node.parentNode
 node.appendChild(node2)
 //删除节点
 node.removeChild(node2)
+```
+
+
+
+```html
+<body>
+    <div class="a">1</div>
+    <div class="a">2</div>
+    <script>
+        const a = document.querySelectorAll('.a')  //返回 NodeList 类数组
+        console.log(a);
+    </script>
+</body>
+```
+
+![image-20220629171914845](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220629171914845.png)
+
+```html
+<body>
+    <div class="a">
+     <div class="cc">111</div>
+    </div>
+
+    <script>
+        console.log(document.getElementsByClassName('a')[0].childNodes);//nodelist 类数组
+        console.log(document.getElementsByClassName('a')[0].children);//Htmlcollection 类数组
+    </script>
+</body>	
+```
+
+![image-20220629173155983](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220629173155983.png)
+
+```html
+// 例子
+<body>
+    <div class="a">
+        <div class="cc">111</div>
+        <div class="cc">222</div>
+        <div id="xiao">333</div>
+        <p>hhh</p>
+    </div>
+
+    <script>
+        const el1 = document.querySelector('.cc') //获取第一个类名为 cc的元素
+        console.log(el1);
+        const el2 = document.getElementsByClassName('cc') // 获取所有类名为 cc 的元素，为HTMLCollection集合
+        console.log(el2);
+        const el3 = document.getElementById('xiao') // 获取id为 xiao的一个元素
+        console.log(el3);
+        const el4 = document.querySelector('#xiao') // 获取id为 xiao的一个元素
+        console.log(el4);
+        const el5 = document.querySelector('div')
+        console.log(el5);
+        const el6 = document.getElementsByTagName('div')
+        console.log(el6);
+        const el7 = document.querySelectorAll('div')
+        console.log(el7);
+        const el8 = document.querySelectorAll('.cc')
+        console.log(el8);
+    </script>
+</body>
 ```
 
 

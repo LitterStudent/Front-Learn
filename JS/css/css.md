@@ -4,11 +4,15 @@
 2. 行内元素：span  a  strong  em 粗体 i big samll 
 3. 行内块元素：可以设置宽高，但是不会换行。 input  img button textarea label 
 
+## 2. CSS3盒模型
 
-
-## 2标准盒模型和IE盒子模型
+标准盒模型和IE盒子模型
 
 box-sizing : content-box   border-box
+
+其中， **content-box 是默认值。**
+
+但是我们设置的时候经常使用 border-box, 从而使得 width = content + padding + border
 
 标准盒子模型 ： content-box  设置的width 为盒子content的宽度，盒子的实际宽度= width+padding+border+margin
 
@@ -30,7 +34,7 @@ margin为负值时： margin-left margin-top 为负值时，元素会向上或�
 
   通配符选择器(*), 属性选择器（a[rel='external']）,伪类选择器（a:hover,li:nth-child）
 
-可以继承的属性： font-size,font-family,color,line-height,
+可以继承的属性： font-size,font-family,color,line-height,， text-align
 
 **元素的line-height如果没有设置,直接继承父元素的line-height。**
 
@@ -84,11 +88,13 @@ span:nth-child(-n+3)
 
 ## 5 posintion
 
-absolute和relative 会脱离文档标准流。
+absolute和fixed会脱离文档标准流。
 
 `static`：默认值。没有定位，元素出现在正常的流中（忽略 `top`, `bottom`, `left`, `right`、`z-index` 声明）。
 
 `relative`（相对定位）： 生成相对定位的元素，定位原点是元素本身所在的位置；
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220709013625316.png" alt="image-20220709013625316" style="zoom:50%;" />
 
 `absolute`（绝对定位）：生成绝对定位的元素，相对于不是static 定位的第一个祖先元素进行定位。使用absolute定位时，添加top,bottom,left,right都为0可以使得元素铺满父元素。
 
@@ -176,7 +182,7 @@ display:block;
 
 
 
-普通伪类：  :first-child, :last-child,  :only-child:匹配没有任何兄弟元素的元素 
+普通伪类：  :first-child指定其第一个子元素, :last-child指定其最后一个子元素	,  :only-child:匹配没有任何兄弟元素的元素 
 
 用户行为伪类选择器：link :visited :focus :hover :actived.
 
@@ -225,7 +231,9 @@ hover理论上任何元素都可以使用的，focus多是针对表单的，如i
 
 ## 11Flex布局。
 
-弹性布局，可以更加简便，灵活的实现各种页面布局。
+弹性布局，相对于以前的 display + float + position 的布局模式，弹性布局可以更加简便，灵活的实现各种页面布局。
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220702120240695.png" alt="image-20220702120240695" style="zoom: 67%;" />
 
 ### 1.父容器属性
 
@@ -297,6 +305,20 @@ align-self属性允许单个项目有与其他项目不一样的对齐方式，�
 
 ## 12 px 和 em 和 rem
 
+物理像素：每个屏幕设备生产后不可改变的像素值 dp。
+
+逻辑像素：与之对应的用于表示图片尺寸，可随时改变 dpi。
+
+设备像素比：dpr =  dp / dpi 
+
+例子： 两个分辨率分别为 1920 * 1080 A和 960 * 540 B物理像素 且大小相同的屏幕，分别要显示一张实际物理像素为 300 * 300 的图片， 为了使得图片在这两块屏幕的显示大小相同，应该使得 分辨率为 1920 * 1080 A的屏幕的 设备像素比 小些， 设dpr为0.5, 
+
+则 1dpi = 2 dp. 这样图片的一个像素在 屏幕A内占两个格子，在B内占一个格子，就可显示同样大小。
+
+查看 dpr
+
+![image-20220701225842262](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220701225842262.png)
+
 [好文](https://juejin.cn/post/6844904013322944525)
 
 px是css的像素，1px代表css中的一个像素点。
@@ -309,7 +331,7 @@ em 是一个相对单位，当在元素的 font-size中使用时 如 2em 是相�
 
 
 
-rem和em一样也是相对长度。不过rem是基于html的font-size.用于自适应网站。
+rem和em一样也是相对长度。不过rem是基于html的font-size.用于移动端响应式网站。
 
 ```css
  vw与rem相结合实现适配
@@ -362,6 +384,12 @@ document.body.clientHeight 为文档高度.
 
 这段代码的意思是，让viewport的宽度等于物理设备上的真实分辨率，不允许用户缩放。一都主流的web app都是这么设置的，它的作用其实是故意舍弃viewport，不缩放页面，这样dpi肯定和设备上的真实分辨率是一样的，不做任何缩放，网页会因此显得更高细腻。玩ps的同学应该都知道，当你将一张1000 * 1000的图片直接缩放至500 * 500分变成什么样，对吧？图片的失真一定逃不掉。
 ```
+
+## 12.6响应式实践
+
+使用viewport和没使用viewport在移动端上的效果：	
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220701181402144.png" alt="image-20220701181402144" style="zoom:50%;" />
 
 
 
@@ -437,7 +465,7 @@ IFC一般有什么用呢？
 
 水平居中：在父盒子中通过**text-align：center**则可以使内部的内联盒子水平居中。
 
-垂直居中：创建一个 IFC，用其中一个元素撑开父元素的高度，然后设置其 vertical-align: middle，**其他行内元素**则可以在此父元素下垂直居中。
+垂直居中：创建一个 IFC，父元素设置高度，然后子元素设置其 vertical-align: middle，可以使得子元素垂直居中
 
 ```html
 <html>
@@ -962,3 +990,88 @@ transform: rotate(0.5turn); //旋转
 2.innerHtml设置节点时会被当作html插入，而textContent 只会被作为文本不会被解析成html。
 
 3.innerText 只展示可见元素内的文本内容。<script><style>标签内文本内容不可见
+
+
+
+## 30. h5新特性
+
+1.新增语义化标签，header,aside,footer,section
+
+2.新增 history api
+
+3.新增选择器，document.querySelector, document.querySelectorAll
+
+4.媒体播放器 audoi, video
+
+5.本地存储 localStorage,  sessionStorage
+
+6.webworker, webScoket
+
+
+
+## 31vertical-align
+
+**基线**: 字母 x 底部的位置
+
+生效前提： 设置属性的盒子为inline-block 或者 inline
+
+用处： 垂直居中
+
+原理： 父元素设置行高等于height，fonsize 为0 即无视字体大小，然后要居中的元素 vertical-align: middle 就可以在父元素中居中了
+
+```css
+#parent{
+    height: 150px;
+    line-height: 150px;
+    font-size: 0;
+}
+img#son{vertical-align: middle;} /*默认是基线对齐，改为middle*/
+```
+
+
+
+## 32居中
+
+
+
+1.水平居中
+
+首先想到在父元素设置 text-align：center, 不是行内元素的子元素可以设置 display: inline-block
+
+margin: 0 auto
+
+绝对定位
+
+displey: flex
+
+
+
+2.垂直居中
+
+设置line-height 等于 height,使得单行文本，行内元素，行内块级元素垂直居中
+
+vertical-algin
+
+绝对定位
+
+display: flex
+
+
+
+
+
+## 33布局
+
+### 1.两栏布局
+
+a.左列定宽，右列自适应
+
+   a1.左边div浮动，右边div设置外边距
+
+   a2.左边div浮动，右边通过overflow：hidden 设置bfc
+
+   a3.绝对定位
+
+   a4.flex 左列 width: 100px; 右列 flex: 1自动铺满
+
+ 

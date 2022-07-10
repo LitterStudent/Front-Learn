@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document</title> 
 </head>
+
 <body>
-    
+
 </body>
 <script>
     function isObject(Obj) {
-        if(typeof Obj !=='object' || Obj===null ){
+        if (typeof Obj !== 'object' || Obj === null) {
             return false;
         }
         return true;
     }
-    function  deepClone(Obj,map=new WeakMap()) {
-        if(!isObject(Obj)){
+    function deepClone(Obj, map = new WeakMap()) {
+        if (!isObject(Obj)) {
             return;
         }
-        if(map.has(Obj)){
+        if (map.has(Obj)) {
             return map.get(Obj);
         }
-        let target = Array.isArray(Obj) ? []:{};
-        map.set(Obj,target);
-        Reflect.ownKeys(Obj).forEach((item)=>{
-            if(isObject(item)){
-                target = depClone(item,map)
+        let target = Array.isArray(Obj) ? [] : {};
+        map.set(Obj, target);
+        Reflect.ownKeys(Obj).forEach((item) => {
+            if (isObject(item)) {
+                target = depClone(item, map)
             }
-            else{
+            else {
                 target[item] = Obj[item]
             }
         })
         return target;
     }
 
-    
-var obj1 = {
-a:1,
-b:{a:2}
-};
-var obj2 = deepClone(obj1);
-console.log(obj1);
+    var obj1 = {
+        a: 1,
+        b: { a: 2 },
+        c: [1, 2, 3, 4]
+    };
+    var obj2 = deepClone2(obj1);
+    console.log(obj2);
 </script>
+
 </html>

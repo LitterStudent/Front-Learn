@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let array1 = [1, 2, 3, 4, 5]
+        console.log('1-------------------');
+        array1.forEach((value => {
+            console.log(value);
+        }))
+        console.log('2------------');
+        array1.fill('x')
+        console.log(array1);
+        console.log('3-----------');
+        console.log(Array.isArray(array1));
+        console.log('4-----------');
+        array1 = [1, 2, 3, 4, 5]
+        console.log(array1.slice(0, 2));  //返回的是切割的目标数组
+        console.log('5-----------');
+        console.log(array1.splice(0, 1)); //返回的是删除的数字
+        console.log(array1);
+        console.log(array1.splice(0, 0, 1));
+        console.log(array1);
+        console.log('6-----------');
+        console.log(array1.concat([6, 7, 8], [9, 10, 11]));
+        console.log('7-----------');
+        array1 = [1, [2, 3], [4, [5, [6]]]]
+        console.log(array1 = array1.flat().flat().flat());
+        console.log('8-----------');
+        console.log(array1.reverse());
+        console.log(array1);
+        array1.reverse()
+        console.log('9-----------');
+        array1 = [1, 5, 4, 6, 7]
+        array1.sort((a, b) => { return a - b })
+        console.log(array1);
+        console.log('10-----------');
+        array1 = [1, 2, 3, 4, 5, 6]
+        let str = ''
+        console.log(str = array1.join('='));
+        console.log(str.split('='));
+        console.log('11-----------');
+        const res = array1.reduce((preValue, curValue) => {
+            return preValue + curValue
+        }, 0)
+        console.log('res', res);
+        console.log('12-----------');
+        console.log(array1.findIndex((value) => value == 2));
+        console.log(array1.find(value => value > 2.9));
+        console.log('13-----------');
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .parent {
+            height: 350px;
+            line-height: 350px;
+            /*行高的值与height相等*/
+            text-align: center;
+            font-size: 0;
+            /*消除幽灵空白节点的bug*/
+            background-color: skyblue;
+        }
+
+        .son {
+            /*display: inline-block;*/
+            /*如果是块级元素需改为行内或行内块级才生效*/
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<div class="parent">
+    <img class="son"
+        src="https://p26-passport.byteacctimg.com/img/user-avatar/ee3070fb60dc33aae317a4af5337034e~300x300.image"
+        alt="">
+</div>
+
+<body>
+
+</body>
+
+</html>

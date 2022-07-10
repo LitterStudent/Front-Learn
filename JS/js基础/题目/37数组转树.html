@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let input = [
+            {
+                id: 1, val: '学校', parentId: null
+            }, {
+                id: 2, val: '班级1', parentId: 1
+            }, {
+                id: 3, val: '班级2', parentId: 1
+            }, {
+                id: 4, val: '学生1', parentId: 2
+            }, {
+                id: 5, val: '学生2', parentId: 2
+            }, {
+                id: 6, val: '学生3', parentId: 3
+            },
+        ]
+        const arrayToTree = function (array) {
+            const tree = {}
+            for (let i = 0; i < array.length; i++) {
+                if (tree.id == undefined) {
+                    const parentItem = array.filter((item) => {
+                        return item.parentId == undefined
+                    })
+                    tree.val = item.val
+                    tree.id = item.id
+                    array.splice(i, 1)
+                }
+            }
+            tree.children = array.length > 0 ? recureArrayTOTree(parentId, array) : []
+            function recureArrayTOTree(parentId, array) {
+                const children = []
+                for (let i = 0; i < array.length; i++) {
+                    if (array[i].parentId === parentId) {
+                        children.push({
+                            id: array[i].id,
+                            val: array[i].val,
+                            children: recureArrayTOTree(array[i].id, array)
+                        })
+                    }
+                }
+                return children
+            }
+
+        }
+    </script>
+</body>
+
+</html>

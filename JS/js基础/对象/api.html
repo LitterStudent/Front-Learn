@@ -12,15 +12,22 @@
     <script>
         const key = Symbol('age')
         const obj = { name: 'xiaoming', [key]: 12 }
-        console.log(Object.getOwnPropertySymbols(obj));
-        console.log(Object.getOwnPropertyNames(obj));
-        console.log(Object.keys(obj));
-        console.log(Object.values(obj));
-        console.log(Object.entries(obj));
+        console.log('Object.getOwnPropertySymbols', Object.getOwnPropertySymbols(obj));
+        console.log('Object.getOwnPropertyNames', Object.getOwnPropertyNames(obj));
+        console.log('Reflect.ownKeys', Reflect.ownKeys(obj));
+        console.log('Object.keys', Object.keys(obj));
+        console.log('Object.values(obj)', Object.values(obj));
+        console.log('Object.entries(obj)', Object.entries(obj));
         const obj2 = Object.assign({}, obj)
-        console.log(obj2);
+        console.log('obj2', obj2);
 
-console.log(source);
+        const obj3 = { name: 'xiaoming', age: 12, job: 'student' }
+        obj3.__proto__.protoName = 1
+        for (const key in obj3) {
+            if (obj3.hasOwnProperty(key)) {
+                console.log(key);
+            }
+        }
     </script>
 </body>
 
