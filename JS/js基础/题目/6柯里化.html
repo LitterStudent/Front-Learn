@@ -7,6 +7,7 @@
     <title>Document</title>
     <script>
         // 函数柯里化
+        // 将传递给函数的参数用闭包去保留，等参数够了才执行函数
         function curry(fn,len = fn.length){
             return _curry.call(this,fn,len)
         }
@@ -40,6 +41,7 @@
           return fn
        }
        
+
        console.log(add(1)(2)(3).toString());
 
 //  

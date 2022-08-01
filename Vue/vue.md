@@ -511,9 +511,13 @@ VueComponent.prototype.__proto __=== Vue.prototype
 
 ### 8.attributes
 
-通常往一个组件上 添加 attribute可以分为两类，一类是 可以作为 prop的attribute(即自定义的 attribute),另一种是非prop的attribute(即标签内置的 attribute 如 id class style). 可以作为 prop的attribute。
+通常往一个组件上 添加 attribute可以分为两类，
 
-后者的继承默认是继承在组件的根标签上的attribute中。如果不希望根标签继承 attribute ,可以在组件中设置 inheritAttrs:false,然后使用$attrs, 将attribute 绑定到要继承的标签上。
+一类是 可以作为 prop的attribute(即自定义的 attribute),
+
+另一种是非prop的attribute(即标签内置的 attribute 如 id class style). 
+
+后者的继承默认是继承在**组件的根标签**上的attribute中。如果不希望根标签继承 attribute ,可以在组件中设置 inheritAttrs:false,然后使用$attrs, 将attribute 绑定到要继承的标签上。
 
 ```vue
 // header组件
@@ -782,6 +786,12 @@ mounted() {
 ## 6.Vue中的动画
 
 通过 <transition> 标签将要使用动画的一个元素包裹在内，如果是多个元素要使用动画，可以使用<transition-group>包裹多个标签，同时需要在每个标签上添加key.
+
+
+
+过程：transition组件会去嗅探内部元素是否添加了 **css过渡或者 css动画**，然后在适当的事件 **添加 或 删除 相应的 class**从而实现动画，
+
+期间 transition组件还会暴露一些 javaScript 钩子函数。
 
 
 
@@ -1418,6 +1428,14 @@ var config = {
 
 vue中数据的双向绑定指的是 视图变化触发数据更新，数据更新触发视图变化。其中视图变化触发数据更新依靠的是事件监听，而数据更新触发视图变化依靠的是响应式数据。vue内部通过数据劫持和发布订阅模式来实习响应式数据，具体如下。。。。
 
+
+
+**MVC**
+
+C指的是 控制层, 是应用程序中负责处理用户交互的部分,通常控制器负责从模型的数据显示到视图上,需要我们手动操作dom.
+
+
+
 **MVVM**
 
 Model  View  ViewModel
@@ -1491,6 +1509,10 @@ Observer（观察者）：Observer观查传入的data对象。遍历data对象�
 
 <img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/202112011400959.png?token=AP3MTU25FWZNRK37KG774WDBU4H24" alt="image-20211017212021275" style="zoom: 67%;" />
 
+vue检测数组的变化是通过重写改变数组的7个方法， push,pop,unshift,shift,sort,reverser,splice,在重写的方法内去实现监听。
+
+
+
 ### 1.Vue.set()
 
 Vue 不允许动态添加根级别的响应式 property。所以你必须在初始化实例前声明所有根级响应式 property，哪怕只是一个空值：
@@ -1516,7 +1538,7 @@ vm._data.b = 2
 
 
 
-但是，对于已经创建的实例，可以使用 `Vue.set(object, propertyName, value)` 方法向**data内的对象**添加响应式 property。
+但是，对于已经创建的实例，可以使用 `Vue.set(object, propertyName, value)` 方法向**data内的对象属性**添加响应式 property。
 
 例如，对于：
 
@@ -1659,9 +1681,19 @@ vue的生命周期是 指 vue 实例的创建，初始化数据，编译模板�
 
 
 
-- 请问`methods`内的方法可以使用箭头函数么，会造成什么样的结果？
+​      请问`methods`内的方法可以使用箭头函数么，会造成什么样的结果？
 
 是不可以使用箭头函数的，因为箭头函数的`this`是定义时就绑定的。在`vue`的内部，`methods`内每个方法的上下文是当前的`vm`组件实例，`methods[key].bind(vm)`，而如果使用使用箭头函数，函数的上下文就变成了父级的上下文，也就是`undefined`了，结果就是通过`undefined`访问任何变量都会报错。
+
+
+
+​    **父子组件生命周期的调用顺序？**
+
+渲染顺序: 父beforeCreate -> 父created -> 父beforeMount -> 子beforeCreate -> 子created -> 子beforeMount -> 子mounted -> 父mounted
+
+更新顺序:  父 beforeUpdate -> 子 beforeUpdate -> 子 updated -> 父 updated
+
+销毁: 父 beforeDestory -> 子 beforeDestory -> 子 destory -> 父 destory
 
 
 
@@ -1997,13 +2029,13 @@ DOM变为虚拟dom的过程即是模板编译。
 
 vue 中的route 就是  key 和 组件的映射
 
-### 0.history和hash
+### 0.historyRouter和hashRouter
 
 本质上都是通过监听事件来根据不同的路径重新渲染组件且不让浏览器因为路径改变而重新发送请求。
 
 hash原理
 
-通过在#号后面拼接路径。当井号 `#` 后面的路径发生变化时，浏览器并不会因为路径的改变重新发起请求，而是会触发 `onhashchange` 事件。
+通过在#号后面拼接路径。当井号 `#` 后面的路径发生变化时，浏览器并不会因为路径的改变重新发起请求，而是会触发 `onhashchange` 事件，然后根据hash值完成页面组件的渲染。
 
 vue-router 通过监听 hashchange 事件来对 通过location.hash 获取路径值并重新渲染组件
 
@@ -2032,7 +2064,7 @@ vue-router 通过监听 hashchange 事件来对 通过location.hash 获取路径
 
 history原理
 
-通过使用H5的新特性 history API, 修改浏览器URL并且不发送请求。vue-router内部通过监听<router-link>的点击事件后通过 location.href 来获取 url然后重新渲染组件。
+通过使用H5的新特性 history API,  history.pushState修改浏览器URL并且不发送请求。并监听 popstate 去获取url变化，然后重新渲染组件。
 
 ```html
 <body>
@@ -2467,7 +2499,7 @@ router.go(1);
 
 
 
-### 11.动态路由是什么
+### 11.带参数的动态路由匹配是什么
 
 把某种模式匹配到的所有路由，全都映射到同个组件。
 
@@ -2547,7 +2579,7 @@ const User = {
 
 
 
-### 13动态操作路由
+### 13动态路由 (动态操作路由)
 
 #### 1.动态添加路由
 
@@ -2632,7 +2664,12 @@ removeRoute();
 
 12. 调用 `beforeRouteEnter` 守卫中传给 `next` 的回调函数，创建好的组件实例会作为回调函数的参数传入。
 
-    
+
+
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220712223550459.png" alt="image-20220712223550459" style="zoom: 80%;" />
+
+
 
 #### 2.全局前置守卫
 
@@ -2651,6 +2688,70 @@ router.beforeEach（(to,from)=>{
 守卫的返回值都可以是以上的4种值。
 
 
+
+### 15数据获取
+
+进入某个路由后，渲染的某个组件可能需要从服务器获取数据后才能渲染页面，有两种时机可以获取数据。
+
+1.路由跳转入组件后，由组件内的created钩子函数去获取数据。
+
+```vue
+<template>
+  <div class="post">
+    <div v-if="loading" class="loading">Loading...</div>
+
+    <div v-if="error" class="error">{{ error }}</div>
+
+    <div v-if="post" class="content">
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.body }}</p>
+    </div>
+  </div>
+</template>
+
+<script>
+    export default {
+  data() {
+    return {
+      loading: false,
+      post: null,
+      error: null,
+    }
+  },
+  created() {
+    // watch 路由的参数，以便再次获取数据
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        this.fetchData()
+      },
+      // 组件创建完后获取数据，
+      // 此时 data 已经被 observed 了
+      { immediate: true }
+    )
+  },
+  methods: {
+    fetchData() {
+      this.error = this.post = null
+      this.loading = true
+      // replace `getPost` with your data fetching util / API wrapper
+      getPost(this.$route.params.id, (err, post) => {
+        this.loading = false
+        if (err) {
+          this.error = err.toString()
+        } else {
+          this.post = post
+        }
+      })
+    },
+  },
+}
+</script>
+```
+
+
+
+2.在路由跳转前，通过路由在组件的钩子函数 beforeRouteEnter 去实现数据获取。去看官网。
 
 
 
@@ -3356,3 +3457,21 @@ oldVnode:旧虚拟节点
 ![image-20211221124926403](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211221124926403.png)
 
 ![image-20211221125331730](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20211221125331730.png)
+
+
+
+## 30.element-ui
+
+1.如何修改element-ui 的默认样式？
+
+a. 如果要修改的全局范围的默认样式，可以在 main.js 中 去引入一个我们写的自定义的css文件，文件内部加入要修改的样式。
+
+b.在vue单文件下增加一个没有 scoped 范围的 style 标签， 内部通过 书写样式去 覆盖
+
+c. 找到要修改的类名， 在前面加上 /deep/ 也可以进行修改
+
+
+
+## 31.Vue 事件的绑定原理
+
+原生事件绑定是通过调用 addEventListener 绑定到真实元素, 而非原生事件 vue 内部是通过 事件总线 调用 $on 监听事件, $emit 派发事件 实现的. 总的仍然是一个发布订阅 模式.

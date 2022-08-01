@@ -86,7 +86,7 @@ undefined表示未初始化，变量通过 var声明后不赋值默认就未unde
 
 类数组转换成数组 ： Array.prototype.slice.call(arguments)
 
-​									Array.form(arguments)
+​									Array.from(arguments)
 
 
 
@@ -99,6 +99,31 @@ undefined表示未初始化，变量通过 var声明后不赋值默认就未unde
 var在全局作用域中声明的变量会被挂载到全局对象window上(不论是否严格模式)，而let和const不会。
 
 var 在函数中使用会声明函数作用域变量, 而let和const还可以声明块级作用域变量。
+
+
+
+babel中如何编译 let 和 const 的？
+
+```js
+let value = 1
+// 全局作用域中 babel翻译成
+var value = 1
+```
+
+```js
+if(true) {
+  let value = 1
+}
+console.log(value)  // undefined
+
+// babel
+if (true) {
+    var _value = 1   //将var改成let的同时，为变量的命名增加下划线
+}
+console.log(value) //undefined
+```
+
+const也一样，在const变量值被修改时编译会直接报错
 
 
 
@@ -141,7 +166,7 @@ Objectis(a, b){
 }
 ```
 
-Object.assigin(traget,source1,source2):将source1和source2合并到target上
+Object.assign(traget,source1,source2):将source1和source2合并到target上
 
 用途： 1.克隆对象，浅拷贝
 
@@ -1177,7 +1202,7 @@ js异步编程的一种解决方案。~~将执行异步任务的代码和处理�
 
 ​			2.promise无法取消，一旦创建就会立即执行，无法中途取消。
 
-
+​			3.当处于pending时，无法得知目前运行到了哪一阶段
 
 
 
@@ -1638,7 +1663,7 @@ module.exports = MyPromise;
 
 ## 2 async 和 await
 
-async 和 await 能进一步改善promise的链式调用，**使得异步代码看起来更像是同步代码，用同步的语法实现异步代码**。
+async 和 await 能进一步改善promise的链式调用，**使得异步代码看起来更像是同步代码，用同步的语法实现异步代码,调试的时候也更加友好**。
 
 **async函数的返回值为 promise.**一个函数如果加上async ,那么该函数就会返回一个状态为fulfilled的promise，**除非async函数内抛出的错误或者await后面的promsie状态变为rejected.** 
 
@@ -1683,21 +1708,20 @@ f().then(v => console.log(v))
 1. async 函数中，将await语句放入到 try catch 中。如果await的promise变为 rejected时，可以在catch中捕获到。
 2. 多个await命令后面的异步操作如果没有关联关系。就可以抽离出来，使用promise.all让它们同时触发，节省时间。  
 
-3.可以通过使用一个辅助函数来包裹 await 后面跟着的函数，在辅助函数内使用try catch从而更优雅地捕获错误。
+3.可以编写一个辅助函数，将await跟着的promsie传入，为promise增加一个catch捕获错误，并以数组的形式，在辅助函数内使用try catch从而更优雅地捕获错误。
 
 ```js
-async function errorCaptured(asyncFunc) {
-    try{
-        let res = await asyncFunc()
-        return [null, res]
-    } catch(e) {
-        return [e, null]
-    }
+// to.js
+export default function to(promise) {
+   return promise.then(data => {
+      return [null, data];
+   })
+   .catch(err => [err]);
 }
 
 
 async function func() {
-    let [err, res] = await errorCaptured(asyncFunc)
+    let [err, res] = await to(asyncFunc)
     if (err) {
         //... 错误捕获
     }
@@ -1755,14 +1779,14 @@ return function() {
 
 #### 3.forEach的使用
 
-```
+```js
 promiseArr.forEach(async(item)=>{
  await item(); //无效异步  因为forEach内部的实现是通过遍历调用回调实现的。
 })
-.map .filter 
+.map .filter               //这些函数执行异步都是 并发的，相邻异步任务无阻塞的
 
 
-for(let i=0; i<lenght ;i++){
+for(let i=0; i<lenght ;i++){      // 这些才是继发，相邻异步任务有阻塞的
   await promiseArr[i]; //有效异步
 }
 for of 中 使用也有效
@@ -2022,6 +2046,24 @@ document.querySelector('input').addEventListener('input',function(e){
 5.let a = (a,b)=>{return a+b} 等于 let a = (a,b)=>a+b 没有{ }不用写return
 
 6.箭头函数可以使用apply,call,bind. 但是传入的this会被忽略，只有传入的参数有用。
+
+箭头函数适合被用于非方法函数。那什么是方法函数呢？方法函数就是作为对象属性的函数
+
+```js
+var obj = {
+  i: 10,
+  b: () => console.log(this.i, this),
+  c: function() {
+    console.log( this.i, this)
+  }
+}
+obj.b();
+// undefined Window
+obj.c();
+// 10, Object {...}
+```
+
+
 
 ## 8 函数
 
@@ -2370,6 +2412,10 @@ console.log(formatDate);
 
 #### 1.common.js 
 
+
+
+
+
 每个文件就是一个模块，都有自己独立的作用域。内部的变量和函数都是私有的，对其他文件不可见。
 
 
@@ -2606,6 +2652,10 @@ import './y';
 
 
 #### 4CommonJS和ES6module的区别
+
+common.js是服务端采用的模块化规范，加载模块化是同步的，因为是运行在服务器，所有模块化文件一般都直接保存在本地了，加载比较快。
+
+
 
 **① CommonJS 模块输出的是一个值的拷贝，一旦输出一个值，模块内部的变化就影响不到这个值。ES6 模块输出的是值的引用。**（ES6 Module通过export {<变量>}输出的是一个变量的引用,变量如果改变的话,我查看的到变化,export default输出的是一个值）
 
@@ -3490,15 +3540,69 @@ WeakMap
 
 
 
-### 10.对象
+### 10.类 Class
+
+ES6 Class 其实就是构造函数的语法糖，类实现的绝大多数功能和构造函数是相同的。Class的写法是让对象的原型更加清晰，更加面向对象编程。
 
 
 
+ 类内部的方法都是不可枚举的。
 
+类继承比寄生组合继承多了一部， Object.setPrototype(child, parent)
+
+
+
+```js
+class Parent {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+class Child extends Parent {
+    constructor(name, age) {
+        super(name); // 调用父类的 constructor(name)
+        this.age = age;
+    }
+}
+
+var child1 = new Child('kevin', '18');
+
+console.log(child1);
+```
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220711215034051.png" alt="image-20220711215034051" style="zoom:67%;" />
+
+ES5寄生组合继承
+
+```js
+function Parent (name) {
+    this.name = name;
+}
+
+Parent.prototype.getName = function () {
+    console.log(this.name)
+}
+
+function Child (name, age) {
+    Parent.call(this, name);
+    this.age = age;
+}
+
+Child.prototype = Object.create(Parent.prototype);
+
+var child1 = new Child('kevin', '18');
+
+console.log(child1);
+```
+
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220711215134689.png" alt="image-20220711215134689" style="zoom:67%;" />
 
 ### 12可迭代对象
 
 [迭代器好文](https://juejin.cn/post/6844903775329583112#heading-7)
+
+所谓的迭代器就是一个含有next()方法的对象, 每次调用 next 方法都会返回一个结果对象 {value, done}, value表示当前的值，done表示是否遍历结束。
 
 **实现了[Symbol.iterator]接口的数据结构称为可迭代对象。**
 
@@ -3514,11 +3618,9 @@ Map
 
 Set
 
+类数组对象（argument, NodeList 对象）
+
 String
-
-arguments
-
-NodeList对象
 
 
 
@@ -3588,7 +3690,9 @@ let arr = ['b', 'c'];
 // ['a', 'b', 'c', 'd']
 ```
 
-2.for .. of   内部调用 Symbol.iterator 接口
+##### 2.for .. of   内部调用 Symbol.iterator 接口
+
+for of 的出现就是为了让我们更便捷的遍历对象的值
 
 ```javascript
 const arr = ['red', 'green', 'blue'];
@@ -3650,6 +3754,10 @@ for (let x of Array.from(arrayLike)) {
   console.log(x);
 }
 ```
+
+
+
+### 13生成器函数 generator
 
 
 
@@ -4260,3 +4368,84 @@ const elements = {
 - 字节码存在的意义：直接将 AST 转化为机器码，执行效率是非常高，但是消耗大量内存，从而先转化为字节码解决内存问题；
 - 解释器 ignition 在解释执行字节码，同时会手机代码信息，发现某一部分代码是热点代码（HotSpot），编译器把热点的字节码转化为机器码，并保存起来，下次使用；
 - 字节码配合解释器和编译器的计数实现称为即时编译（JIT）。
+
+
+
+## 31.Babel 如何编译js代码
+
+babel中如何编译 let 和 const 的？
+
+```js
+let value = 1
+// 全局作用域中 babel翻译成
+var value = 1
+```
+
+```js
+if(true) {
+  let value = 1
+}
+console.log(value)  // undefined
+
+// babel
+if (true) {
+    var _value = 1   //将var改成let的同时，为变量的命名增加下划线
+}
+console.log(value) //undefined
+```
+
+const也一样，在const变量值被修改时编译会直接报错
+
+
+
+
+
+babel 编译 for of	
+
+```js
+// 源代码
+const colors = new Set(["red", "green", "blue"]);
+
+for (let color of colors) {
+    console.log(color);
+}
+```
+
+
+
+```js
+// 编译后
+"use strict";
+
+var colors = new Set(["red", "green", "blue"]);
+
+var _iteratorNormalCompletion = true;
+var _didIteratorError = false;
+var _iteratorError = undefined;
+
+try {
+    for (
+        var _iterator = colors[Symbol.iterator](), _step;
+        !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
+        _iteratorNormalCompletion = true
+    ) {
+        var color = _step.value;
+
+        console.log(color);
+    }
+} catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+} finally {
+    try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+        }
+    } finally {
+        if (_didIteratorError) {
+            throw _iteratorError;
+        }
+    }
+}
+```
+

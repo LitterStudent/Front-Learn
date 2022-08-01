@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,21 +8,21 @@
     <title>Document</title>
     <script>
         // 数组扁平化
-        let arr = [1,[2,[3,[4,5]]],6]
+        let arr = [1, [2, [3, [4, 5]]], 6]
 
         let res = arr.flat(Infinity)
 
-        let res2 = JSON.stringify(arr).replace(/\[|\]/g,'').split(',')
+        let res2 = JSON.stringify(arr).replace(/\[|\]/g, '').split(',')
         // 转换后元素都为字符串
         console.log(res2)
 
-        let res3 = JSON.parse('['+JSON.stringify(arr).replace(/\[|\]/g,'')+']')
+        let res3 = JSON.parse('[' + JSON.stringify(arr).replace(/\[|\]/g, '') + ']')
         console.log(res3)
 
-        const flatten = arr=>{
-            return arr.reduce((pre,cur)=>{
-                return pre.concat(Array.isArray(cur)?flatten(cur) : cur)
-            },[])
+        const flatten = arr => {
+            return arr.reduce((pre, cur) => {
+                return pre.concat(Array.isArray(cur) ? flatten(cur) : cur)
+            }, [])
         }
         const res4 = flatten(arr)
         console.log(res4)
@@ -29,12 +30,12 @@
 
 
         const res5 = []
-        const fn = arr=>{
-            for(let i=0;i<arr.length;i++){
-                if(Array.isArray(arr[i])){
+        const fn = arr => {
+            for (let i = 0; i < arr.length; i++) {
+                if (Array.isArray(arr[i])) {
                     fn(arr[i])
                 }
-                else{
+                else {
                     res5.push(arr[i])
                 }
             }
@@ -46,34 +47,63 @@
 
         // 打平对象
 
-        function flatObj(obj){
-        let keys = Object.keys(obj);
-        let res = {}
-        let fun = function(keys,obj){
-            keys.forEach((key)=>{
-            if(typeof obj[key] === 'object' && obj[key]!==null){
-                fun(Object.keys(obj[key]),obj[key]); 
+        function flatObj(obj) {
+            let keys = Object.keys(obj);
+            let res = {}
+            let fun = function (keys, obj) {
+                keys.forEach((key) => {
+                    if (typeof obj[key] === 'object' && obj[key] !== null) {
+                        fun(Object.keys(obj[key]), obj[key]);
+                    }
+                    else {
+                        res[key] = obj[key]
+                    }
+
+                })
             }
-            else {
-                res[key] = obj[key]
-            }
-            
-        })
+            fun(keys, obj)
+            return res;
         }
-        fun(keys,obj)
-        return res;
-    }
-    
-    const obj = {
-  a: 1,
-  b: [1, 2, { c: true }],
-  c: { e: 2, f: 3 },
-  g: null,
-};
-console.log(flatObj(obj));
+
+        const obj = {
+            a: 1,
+            b: [1, 2, { c: true }],
+            c: { e: 2, f: 3 },
+            g: null,
+        };
+        function flatObj2(obj) {
+            const res = {}
+            const keys = Reflect.ownKeys(obj)
+            const recureFun = function (obj, key) {
+                const keys = Reflect.ownKeys(obj)
+                keys.forEach(key2 => {
+                    const value = obj[key2]
+                    if (typeof value === 'object' && value !== null) {
+                        recureFun(obj[key2], `${key}:${key2}`)
+                    } else {
+                        res[`${key}:${key2}`] = value
+                    }
+                })
+            }
+            keys.forEach((key) => {
+                const value = obj[key]
+                if (typeof value === 'object' && value !== null) {
+                    recureFun(value, key)
+                } else {
+                    res[key] = value
+                }
+            })
+
+            return res
+        }
+
+        console.log(flatObj2(obj));
+
     </script>
 </head>
+
 <body>
-    
+
 </body>
+
 </html>

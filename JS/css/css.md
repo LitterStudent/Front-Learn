@@ -28,6 +28,61 @@ margin为负值时： margin-left margin-top 为负值时，元素会向上或�
 
 ![image-20220323115426435](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220323115426435.png)
 
+
+
+当要获取整个浏览器的可视窗口的高度时可以使用 window.innerHeight（大小固定，感觉和clientwidth一样） ，其中 window.outerHeight 又不太一样，如图所示
+
+![image-20220717012930371](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220717012930371.png)
+
+在不支持 window.innerHeight的浏览器中，可以使用 document.documentElement.clientHeight （documentElement指的是根元素html）， document.body.clientHeight (body指的是 body标签，显而易见嘛)
+
+### 最佳实践
+
+既然获取窗口大小存在浏览器兼容问题，在实践中通常使用下面的代码来兼容所有浏览器：
+
+```js
+var height = window.innerHeight
+    || document.documentElement.clientHeight
+    || document.body.clientHeight;
+```
+
+
+
+## 滚动高度
+
+1.`clientHeight`: 内部可视区域大小。
+
+2.`offsetHeight`：整个可视区域大小，包括border和scrollbar在内。
+
+3.`scrollHeight`：元素内容的高度，包括溢出部分。
+
+4.`scrollTop`：元素内容向上滚动了多少像素，如果没有滚动则为0。
+
+
+
+通过 window.innerHeight， document.documentElement.clientHeight 获取可视节目的高度
+
+通过document.documentElement.scrollTop 获取滚动高度
+
+为什么不用body?
+
+在设计页面时可能经常会用到固定层的位置，这就需要获取一些html对象的坐标以更灵活的设置目标层的坐标，这里可能就会用到**document.body.scrollTop**等属性，但是此属性在xhtml标准网页或者更简单的说是带<!DOCTYPE ..>标签的页面里得到的结果是0，如果不要此标签则一切正常，那么在xhtml页面怎么获得body的坐标呢，当然有办法-使用**document.documentElemen**t来取代**document.body**,可以这样写
+
+![image-20220717013916416](https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220717013916416.png)
+
+element.**getBoundingClientRect(**): 获取元素在 可视节目的高度， 不会高于 window.innerHeight
+
+```js
+    // 图片懒加载的查看图片是否在可视区域的操作
+	const { top } = this.el.getBoundingClientRect();
+    console.log(top, window.innerHeight);
+    return top < window.innerHeight * (this.options.preload || 1.3);
+```
+
+
+
+
+
 ## 3CSS的选择器有哪些，哪些属性可以继承？
 
   Id选择器，类选择器，标签选择器，相邻选择器（h1+p）,子选择器（ul > li）,后代选择器（li a),，
@@ -247,11 +302,11 @@ flex-direction: row | row-reverse | column | column-reverse
 
 justify-content:flex-start | flex-end |center 
 
-|space-between  子元素在主轴两端对齐，项目之间间隔相等
+|space-between  子元素在主轴两端对齐，项目之间间隔相等  会贴合边框
 
 |sapce-around    在主轴上均匀排布每个元素
 
-
+<img src="https://raw.githubusercontent.com/LitterStudent/Cloud-picture/main/image-20220717021405085.png" alt="image-20220717021405085" style="zoom:50%;" />
 
 子元素在交叉轴上的对齐方式。
 
@@ -408,6 +463,12 @@ display：none 的元素不会出现在渲染树中，其子元素也会被隐�
 visibility:hidden 元素仍在文档的布局上，只会引发浏览器的重绘 ，不会引发回流。其子元素设置visibility:visiable就可以显示出来。不一定隐藏子元素。设置点击事件无效。
 
 opacity:0  引发重绘。设置点击事件有效。
+
+
+
+display:none直接将元素从dom树中删除，opacity:0, visiablity:hidden不会，但是opacity:0设置点击事件有效
+
+
 
 
 
@@ -619,7 +680,7 @@ console.log(div.offsetHeight);
 #### 如何减少回流、重绘
 
 - 使用 transform 替代 top
-- 使用 visibility 替换 display: none ，因为前者只会引起重绘，后者会引发回流（改变了布局）
+- 使用 visibility 替换 display: none ，因为前者只会引起重绘，后者会引发回流（改变了布局）但是 **Opacity 更好，不会促发重绘**
 - 不要把节点的属性值放在一个循环里当成循环里的变量。
 - 不要使用 table 布局，可能很小的一个小改动会造成整个 table 的重新布局
 - 动画实现的速度的选择，动画速度越快，回流次数越多，也可以选择使用 requestAnimationFrame
@@ -1052,11 +1113,46 @@ displey: flex
 
 vertical-algin
 
+```css
+#parent{
+    height: 150px;
+    line-height: 150px;
+    font-size: 0;
+}
+img#son{vertical-align: middle;} /*默认是基线对齐，改为middle*/
+```
+
 绝对定位
 
 display: flex
 
 
+
+水平垂直居中
+
+1.text-align:center,  vetical-algin: middle
+
+2.定位+ transform
+
+3.display: flex
+
+4.定位
+
+```css
+#parent{
+    position: relative;
+}
+#son{
+    position: absolute;
+    margin: auto;
+    width: 100px;
+    height: 50px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+```
 
 
 

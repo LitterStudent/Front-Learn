@@ -15,18 +15,42 @@
 </body>
 <script>
     // 防抖与节流
-// 防抖和节流都是防止某一时间频繁触发某一个操作
-// 防抖是在一个时间段内只执行一次 而节流是间隔时间执行
-// 防抖的应用场景：  搜索框内不断输入值，用防抖节约请求资源  
-// window触发resize时用防抖只促发一次
-// 节流：监听 onscroll 下拉事件加载更多的资源
+    // 防抖和节流都是防止某一时间频繁触发某一个操作
+    // 防抖是在一个时间段内只执行一次 而节流是间隔时间执行
+    // 防抖的应用场景：  搜索框内不断输入值，用防抖节约请求资源  
+    // window触发resize时用防抖只促发一次
+    // 节流：监听 onscroll 下拉事件加载更多的资源
+
+    function debounce3(fn, timer, immediate) {
+        let flag = false;
+        return function (...args) {
+            const that = this
+            if (immediate && flag === false) {
+                fn.call(that, ...args)
+                flag = setTimeout(() => {
+                    flag = false
+                }, timer)
+            } else if (immediate && flag) {
+                clearTimeout(flag)
+                flag = setTimeout(() => {
+                    flag = false
+                }, timer)
+            } else {
+                clearTimeout(flag)
+                flag = setTimeout(() => {
+                    fn.call(that, ...args)
+
+                }, timer)
+            }
+        }
+    }
 
 
 
-// 防抖的原理就是：你尽管触发事件，但是我一定在事件触发 n 秒后才执行，
-//如果你在一个事件触发的 n 秒内又触发了这个事件，
-//那我就以新的事件的时间为准，n 秒后才执行，
-//总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行，
+    // 防抖的原理就是：你尽管触发事件，但是我一定在事件触发 n 秒后才执行，
+    //如果你在一个事件触发的 n 秒内又触发了这个事件，
+    //那我就以新的事件的时间为准，n 秒后才执行，
+    //总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行，
 
     // 模拟一端ajax 请求
     function ajax(content) {
@@ -49,7 +73,7 @@
     function debounce2(fun, delay, immediate) {
         let timmer
         return function (...args) {
-            
+
             if (timmer) {
                 clearTimeout(timmer);
             }
@@ -72,7 +96,7 @@
 
     let inputb = document.getElementById('debounce')
 
-    let debounceAjax = debounce2(ajax,1000,true)
+    let debounceAjax = debounce3(ajax, 1000, false)
 
     inputb.addEventListener('keyup', function (e) {
         debounceAjax(e.target.value)
@@ -94,8 +118,20 @@
     }
 
 
+    function throttle2(fn, delay) {
+        let flag = false
+        return function (...args) {
+            if (!flag) {
+                fn(...args)
+                flag = true
+                setTimeout(() => {
+                    flag = false
+                }, delay)
+            }
+        }
+    }
 
-    let throttleAjax = throttle(ajax, 1000)
+    let throttleAjax = throttle2(ajax, 1000)
 
     let inputc = document.getElementById("throttle")
 

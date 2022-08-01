@@ -7,19 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+
+</style>
 
 <body>
-    <script>
-        console.log(a);
-        if (1) {
-            var a = 2
-        }
 
-        function exec() {
-            var b = 3
+    <script>
+        async function a() {
+            try {
+                const b = await Promise.reject(1)
+                console.log(22);
+            } catch (error) {
+                console.log(error);
+            }
+
         }
-        exec()
-        console.log(b);
+        a()
     </script>
 </body>
 
